@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <title>FísicaMatemáticas - II Prueba I Semestre</title>
+  <style>
+    /* SISTEMA DE DISEÑO TIKTOK / CYBERPUNK NATIVO */
+    :root {
+      --bg: #000000;
+      --bg-soft: #0A0A12;
+      --surface: #12121F;
+      --surface-card: #1A1A2E;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #FFFFFF;
+      --text-dim: #9999AA;
+      
+      /* Colores de marca vibrantes por Tema */
+      --t1: #00F2FE; /* MRU - Cian Eléctrico */
+      --t2: #FE0979; /* MRUA Horizontal - Neón Pink */
+      --t3: #25D366; /* Caída Libre - Verde Vibrante */
+      
+      --good: #00FF87;
+      --bad: #FF3366;
+      --warn: #FFB020;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #050508;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      letter-spacing: -0.01em;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* CONTENEDOR MÓVIL (FRAME) */
+    #app-frame {
+      width: 100%;
+      max-width: 480px;
+      height: 100dvh;
+      background-color: var(--bg);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    @media (min-width: 540px) {
+      #app-frame {
+        height: 850px;
+        border-radius: 32px;
+        border: 4px solid var(--line);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+      }
+    }
+
+    /* VISTAS BASE */
+    .view {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      padding: 24px 20px 110px 20px; /* Colchón inferior para evitar solapamiento con bottom-nav */
+    }
+
+    .view.active {
+      display: flex;
+    }
+
+    /* COMPONENTES DE TEXTO Y FUENTES MONO PARA FÓRMULAS */
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, Consolas, monospace;
+      font-weight: 600;
+    }
+
+    h1, h2, h3 {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    /* HEADER COMÚN */
+    .app-header {
+      padding: 16px 20px;
+      background: linear-gradient(to bottom, #000000, transparent);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .app-header h2 {
+      font-size: 1.1rem;
+      background: linear-gradient(45deg, var(--t1), var(--t2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* NAV INFERIOR FIJO */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 76px;
+      background: rgba(10, 10, 18, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-btn.active {
+      color: var(--text);
+    }
+
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 4px;
+      fill: currentColor;
+    }
+
+    /* VISTA DE INICIO (HOME) */
+    .welcome-card {
+      background: linear-gradient(135deg, rgba(26,26,46,0.5) 0%, rgba(10,10,18,0.8) 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .welcome-title {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    .exam-date-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.06);
+      padding: 6px 12px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: var(--warn);
+      border: 1px solid rgba(255,176,32,0.2);
+      margin-bottom: 12px;
+    }
+
+    .theme-selector-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .theme-row-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .theme-row-card:active {
+      transform: scale(0.98);
+    }
+
+    .theme-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .theme-info-box {
+      flex-grow: 1;
+    }
+
+    .theme-info-box h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .theme-info-box p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      line-height: 1.2;
+    }
+
+    /* VISTA DE ESTUDIO (SWIPEABLE / VERTICAL SNAP) */
+    .study-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .study-card {
+      background: var(--surface-card);
+      border-radius: 20px;
+      border-left: 5px solid var(--theme-color, var(--t1));
+      padding: 20px;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-meta {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--theme-color, var(--t1));
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    .concept-box {
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 12px 0;
+      border: 1px dashed var(--line);
+    }
+
+    .formula-display {
+      font-size: 1.4rem;
+      text-align: center;
+      color: var(--text);
+      margin: 10px 0;
+      display: block;
+    }
+
+    .step-list {
+      margin-top: 10px;
+      padding-left: 14px;
+    }
+
+    .step-item {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: var(--text-dim);
+    }
+
+    .step-item strong {
+      color: var(--text);
+    }
+
+    .trap-box {
+      background: rgba(255, 51, 102, 0.08);
+      border: 1px solid rgba(255, 51, 102, 0.2);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 14px;
+    }
+
+    .trap-title {
+      color: var(--bad);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* VISTA DE QUIZ */
+    .quiz-progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--line);
+      border-radius: 3px;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    .quiz-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--t1), var(--t2));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .quiz-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .quiz-question {
+      font-size: 1.1rem;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      color: var(--text);
+      text-align: left;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      min-height: 52px;
+    }
+
+    .option-btn:active {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .option-btn.correct {
+      border-color: var(--good);
+      background: rgba(0, 255, 135, 0.1);
+    }
+
+    .option-btn.wrong {
+      border-color: var(--bad);
+      background: rgba(255, 51, 102, 0.1);
+    }
+
+    .option-btn.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .feedback-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .feedback-box.show {
+      display: block;
+    }
+
+    .next-btn {
+      margin-top: 20px;
+      background: var(--text);
+      color: #000000;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      display: none;
+    }
+
+    .next-btn.show {
+      display: block;
+    }
+
+    /* INLINE REVIEW CARD EN FALLA 3 */
+    .inline-review-card {
+      margin-top: 16px;
+      background: rgba(255, 176, 32, 0.08);
+      border: 1px solid rgba(255, 176, 32, 0.3);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    /* VISTA RESULTADOS */
+    .results-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gauge-svg {
+      width: 160px;
+      height: 160px;
+      transform: rotate(-90deg);
+      margin-bottom: 16px;
+    }
+
+    .gauge-bg {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 12;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: var(--good);
+      stroke-width: 12;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 440;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease-out;
+    }
+
+    .gauge-text {
+      font-size: 2.2rem;
+      font-weight: 800;
+      fill: var(--text);
+    }
+
+    .score-badge {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .retry-btn {
+      background: linear-gradient(45deg, var(--t1), var(--t2));
+      color: var(--text);
+      border: none;
+      border-radius: 14px;
+      padding: 16px 32px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    /* ELEMENTOS DE CONTROL DE FLUJO EN RESPONSIVIDAD COMPACTA */
+    @media (max-height: 600px) {
+      .view { padding-bottom: 85px; }
+      .welcome-card { padding: 12px; margin-bottom: 12px; }
+      .welcome-title { font-size: 1.2rem; }
+      .theme-row-card { padding: 10px; gap: 8px; }
+      .theme-icon-box { width: 36px; height: 36px; font-size: 1.1rem; }
+      .gauge-svg { width: 120px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-frame">
+    <header class="app-header">
+      <h2>II Prueba FísicaMatemáticas</h2>
+      <div id="header-badge" class="mono" style="font-size: 0.8rem; color: var(--text-dim);">CTP MEP</div>
+    </header>
+
+    <section id="view-home" class="view active">
+      <div class="welcome-card">
+        <span class="exam-date-badge">📅 Jueves 25/06/2026 • 7:00 a.m.</span>
+        <h1 class="welcome-title">Preparación de Alto Blindaje</h1>
+        <p style="font-size: 0.9rem; color: var(--text-dim);">Estrategia pedagógica para asegurar el 100. Seleccioná un eje temático para iniciar.</p>
+      </div>
+
+      <div class="theme-selector-list">
+        <div class="theme-row-card" onclick="switchTab('study', 0)">
+          <div class="theme-icon-box" style="background: rgba(0, 242, 254, 0.1); color: var(--t1);">直線</div>
+          <div class="theme-info-box">
+            <h3>Tema 1: MRU</h3>
+            <p>Rapidez, velocidad, distancia, desplazamiento y el análisis del crucigrama de Cotidianos.</p>
+          </div>
+        </div>
+
+        <div class="theme-row-card" onclick="switchTab('study', 1)">
+          <div class="theme-icon-box" style="background: rgba(254, 9, 121, 0.1); color: var(--t2);">⏩</div>
+          <div class="theme-info-box">
+            <h3>Tema 2: MRUA Horizontal</h3>
+            <p>Aceleración constante, conversiones obligatorias km/h a m/s y análisis dimensional.</p>
+          </div>
+        </div>
+
+        <div class="theme-row-card" onclick="switchTab('study', 2)">
+          <div class="theme-icon-box" style="background: rgba(37, 211, 102, 0.1); color: var(--t3);">🔻</div>
+          <div class="theme-info-box">
+            <h3>Tema 3: Caída Libre</h3>
+            <p>Movimiento rectilíneo acelerado vertical gobernado por el factor de gravedad g.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-study" class="view">
+      <div class="study-container" id="study-cards-render">
+        </div>
+    </section>
+
+    <section id="view-quiz" class="view">
+      <div class="quiz-progress-bar">
+        <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
+      </div>
+      <div id="quiz-card-render" class="quiz-card">
+        </div>
+    </section>
+
+    <section id="view-results" class="view">
+      <div class="results-container">
+        <h2>Evaluación Finalizada</h2>
+        <p style="color: var(--text-dim); margin-bottom: 20px; font-size: 0.9rem;">Cálculo basado estrictamente en el primer intento.</p>
+        
+        <svg class="gauge-svg">
+          <circle class="gauge-bg" cx="80" cy="80" r="70"></circle>
+          <circle id="gauge-fill" class="gauge-fill" cx="80" cy="80" r="70"></circle>
+          <text x="80" y="92" class="gauge-text" text-anchor="middle" transform="rotate(90 80 80)" id="gauge-text-val">0</text>
+        </svg>
+
+        <div id="score-badge" class="score-badge">---</div>
+        <div id="results-breakdown" style="width:100%; text-align:left; font-size:0.9rem; color:var(--text-dim); margin-bottom:16px;"></div>
+
+        <button class="retry-btn" onclick="restartQuiz()">Reiniciar Quiz Blindado</button>
+      </div>
+    </section>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" id="btn-nav-home" onclick="switchView('home')">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        Inicio
+      </button>
+      <button class="nav-btn" id="btn-nav-study" onclick="switchView('study')">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5.49 18C6.14 19.14 7.97 20 12 20s5.86-.86 6.51-2H5.49z"/></svg>
+        Estudiar
+      </button>
+      <button class="nav-btn" id="btn-nav-quiz" onclick="switchView('quiz')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        Quiz (30 Qs)
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    /* ARRAYS DE DATOS ESTRUCTURADOS (MÓDULO DE CONTENIDO PEDAGÓGICO) */
+    const TEMAS = [
+      { id: 0, nombre: "Movimiento Rectilíneo Uniforme", color: "var(--t1)" },
+      { id: 1, nombre: "MRUA Horizontal", color: "var(--t2)" },
+      { id: 2, font: "Caída Libre (MRUA Vertical)", color: "var(--t3)" }
+    ];
+
+    const STUDY_CARDS = [
+      {
+        temaId: 0,
+        meta: "Módulo Teórico • Indicador 1",
+        title: "Magnitudes Fundamentales: MRU",
+        content: `La base del MRU radica en separar lo escalar de lo vectorial (Cotidiano #3).
+        <div class="concept-box">
+          <strong>Distancia (d):</strong> Longitud real de la trayectoria. Siempre suma (Escalar).<br>
+          <strong>Desplazamiento (Δx):</strong> Cambio neto de posición entre origen y destino (Vectorial).
+        </div>
+        <div class="trap-box">
+          <div class="trap-title">⚠️ Trampa del MEP: El viaje circular</div>
+          Si un cuerpo sale de San José hacia Alajuela y regresa inmediatamente al punto de origen, su distancia recorrida es el doble de la separación física, pero su <strong>desplazamiento final es exactamente 0 metros</strong>.
+        </div>`
+      },
+      {
+        temaId: 0,
+        meta: "Módulo Práctico • Ejemplo Resuelto",
+        title: "Cálculo de Rapidez de una Trayectoria Recta",
+        content: `Un ciclista recorre una calle recta en San José cubriendo una distancia de 1200 metros en un tiempo controlado de 4 minutos. Calcule su rapidez en el S.I.
+        <div class="concept-box">
+          <span class="formula-display">v = d / t</span>
+        </div>
+        <div class="step-list">
+          <div class="step-item"><strong>Paso 1:</strong> Convertir el tiempo al S.I. -> 4 minutos × 60 segundos = 240 segundos.</div>
+          <div class="step-item"><strong>Paso 2:</strong> Aplicar la fórmula directa -> v = 1200 m / 240 s.</div>
+          <div class="step-item"><strong>Resultado:</strong> v = 5 m/s. Su velocidad física uniforme.</div>
+        </div>`
+      },
+      {
+        temaId: 1,
+        meta: "Módulo Teórico • Indicador 2",
+        title: "Ecuaciones del Cambio de Velocidad",
+        content: `En el MRUA Horizontal la velocidad varía de manera uniforme por la existencia de la aceleración constante.
+        <div class="concept-box">
+          <span class="formula-display">v<sub>f</sub> = v<sub>i</sub> + a · t</span>
+          <span class="formula-display">d = v<sub>i</sub> · t + ½ · a · t²</span>
+        </div>
+        <div class="trap-box">
+          <div class="trap-title">⚠️ Trampa del MEP: Del reposo / Frenado</div>
+          "Parte del reposo" significa que su <strong>v<sub>i</sub> = 0</strong>.<br>
+          "Aplica los frenos hasta detenerse" exige que coloques su <strong>v<sub>f</sub> = 0</strong>, y el resultado matemático de la aceleración debe dar obligatoriamente <strong>negativo</strong>.
+        </div>`
+      },
+      {
+        temaId: 1,
+        meta: "Módulo de Conversiones • Herramienta de Examen",
+        title: "Conversión de Velocidad km/h a m/s",
+        content: `Los datos en la vida real se entregan en kilómetros por hora, pero el análisis físico requiere metros por segundo.
+        <div class="concept-box">
+          <strong>Factor de conversión directo:</strong><br>
+          • Para pasar de km/h a m/s: Dividir entre 3.6<br>
+          • Para pasar de m/s a km/h: Multiplicar por 3.6
+        </div>
+        <div class="step-list">
+          <div class="step-item"><strong>Ejemplo de campo:</strong> Un bus de pasajeros viaja por la Ruta 27 a 90 km/h.</div>
+          <div class="step-item"><strong>Operación:</strong> 90 ÷ 3.6 = 25 m/s.</div>
+        </div>`
+      },
+      {
+        temaId: 2,
+        meta: "Módulo Vertical • Indicador 3",
+        title: "Caída Libre y Efecto Gravedad",
+        content: `Es un MRUA vertical donde la aceleración de avance está dictada por la acción del planeta Tierra, denotada como <strong>g = 9.8 m/s²</strong>.
+        <div class="concept-box">
+          Si un objeto se <strong>deja caer</strong>, se asume v<sub>i</sub> = 0.<br>
+          Las fórmulas base se simplifican estructuralmente:<br>
+          <span class="formula-display">v<sub>f</sub> = g · t</span>
+          <span class="formula-display">h = ½ · g · t²</span>
+        </div>
+        <div class="trap-box">
+          <div class="trap-title">⚠️ Diferencia de Conceptos en Lanzamientos</div>
+          Si el cuerpo es lanzado con fuerza hacia abajo, su v<sub>i</sub> inicial NO es cero. Debes usar la fórmula larga sumando la velocidad inicial del impulso.
+        </div>`
+      }
+    ];
+
+    // BASE DE DATOS BLINDADA: 30 PREGUNTAS EN TOTAL (10 POR TEMA)
+    const QUIZ_QUESTIONS = [
+      // TEMA 1: MRU (0 al 9)
+      {
+        temaId: 0,
+        q: "Un auto recorre una pista circular completa de 400 metros de longitud y regresa exactamente al punto de salida. ¿Cuáles son su distancia y su desplazamiento total?",
+        options: [
+          "Distancia = 400 m, Desplazamiento = 0 m",
+          "Distancia = 0 m, Desplazamiento = 400 m",
+          "Distancia = 400 m, Desplazamiento = 400 m",
+          "Distancia = 0 m, Desplazamiento = 0 m"
+        ],
+        correct: 0,
+        exp: "La distancia mide toda la trayectoria (400 m). El desplazamiento solo mide la línea recta entre el inicio y el final; como volvió al mismo punto, este es cero."
+      },
+      {
+        temaId: 0,
+        q: "Un camión se desplaza con una rapidez constante de 15 m/s durante un intervalo continuo de 20 segundos. ¿Qué distancia logra recorrer?",
+        options: ["300 metros", "1.33 metros", "0.75 metros", "35 metros"],
+        correct: 0,
+        exp: "Utilizando la fórmula lineal d = v · t, multiplicamos 15 m/s × 20 s = 300 metros."
+      },
+      {
+        temaId: 0,
+        q: "¿Cuál de las siguientes afirmaciones describe con total fidelidad una característica obligatoria del Movimiento Rectilíneo Uniforme?",
+        options: [
+          "La velocidad cambia constantemente.",
+          "La aceleración tiene un valor constante y diferente de cero.",
+          "La velocidad permanece constante y la aceleración es nula.",
+          "La trayectoria del cuerpo es una parábola perfecta."
+        ],
+        correct: 2,
+        exp: "En el MRU, 'Uniforme' significa que la velocidad no sufre variaciones de módulo ni dirección, lo que implica que la aceleración es cero."
+      },
+      {
+        temaId: 0,
+        q: "Un ciclista avanza a velocidad constante y recorre 10 metros en 2 segundos. ¿Qué distancia recorrerá en un tiempo total de 6 segundos?",
+        options: ["30 metros", "20 metros", "60 metros", "15 metros"],
+        correct: 0,
+        exp: "Su rapidez es de 5 m/s (10m/2s). En 6 segundos recorrerá: d = 5 m/s × 6 s = 30 metros."
+      },
+      {
+        temaId: 0,
+        q: "Si un tren tarda 5 segundos en recorrer una distancia recta de 125 metros, ¿cuál es su rapidez en el sistema internacional?",
+        options: ["25 m/s", "625 m/s", "0.04 m/s", "50 m/s"],
+        correct: 0,
+        exp: "v = d / t -> v = 125 m / 5 s = 25 m/s."
+      },
+      {
+        temaId: 0,
+        q: "Una persona camina 60 metros hacia el Este y de inmediato camina 20 metros hacia el Oeste. Determine su desplazamiento resultante.",
+        options: ["40 metros hacia el Este", "80 metros hacia el Este", "40 metros hacia el Oeste", "60 metros hacia el Oeste"],
+        correct: 0,
+        exp: "El desplazamiento toma en cuenta la dirección de los vectores: 60m (positivo) - 20m (negativo) = 40m hacia el Este."
+      },
+      {
+        temaId: 0,
+        q: "¿Qué diferencia conceptual existe entre la rapidez y la velocidad?",
+        options: [
+          "La rapidez es vectorial y la velocidad es escalar.",
+          "La rapidez incluye dirección y sentido, la velocidad no.",
+          "La rapidez es escalar (módulo) y la velocidad es vectorial (incluye dirección).",
+          "No existe ninguna diferencia, son sinónimos perfectos."
+        ],
+        correct: 2,
+        exp: "La rapidez solo indica qué tan rápido se mueve el cuerpo (magnitud escalar), mientras que la velocidad detalla hacia dónde se dirige (magnitud vectorial)."
+      },
+      {
+        temaId: 0,
+        q: "Un atleta de alto rendimiento corre a una rapidez fija de 4 m/s. ¿Cuánto tiempo requerirá para cubrir una distancia de 200 metros?",
+        options: ["50 segundos", "800 segundos", "0.02 segundos", "25 segundos"],
+        correct: 0,
+        exp: "Despejando el tiempo de la ecuación de MRU: t = d / v -> t = 200 m / 4 m/s = 50 segundos."
+      },
+      {
+        temaId: 0,
+        q: "Si un móvil mantiene una aceleración de exactamente cero m/s², ¿qué tipo de movimiento experimenta?",
+        options: ["Movimiento Rectilíneo Uniforme", "Movimiento Uniformemente Acelerado", "Caída Libre", "Parabólico"],
+        correct: 0,
+        exp: "La aceleración cero es la condición fundamental y definitiva del Movimiento Rectilíneo Uniforme (MRU)."
+      },
+      {
+        temaId: 0,
+        q: "Un vehículo avanza a 2 m/s durante un lapso de 5 minutos. Calcule la distancia final en metros.",
+        options: ["600 metros", "10 metros", "100 metros", "2.5 metros"],
+        correct: 0,
+        exp: "Primero se convierten los 5 minutos a segundos: 5 × 60 = 300 s. Luego: d = v · t = 2 m/s × 300 s = 600 metros."
+      },
+
+      // TEMA 2: MRUA HORIZONTAL (10 al 19)
+      {
+        temaId: 1,
+        q: "Un automóvil deportivo acelera desde el reposo hasta alcanzar una velocidad de 20 m/s en un tiempo de 4 segundos. ¿Cuál es su aceleración?",
+        options: ["5 m/s²", "80 m/s²", "0.2 m/s²", "4 m/s²"],
+        correct: 0,
+        exp: "a = (v_f - v_i) / t. Como parte del reposo, v_i = 0. Entonces: a = (20 - 0) / 4 = 5 m/s²."
+      },
+      {
+        temaId: 1,
+        q: "Un tren de carga viaja con una velocidad de 72 km/h. ¿A cuánto equivale esta velocidad expresada en el Sistema Internacional (m/s)?",
+        options: ["20 m/s", "25 m/s", "259.2 m/s", "15 m/s"],
+        correct: 0,
+        exp: "Dividimos el valor entre la constante de conversión: 72 ÷ 3.6 = 20 m/s."
+      },
+      {
+        temaId: 1,
+        q: "Un motociclista que se desplaza a 15 m/s decide acelerar. Si equivale a pasarlo a km/h, ¿cuál es el valor correspondiente?",
+        options: ["54 km/h", "41.6 km/h", "4.16 km/h", "30 km/h"],
+        correct: 0,
+        exp: "Para pasar de m/s a km/h multiplicamos de forma directa por 3.6: 15 × 3.6 = 54 km/h."
+      },
+      {
+        temaId: 1,
+        q: "Un autobús frena con una aceleración constante de -2 m/s². Si su velocidad inicial era de 20 m/s, ¿cuánto tiempo tarda en detenerse por completo?",
+        options: ["10 segundos", "40 segundos", "0.1 segundos", "5 segundos"],
+        correct: 0,
+        exp: "v_f = v_i + a·t. Detenerse implica v_f = 0. 0 = 20 - 2t -> 2t = 20 -> t = 10 segundos."
+      },
+      {
+        temaId: 1,
+        q: "Un objeto acelera a razón constante de 3 m/s² partiendo del reposo. ¿Qué distancia horizontal logra avanzar en 4 segundos?",
+        options: ["24 metros", "48 metros", "12 metros", "6 metros"],
+        correct: 0,
+        exp: "d = v_i·t + ½·a·t². Reposo indica v_i = 0. d = 0 + ½(3)(4)² = 0.5 × 3 × 16 = 24 metros."
+      },
+      {
+        temaId: 1,
+        q: "¿Cuál es la unidad oficial de medida para la aceleración en el Sistema Internacional de Unidades?",
+        options: ["m/s²", "m/s", "km/h²", "m·s"],
+        correct: 0,
+        exp: "La aceleración mide el cambio de velocidad (m/s) por cada unidad de tiempo (s), lo que da como resultado físico m/s²."
+      },
+      {
+        temaId: 1,
+        q: "Si un auto tiene un valor de aceleración negativo de forma constante, significa físicamente que:",
+        options: [
+          "Su velocidad está disminuyendo uniformemente con el tiempo.",
+          "El automóvil se mueve de reversa aumentando su rapidez.",
+          "Su velocidad aumenta de forma exponencial.",
+          "El vehículo se ha quedado estático en el sitio."
+        ],
+        correct: 0,
+        exp: "Una aceleración con signo opuesto al movimiento representa una desaceleración o frenado uniforme."
+      },
+      {
+        temaId: 1,
+        q: "Un camión con velocidad de 30 m/s aplica frenos disminuyendo su velocidad de manera uniforme hasta detenerse en 6 segundos. ¿Qué distancia recorrió?",
+        options: ["90 metros", "180 metros", "5 metros", "45 metros"],
+        correct: 0,
+        exp: "Usamos d = ((v_i + v_f) / 2) · t. Reemplazando: d = ((30 + 0) / 2) × 6 = 15 × 6 = 90 metros."
+      },
+      {
+        temaId: 1,
+        q: "Determine el análisis dimensional correcto para el concepto físico de la aceleración.",
+        options: ["L · T⁻²", "L · T⁻¹", "L² · T", "L · T²"],
+        correct: 0,
+        exp: "Aceleración es Longitud dividida entre Tiempo al cuadrado, lo que se escribe dimensionalmente como L · T⁻²."
+      },
+      {
+        temaId: 1,
+        q: "Un auto viaja a 10 m/s y acelera a 2 m/s² durante 5 segundos. ¿Cuál es su velocidad final?",
+        options: ["20 m/s", "15 m/s", "50 m/s", "25 m/s"],
+        correct: 0,
+        exp: "v_f = v_i + a·t -> v_f = 10 + (2 × 5) = 10 + 10 = 20 m/s."
+      },
+
+      // TEMA 3: CAÍDA LIBRE (20 al 29)
+      {
+        temaId: 2,
+        q: "Se deja caer una piedra desde lo alto de un puente de control vial. ¿Qué velocidad tendrá exactamente tras 2 segundos de caída libre?",
+        options: ["19.6 m/s", "9.8 m/s", "4.9 m/s", "39.2 m/s"],
+        correct: 0,
+        exp: "v_f = g · t. Tomando g = 9.8 m/s²: v_f = 9.8 × 2 = 19.6 m/s."
+      },
+      {
+        temaId: 2,
+        q: "Se deja caer una esfera metálica desde una altura de 19.6 metros. ¿Cuánto tiempo le toma impactar contra el suelo?",
+        options: ["2 segundos", "1 segundo", "4 segundos", "3 segundos"],
+        correct: 0,
+        exp: "h = ½·g·t² -> 19.6 = ½(9.8)·t² -> 19.6 = 4.9·t² -> t² = 4 -> t = 2 segundos."
+      },
+      {
+        temaId: 2,
+        q: "Si en una cámara de vacío perfecta se dejan caer de forma simultánea un pesado martillo de acero y una pluma ligera, ¿cuál llega primero al suelo?",
+        options: [
+          "Ambos caen al mismo tiempo con idéntica aceleración.",
+          "El martillo llega primero por tener mayor masa.",
+          "La pluma llega primero por experimentar menos roce.",
+          "Ninguno cae, flotan por la ausencia de aire."
+        ],
+        correct: 0,
+        exp: "En ausencia de la resistencia del aire, todos los cuerpos independientemente de su masa caen con la misma aceleración de la gravedad."
+      },
+      {
+        temaId: 2,
+        q: "Se lanza un objeto verticalmente hacia arriba. Justo en el punto de máxima altura de su trayectoria, su velocidad instantánea es:",
+        options: ["0 m/s", "9.8 m/s", "Máxima", "Depende del peso original del objeto"],
+        correct: 0,
+        exp: "Al subir se desacelera por efecto de la gravedad. En el punto más alto se detiene por un instante para iniciar el descenso, por ende su velocidad es 0 m/s."
+      },
+      {
+        temaId: 2,
+        q: "Cuando un cuerpo va subiendo en tiro vertical, ¿cuál es la dirección del vector de aceleración de la gravedad?",
+        options: [
+          "Hacia abajo, atrayendo el cuerpo al centro de la Tierra.",
+          "Hacia arriba, impulsando el movimiento de ascenso.",
+          "Es nula mientras el cuerpo continúe subiendo.",
+          "Horizontal hacia el Este debido a la rotación planetaria."
+        ],
+        correct: 0,
+        exp: "La gravedad siempre tira hacia abajo, hacia el centro de la Tierra, sin importar si el objeto sube o baja."
+      },
+      {
+        temaId: 2,
+        q: "Se suelta un objeto desde el reposo absoluto. ¿Qué distancia vertical habrá descendido al cabo de 3 segundos?",
+        options: ["44.1 metros", "29.4 metros", "88.2 metros", "9.8 metros"],
+        correct: 0,
+        exp: "h = ½·g·t² -> h = 0.5 × 9.8 × (3)² = 4.9 × 9 = 44.1 metros."
+      },
+      {
+        temaId: 2,
+        q: "Un objeto es lanzado verticalmente hacia abajo con una velocidad inicial de 4 m/s. Halle su velocidad final transcurridos 2 segundos.",
+        options: ["23.6 m/s", "19.6 m/s", "15.6 m/s", "27.6 m/s"],
+        correct: 0,
+        exp: "v_f = v_i + g·t -> v_f = 4 + (9.8 × 2) = 4 + 19.6 = 23.6 m/s."
+      },
+      {
+        temaId: 2,
+        q: "Se dispara un proyectil hacia arriba con v<sub>i</sub> = 29.4 m/s. ¿Qué tiempo le toma alcanzar el punto más alto de su vuelo?",
+        options: ["3 segundos", "2 segundos", "4 segundos", "1 segundo"],
+        correct: 0,
+        exp: "En el punto más alto v_f = 0. 0 = v_i - g·t -> t = v_i / g = 29.4 / 9.8 = 3 segundos."
+      },
+      {
+        temaId: 2,
+        q: "El valor estándar de la aceleración de la gravedad terrestre (9.8 m/s²) se asume conceptualmente como un valor de tipo:",
+        options: ["Constante en las cercanías de la superficie", "Variable aleatoria", "Escalar puro sin dirección", "Nulo en caída libre"],
+        correct: 0,
+        exp: "A nivel pedagógico de secundaria se asume constante para simplificar el análisis matemático del MRUA vertical."
+      },
+      {
+        temaId: 2,
+        q: "Si un cuerpo se encuentra en caída libre pura, su velocidad incrementa cada segundo en un valor aproximado de:",
+        options: ["9.8 m/s", "1 m/s", "4.9 m/s", "19.6 m/s"],
+        correct: 0,
+        exp: "Al ser la aceleración de 9.8 m/s², por cada segundo que transcurra, la velocidad aumenta exactamente esa misma cantidad."
+      }
+    ];
+
+    /* VARIABLES DE ESTADO DE LA APLICACIÓN */
+    let currentThemeFilter = null;
+    let quizActiveQuestions = [];
+    let currentQuizIdx = 0;
+    let userAttempts = 0;
+    let firstAnswers = []; // Guarda el estado del primer intento para el cálculo riguroso de la nota
+
+    /* ENRUTADOR SIMPLE DE VISTAS */
+    function switchView(viewName) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      
+      const targetView = document.getElementById(`view-${viewName}`);
+      if (targetView) targetView.classList.add('active');
+      
+      const targetBtn = document.getElementById(`btn-nav-${viewName}`);
+      if (targetBtn) targetBtn.classList.add('active');
+
+      if(viewName === 'study') {
+        renderStudyCards();
+      } else if(viewName === 'quiz' && quizActiveQuestions.length === 0) {
+        initQuiz();
+      }
+    }
+
+    function switchTab(viewName, themeId) {
+      currentThemeFilter = themeId;
+      switchView(viewName);
+    }
+
+    /* RENDERIZADO DE MÓDULO DE ESTUDIO */
+    function renderStudyCards() {
+      const container = document.getElementById('study-cards-render');
+      container.innerHTML = "";
+      
+      // Si se seleccionó un tema específico en el Home se filtra, sino se muestran todas
+      const filtered = currentThemeFilter !== null 
+        ? STUDY_CARDS.filter(c => c.temaId === currentThemeFilter)
+        : STUDY_CARDS;
+
+      filtered.forEach(card => {
+        const themeColor = card.temaId === 0 ? 'var(--t1)' : card.temaId === 1 ? 'var(--t2)' : 'var(--t3)';
+        const cardHtml = `
+          <div class="study-card" style="--theme-color: ${themeColor}">
+            <div class="card-meta">${card.meta}</div>
+            <h3 class="card-title">${card.title}</h3>
+            <div>${card.content}</div>
+          </div>
+        `;
+        container.innerHTML += cardHtml;
+      });
+      
+      // Reseteamos el filtro para la próxima navegación directa
+      currentThemeFilter = null;
+    }
+
+    /* LÓGICA DEL SIMULADOR DE EXAMEN (QUIZ) */
+    function initQuiz() {
+      // Cargamos las 30 preguntas estructuradas
+      quizActiveQuestions = [...QUIZ_QUESTIONS];
+      currentQuizIdx = 0;
+      userAttempts = 0;
+      firstAnswers = new Array(quizActiveQuestions.length).fill(null);
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      if (currentQuizIdx >= quizActiveQuestions.length) {
+        showResults();
+        return;
+      }
+
+      userAttempts = 0;
+      const qData = quizActiveQuestions[currentQuizIdx];
+      
+      // Actualizar barra de progreso continua
+      const progressPercent = (currentQuizIdx / quizActiveQuestions.length) * 100;
+      document.getElementById('quiz-progress-fill').style.width = `${progressPercent}%`;
+
+      const container = document.getElementById('quiz-card-render');
+      
+      let optionsHtml = "";
+      qData.options.forEach((opt, idx) => {
+        optionsHtml += `
+          <button class="option-btn" onclick="checkOption(${idx})" id="opt-${idx}">
+            ${opt}
+          </button>
+        `;
+      });
+
+      container.innerHTML = `
+        <div style="font-size:0.8rem; text-transform:uppercase; font-weight:700; color:var(--text-dim); margin-bottom:8px;">
+          Pregunta ${currentQuizIdx + 1} de ${quizActiveQuestions.length}
+        </div>
+        <div class="quiz-question">${qData.q}</div>
+        <div class="options-container">
+          ${optionsHtml}
+        </div>
+        <div id="inline-review-zone"></div>
+        <div id="quiz-feedback" class="feedback-box"></div>
+        <button id="quiz-next-btn" class="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+      `;
+    }
+
+    function checkOption(selectedIdx) {
+      const qData = quizActiveQuestions[currentQuizIdx];
+      userAttempts++;
+
+      // Guardar el primer intento para la nota definitiva
+      if (userAttempts === 1) {
+        firstAnswers[currentQuizIdx] = (selectedIdx === qData.correct);
+      }
+
+      const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
+
+      if (selectedIdx === qData.correct) {
+        // RESPUESTA ACERTADA
+        selectedBtn.classList.add('correct');
+        lockOptions();
+        showFeedback(true, qData.exp);
+      } else {
+        // RESPUESTA INCORRECTA
+        selectedBtn.classList.add('wrong');
+        selectedBtn.classList.add('disabled'); // Deshabilitar la opción fallada
+
+        if (userAttempts === 3) {
+          // MECÁNICA DE FALLA 3: Mostrar tarjeta inline de repaso conceptual
+          const reviewZone = document.getElementById('inline-review-zone');
+          // Buscamos una tarjeta de estudio correspondiente al tema para inyectarla de apoyo
+          const refCard = STUDY_CARDS.find(c => c.temaId === qData.temaId) || STUDY_CARDS[0];
+          
+          reviewZone.innerHTML = `
+            <div class="inline-review-card">
+              <div style="color:var(--warn); font-weight:700; font-size:0.85rem; margin-bottom:4px;">💡 Tarjeta de Repaso de Emergencia:</div>
+              <p style="font-size:0.85rem; color:var(--text);">${refCard.title}</p>
+              <button onclick="switchTab('study', ${qData.temaId})" style="background:none; border:none; color:var(--t1); font-size:0.8rem; font-weight:700; text-decoration:underline; margin-top:6px; cursor:pointer;">
+                Ir al módulo de estudio completo
+              </button>
+            </div>
+          `;
+        }
+
+        if (userAttempts >= 4) {
+          // MECÁNICA DE FALLA 4: Revelar respuesta y bloquear
+          lockOptions();
+          document.getElementById(`opt-${qData.correct}`).classList.add('correct');
+          showFeedback(false, qData.exp);
+        }
+      }
+    }
+
+    function lockOptions() {
+      document.querySelectorAll('.option-btn').forEach(btn => btn.classList.add('disabled'));
+      document.getElementById('quiz-next-btn').classList.add('show');
+    }
+
+    function showFeedback(isCorrect, text) {
+      const fb = document.getElementById('quiz-feedback');
+      fb.classList.add('show');
+      if (isCorrect) {
+        fb.style.backgroundColor = 'rgba(0, 255, 135, 0.1)';
+        fb.style.border = '1px solid rgba(0, 255, 135, 0.3)';
+        fb.innerHTML = `<strong>¡Excelente! Acertaste.</strong><br>${text}`;
+      } else {
+        fb.style.backgroundColor = 'rgba(255, 51, 102, 0.1)';
+        fb.style.border = '1px solid rgba(255, 51, 102, 0.3)';
+        fb.innerHTML = `<strong>Máximos intentos alcanzados.</strong> La opción verde era la correcta.<br>${text}`;
+      }
+    }
+
+    function nextQuestion() {
+      currentQuizIdx++;
+      renderQuizQuestion();
+    }
+
+    /* VISTA DE RESULTADOS FINALES Y BALANCE PEDAGÓGICO */
+    function showResults() {
+      switchView('results');
+      
+      const total = firstAnswers.length;
+      const correctas = firstAnswers.filter(ans => ans === true).length;
+      const nota = Math.round((correctas / total) * 100);
+
+      // Render animado del Gauge SVG circular
+      const fillCircle = document.getElementById('gauge-fill');
+      const textVal = document.getElementById('gauge-text-val');
+      
+      // El perímetro del círculo con radio 70 es 2 * PI * 70 = 440 aprox.
+      const offset = 440 - (440 * nota) / 100;
+      fillCircle.style.strokeDashoffset = offset;
+      textVal.textContent = nota;
+
+      // Color adaptativo según rendimiento del MEP (Umbral de aprobación: 70)
+      if (nota >= 90) {
+        fillCircle.style.stroke = "var(--good)";
+        document.getElementById('score-badge').innerHTML = `<span style="color:var(--good)">🔥 ¡Excelente Rendimiento! (${correctas}/${total})</span>`;
+      } else if (nota >= 70) {
+        fillCircle.style.stroke = "var(--t1)";
+        document.getElementById('score-badge').innerHTML = `<span style="color:var(--t1)">👍 Aprobado MEP (${correctas}/${total})</span>`;
+      } else {
+        fillCircle.style.stroke = "var(--bad)";
+        document.getElementById('score-badge').innerHTML = `<span style="color:var(--bad)">⚠️ Requiere Repaso Intenso (${correctas}/${total})</span>`;
+      }
+
+      // Desglose analítico por temas para detectar debilidades
+      let mruTotal = 0, mruOk = 0;
+      let mruaTotal = 0, mruaOk = 0;
+      let caidaTotal = 0, caidaOk = 0;
+
+      quizActiveQuestions.forEach((q, idx) => {
+        if (q.temaId === 0) { mruTotal++; if (firstAnswers[idx]) mruOk++; }
+        if (q.temaId === 1) { mruaTotal++; if (firstAnswers[idx]) mruaOk++; }
+        if (q.temaId === 2) { caidaTotal++; if (firstAnswers[idx]) caidaOk++; }
+      });
+
+      document.getElementById('results-breakdown').innerHTML = `
+        <p style="margin-bottom:8px;"><strong>Rendimiento desglosado por tema:</strong></p>
+        <div style="margin-bottom:6px;">• MRU: ${mruOk} de ${mruTotal} correctas.</div>
+        <div style="margin-bottom:6px;">• MRUA Horizontal: ${mruaOk} de ${mruaTotal} correctas.</div>
+        <div>• Caída Libre: ${caidaOk} de ${caidaTotal} correctas.</div>
+      `;
+    }
+
+    function restartQuiz() {
+      initQuiz();
+      switchView('quiz');
+    }
+
+    // Inicialización automática del script al cargar
+    window.onload = () => {
+      renderStudyCards();
+    };
+  </script>
+</body>
+</html>
