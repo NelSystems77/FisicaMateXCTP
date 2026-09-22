@@ -460,6 +460,35 @@ const energyBarsSVG = `<svg class="topic-svg" viewBox="0 0 300 165" role="img" a
   <text x="155" y="55" font-size="9" text-anchor="middle" fill="#C4780A">Ec máxima</text>
 </svg>`;
 
+const inclinedPlaneSVG = `<svg class="topic-svg" viewBox="0 0 260 160" role="img" aria-label="Bloque sobre un plano inclinado sin fricción, con el peso descompuesto en sus componentes">
+  <defs>
+    <marker id="arrMg2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,0 L4,8 z" fill="#C4780A"/></marker>
+    <marker id="arrPar" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1E9E5A"/></marker>
+    <marker id="arrPerp" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,8 L4,0 L8,8 z" fill="#2F6FED"/></marker>
+  </defs>
+  <polygon points="20,140 240,140 240,40" fill="#FCEFC7" stroke="#C4780A" stroke-width="2"/>
+  <rect x="150" y="88" width="34" height="24" fill="#7C6FF0" stroke="#5B4FD1" stroke-width="1.5" transform="rotate(-27 167 100)"/>
+  <text x="26" y="132" font-size="11" fill="#5B6B80">θ = 30°</text>
+  <line x1="167" y1="100" x2="167" y2="150" stroke="#C4780A" stroke-width="2.5" marker-end="url(#arrMg2)"/>
+  <text x="172" y="145" font-size="11" fill="#C4780A">mg</text>
+  <line x1="167" y1="100" x2="205" y2="122" stroke="#1E9E5A" stroke-width="2.5" marker-end="url(#arrPar)"/>
+  <text x="188" y="118" font-size="10" fill="#1E9E5A">mg·senθ</text>
+  <line x1="167" y1="100" x2="145" y2="70" stroke="#2F6FED" stroke-width="2.5" marker-end="url(#arrPerp)"/>
+  <text x="95" y="68" font-size="10" fill="#2F6FED">mg·cosθ</text>
+</svg>`;
+
+const pulleySVG = `<svg class="topic-svg" viewBox="0 0 260 170" role="img" aria-label="Sistema de dos masas unidas por una cuerda sobre una polea sin fricción">
+  <circle cx="130" cy="30" r="16" fill="none" stroke="#5B6B80" stroke-width="3"/>
+  <line x1="116" y1="30" x2="60" y2="30" stroke="#5B6B80" stroke-width="2"/>
+  <line x1="144" y1="30" x2="190" y2="30" stroke="#5B6B80" stroke-width="2"/>
+  <line x1="60" y1="30" x2="60" y2="90" stroke="#5B6B80" stroke-width="2"/>
+  <line x1="190" y1="30" x2="190" y2="60" stroke="#5B6B80" stroke-width="2"/>
+  <rect x="40" y="90" width="40" height="34" fill="#E1F6F3" stroke="#0E9C8F" stroke-width="2"/>
+  <text x="60" y="112" text-anchor="middle" font-size="12" fill="#0E9C8F">m₁=3kg</text>
+  <rect x="170" y="60" width="40" height="34" fill="#FCE7EC" stroke="#D6284A" stroke-width="2"/>
+  <text x="190" y="82" text-anchor="middle" font-size="12" fill="#D6284A">m₂=5kg</text>
+</svg>`;
+
 const TOPICS = {
   parabolico:{ name:'Movimiento Parabólico', short:'Parabólico', icon:'🎯', color:'violet', pages:'77–85',
     theory:[
@@ -484,7 +513,7 @@ const TOPICS = {
       {title:'2ª Ley: F = m·a', body:'La aceleración de un cuerpo es directamente proporcional a la fuerza neta aplicada e inversamente proporcional a su masa.'},
       {title:'3ª Ley: Acción y reacción', body:'Toda fuerza de acción genera una fuerza de reacción de igual magnitud y sentido contrario, aplicada sobre el otro cuerpo.'},
       {title:'Las 4 fuerzas fundamentales', body:'<strong>Gravitacional</strong> (atracción entre masas), <strong>electromagnética</strong> (cargas eléctricas e imanes), <strong>nuclear fuerte</strong> (une protones y neutrones) y <strong>nuclear débil</strong> (desintegración radiactiva).'},
-      {title:'Diagramas de cuerpo libre y rozamiento', body:'Un diagrama de cuerpo libre (DCL) representa todas las fuerzas que actúan sobre un objeto. El rozamiento se opone al movimiento: estático (antes de moverse) y cinético (durante el movimiento), f = μ·N.', svg:fbdSVG}
+      {title:'Diagramas de cuerpo libre y rozamiento', body:'Un diagrama de cuerpo libre (DCL) representa todas las fuerzas que actúan sobre un objeto. El rozamiento se opone al movimiento: estático (antes de moverse) y cinético (durante el movimiento), f = μ·N. También se usa para analizar planos inclinados (descomponiendo el peso en mg·senθ y mg·cosθ) y sistemas de poleas con varias masas.', svg:fbdSVG}
     ]
   },
   energia:{ name:'Trabajo, Energía y Potencia', short:'Energía', icon:'⚡', color:'green', pages:'149–169',
@@ -564,6 +593,8 @@ const QUESTIONS = [
 {topic:'newton',level:2,q:'Con Fneta≈16.5 N y m=8 kg, ¿cuál es la aceleración resultante del bloque?',options:['≈2.1 m/s²','5 m/s²','0.5 m/s²','16.5 m/s²'],correct:0,ok:'Correcto: a=Fneta/m=16.5/8≈2.1 m/s².',bad:'a=Fneta/m=16.5/8≈2.1 m/s².'},
 {topic:'newton',level:2,q:'Dos fuerzas actúan sobre un objeto: 15 N hacia la derecha y 6 N hacia la izquierda. ¿Cuál es la fuerza neta?',options:['21 N hacia la derecha','9 N hacia la izquierda','9 N hacia la derecha','15 N hacia la izquierda'],correct:2,ok:'Correcto: 15-6=9 N hacia la derecha (dirección de la fuerza mayor).',bad:'Fneta=15N-6N=9N hacia la derecha, la dirección de la fuerza mayor.'},
 {topic:'newton',level:2,q:'Un objeto de 2 kg cuelga en reposo de una cuerda. Con g=9.8 m/s², ¿cuánto vale la tensión en la cuerda?',options:['2 N','9.8 N','19.6 N','4.9 N'],correct:2,ok:'Correcto: en reposo, T=peso=m·g=2×9.8=19.6 N.',bad:'En equilibrio, T=m·g=2×9.8=19.6 N.'},
+{topic:'newton',level:2,q:'Un bloque de 10 kg se desliza sin fricción sobre un plano inclinado a 30°. Con g=9.8 m/s², ¿cuál es la componente del peso paralela al plano (la que provoca el deslizamiento)?',svg:inclinedPlaneSVG,options:['98 N','49 N','84.9 N','4.9 N'],correct:1,ok:'Correcto: la componente paralela al plano es mg·senθ=10×9.8×sen30°=10×9.8×0.5=49 N.',bad:'La componente paralela al plano es mg·senθ=10×9.8×0.5=49 N (la componente perpendicular, mg·cosθ, la equilibra la normal).'},
+{topic:'newton',level:2,q:'Dos bloques (m₁=3 kg y m₂=5 kg) están unidos por una cuerda que pasa por una polea sin fricción ni masa. Con g=9.8 m/s², ¿cuál es la aceleración del sistema?',svg:pulleySVG,options:['9.8 m/s²','1.225 m/s²','2.45 m/s²','4.9 m/s²'],correct:2,ok:'Correcto: en un sistema de polea con dos masas, a=(m₂−m₁)·g/(m₁+m₂)=(5−3)×9.8/8=2.45 m/s².',bad:'a=(m₂−m₁)·g/(m₁+m₂)=(5−3)×9.8/8=2.45 m/s².'},
 
 /* ---------- NEWTON L3 ---------- */
 {topic:'newton',level:3,q:'¿Por qué es importante usar el cinturón de seguridad en un vehículo, según la primera Ley de Newton?',options:['Porque decora el interior del vehículo','Porque el cuerpo tiende a seguir en movimiento por inercia cuando el auto se detiene bruscamente','Porque reduce el peso del vehículo','Porque evita el rozamiento con el aire'],correct:1,ok:'Correcto: por inercia, el cuerpo sigue moviéndose aunque el auto se detenga, por eso el cinturón es esencial.',bad:'Por inercia, el cuerpo continúa en movimiento cuando el vehículo frena de golpe; el cinturón evita lesiones.'},
@@ -588,6 +619,8 @@ const QUESTIONS = [
 {topic:'energia',level:2,q:'Un resorte con k=200 N/m se comprime 0.1 m. ¿Cuál es su energía potencial elástica?',options:['10 J','20 J','0.2 J','1 J'],correct:3,ok:'Correcto: Ee=½×200×0.1²=½×200×0.01=1 J.',bad:'Ee=½·k·x²=½×200×(0.1)²=1 J.'},
 {topic:'energia',level:2,q:'Un objeto cae libremente desde 10 m de altura (sin fricción). Usando conservación de la energía (g=9.8 m/s²), ¿cuál es su rapidez justo antes de tocar el suelo?',svg:energyBarsSVG,options:['9.8 m/s','19.6 m/s','98 m/s','14 m/s'],correct:3,ok:'Correcto: mgh=½mv² → v=√(2gh)=√(2×9.8×10)=√196=14 m/s.',bad:'v=√(2gh)=√(2×9.8×10)=√196=14 m/s.'},
 {topic:'energia',level:2,q:'Un motor realiza 6000 J de trabajo en 3 segundos. ¿Cuál es su potencia?',options:['18 000 W','3 W','6000 W','2000 W'],correct:3,ok:'Correcto: P=W/t=6000/3=2000 W.',bad:'P=W/t=6000/3=2000 W.'},
+{topic:'energia',level:2,q:'Un carrito de 2 kg parte del reposo en una colina de una montaña rusa (sin fricción) a 10 m de altura y desciende hasta otra colina más baja, a 4 m de altura. Aplicando la Ley de Conservación de la Energía mecánica (g=9.8 m/s²), ¿cuál es su rapidez al pasar por la colina de 4 m?',options:['14 m/s','9.8 m/s','≈10.8 m/s','19.6 m/s'],correct:2,ok:'Correcto: la energía mecánica se conserva, así que mg(h₁−h₂)=½mv² → v=√(2g(h₁−h₂))=√(2×9.8×6)≈10.8 m/s. Solo importa la diferencia de altura, no la forma de la pista.',bad:'Como Em se conserva, mg(h₁−h₂)=½mv² → v=√(2×9.8×6)≈10.8 m/s.'},
+{topic:'energia',level:2,q:'Un péndulo de 0.5 kg se suelta desde el reposo a 0.2 m por encima de su punto más bajo. Usando la Ley de Conservación de la Energía mecánica (g=9.8 m/s², sin fricción), ¿cuál es su rapidez en el punto más bajo?',svg:energyBarsSVG,options:['≈2.0 m/s','9.8 m/s','0.2 m/s','3.92 m/s'],correct:0,ok:'Correcto: mgh=½mv² → v=√(2gh)=√(2×9.8×0.2)=√3.92≈2.0 m/s. La masa del péndulo no afecta el resultado.',bad:'v=√(2gh)=√(2×9.8×0.2)≈2.0 m/s.'},
 
 /* ---------- ENERGÍA L3 ---------- */
 {topic:'energia',level:3,q:'¿Por qué se dice que la energía mecánica se conserva en ausencia de fuerzas disipativas como la fricción?',options:['Porque la energía desaparece gradualmente','Porque la energía solo se transforma entre cinética y potencial, sin pérdidas, manteniendo el total constante','Porque la velocidad siempre es cero','Porque la masa cambia constantemente'],correct:1,ok:'Correcto: sin fricción, Em=Ec+Ep permanece constante, solo cambia la proporción entre ambas.',bad:'Sin fuerzas disipativas, la energía solo se transforma entre cinética y potencial, y su suma total permanece constante.'},
