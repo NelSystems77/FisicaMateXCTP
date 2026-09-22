@@ -1,1101 +1,1025 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#000000">
-  <title>FísicaMatemáticas - II Prueba Completa</title>
-  <style>
-    /* SISTEMA DE DISEÑO TIKTOK DARK NATIVO */
-    :root {
-      --bg: #000000;
-      --bg-soft: #08080F;
-      --surface: #11111E;
-      --surface-card: #161626;
-      --line: rgba(255, 255, 255, 0.08);
-      --text: #FFFFFF;
-      --text-dim: #A0A0B5;
-      
-      --t1: #00F2FE; /* MRU - Cian */
-      --t2: #FE0979; /* MRUA Horizontal - Neón Pink */
-      --t3: #25D366; /* Caída Libre / Vertical - Verde */
-      --t4: #FFB020; /* Herramientas Matemáticas - Oro */
-      
-      --good: #00FF87;
-      --bad: #FF3366;
-      --warn: #FFB020;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3B82F6">
+<title>FísicaMate CTP — Práctica I Prueba II Semestre</title>
+<meta name="description" content="Práctica interactiva de Física para la I Prueba del II Semestre: movimiento parabólico, gráficas del movimiento, Leyes de Newton y trabajo-energía-potencia.">
+<style>
+  :root{
+    --bg:#F3F7FC;
+    --surface:#FFFFFF;
+    --surface-alt:#EAF1FA;
+    --line:#DCE6F2;
+    --text:#1B2A3B;
+    --text-dim:#5B6B80;
+    --text-faint:#8593A6;
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
+    --blue:#2F6FED;
+    --blue-soft:#E7F0FE;
+    --violet:#7C6FF0;
+    --violet-soft:#EEEBFD;
+    --teal:#0E9C8F;
+    --teal-soft:#E1F6F3;
+    --amber:#C4780A;
+    --amber-soft:#FCF0DA;
+    --green:#1E9E5A;
+    --green-soft:#E4F7EC;
 
-    body {
-      background-color: #030305;
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      letter-spacing: -0.01em;
-      min-height: 100dvh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+    --success:#1E9E5A;
+    --success-soft:#E4F7EC;
+    --error:#D6284A;
+    --error-soft:#FCE7EC;
 
-    #app-frame {
-      width: 100%;
-      max-width: 480px;
-      height: 100dvh;
-      background-color: var(--bg);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow:0 2px 10px rgba(30,50,90,0.06);
+    --shadow-lift:0 10px 30px rgba(30,50,90,0.12);
+  }
 
-    @media (min-width: 540px) {
-      #app-frame {
-        height: 860px;
-        border-radius: 28px;
-        border: 4px solid var(--line);
-        box-shadow: 0 24px 60px rgba(0,0,0,0.8);
-      }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1720;
+      --surface:#16202C;
+      --surface-alt:#1D2A38;
+      --line:#28394B;
+      --text:#EAF1FA;
+      --text-dim:#A9B8CC;
+      --text-faint:#7A8AA0;
+      --blue-soft:#1B2C4C;
+      --violet-soft:#241F45;
+      --teal-soft:#0E2E2C;
+      --amber-soft:#3A2A0E;
+      --green-soft:#0F2E1E;
+      --success-soft:#0F2E1E;
+      --error-soft:#3A1420;
+      --shadow:0 2px 10px rgba(0,0,0,0.3);
+      --shadow-lift:0 10px 30px rgba(0,0,0,0.45);
     }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1720;
+    --surface:#16202C;
+    --surface-alt:#1D2A38;
+    --line:#28394B;
+    --text:#EAF1FA;
+    --text-dim:#A9B8CC;
+    --text-faint:#7A8AA0;
+    --blue-soft:#1B2C4C;
+    --violet-soft:#241F45;
+    --teal-soft:#0E2E2C;
+    --amber-soft:#3A2A0E;
+    --green-soft:#0F2E1E;
+    --success-soft:#0F2E1E;
+    --error-soft:#3A1420;
+    --shadow:0 2px 10px rgba(0,0,0,0.3);
+    --shadow-lift:0 10px 30px rgba(0,0,0,0.45);
+  }
 
-    /* CONTROL DE VISTAS */
-    .view {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      inset: 0;
-      overflow-y: auto;
-      padding: 16px 16px 110px 16px; /* Colchón para evitar solape con bottom-nav */
-    }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    min-height:100dvh;
+  }
+  .skip-link{
+    position:absolute; left:-999px; top:0; background:var(--blue); color:#fff;
+    padding:10px 16px; border-radius:0 0 10px 0; z-index:200;
+  }
+  .skip-link:focus{ left:0; }
 
-    .view.active {
-      display: flex;
-    }
+  #app{
+    max-width:640px;
+    margin:0 auto;
+    min-height:100dvh;
+    background:var(--surface);
+    box-shadow:var(--shadow-lift);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  @media (max-width:640px){
+    #app{ box-shadow:none; }
+  }
 
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, Consolas, monospace;
-      font-weight: 600;
-    }
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px;
+    background:var(--surface);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .brand{ display:flex; align-items:center; gap:10px; }
+  .topbar .brand .logo{
+    width:36px; height:36px; border-radius:11px;
+    background:linear-gradient(135deg,var(--blue),var(--violet));
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+  }
+  .topbar h1{ font-size:1.02rem; margin:0; font-weight:800; letter-spacing:-0.01em; }
+  .topbar .sub{ font-size:0.72rem; color:var(--text-faint); font-weight:600; }
+  .xp-pill{
+    display:flex; align-items:center; gap:6px;
+    background:var(--amber-soft); color:var(--amber);
+    border-radius:999px; padding:7px 12px; font-weight:800; font-size:0.85rem;
+    border:1px solid transparent;
+  }
+  .theme-btn{
+    background:var(--surface-alt); border:1px solid var(--line); color:var(--text-dim);
+    border-radius:10px; width:34px; height:34px; cursor:pointer; font-size:15px; margin-left:8px;
+  }
 
-    h1, h2, h3 {
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
+  main{ flex:1; padding:18px 18px 110px; }
+  .view{ display:none; animation:fade .25s ease; }
+  .view.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+  @media (prefers-reduced-motion: reduce){
+    .view{ animation:none; }
+    *{ transition:none !important; }
+  }
 
-    /* BARRA SUPERIOR */
-    .app-header {
-      padding: 14px 16px;
-      background: var(--bg-soft);
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 10;
-    }
+  h2{ font-size:1.3rem; margin:0 0 6px; letter-spacing:-0.01em; }
+  h3{ font-size:1.05rem; margin:0 0 8px; }
+  p{ margin:0 0 10px; color:var(--text-dim); }
+  .lede{ color:var(--text-dim); font-size:0.95rem; margin-bottom:18px; }
 
-    .app-header h2 {
-      font-size: 1rem;
-      background: linear-gradient(45deg, var(--t1), var(--t2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  .card{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius-lg); padding:18px; margin-bottom:14px;
+    box-shadow:var(--shadow);
+  }
 
-    /* MENÚ DE NAVEGACIÓN INFERIOR */
-    .bottom-nav {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 72px;
-      background: rgba(8, 8, 15, 0.95);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-top: 1px solid var(--line);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 100;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+  .topic-card{ display:flex; flex-direction:column; gap:12px; }
+  .topic-head{ display:flex; align-items:center; gap:12px; }
+  .topic-icon{
+    width:46px; height:46px; border-radius:14px; flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:22px;
+  }
+  .topic-meta{ flex:1; min-width:0; }
+  .topic-meta .name{ font-weight:800; font-size:1rem; }
+  .topic-meta .pages{ font-size:0.75rem; color:var(--text-faint); font-weight:600; }
 
-    .nav-btn {
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
+  .bar-track{ background:var(--surface-alt); border-radius:999px; height:9px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:999px; transition:width .4s ease; }
+  .bar-row{ display:flex; align-items:center; gap:10px; }
+  .bar-row .pct{ font-size:0.75rem; font-weight:800; color:var(--text-dim); min-width:34px; text-align:right; }
 
-    .nav-btn.active {
-      color: var(--text);
-    }
+  .btn-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .btn{
+    font-family:inherit; font-weight:800; font-size:0.9rem; letter-spacing:-0.01em;
+    border-radius:var(--radius-md); padding:12px 16px; cursor:pointer; border:1px solid transparent;
+    display:inline-flex; align-items:center; gap:8px; justify-content:center; flex:1;
+  }
+  .btn-primary{ background:var(--blue); color:#fff; }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:var(--surface-alt); color:var(--text); border-color:var(--line); }
+  .btn-ghost:hover{ background:var(--blue-soft); }
+  .btn-block{ width:100%; }
+  .btn:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline:3px solid var(--blue); outline-offset:2px;
+  }
+  .btn[disabled]{ opacity:.5; cursor:not-allowed; }
 
-    .nav-btn svg {
-      width: 20px;
-      height: 20px;
-      margin-bottom: 4px;
-      fill: currentColor;
-    }
+  .simulacro-card{
+    background:linear-gradient(135deg,var(--blue),var(--violet));
+    color:#fff; border:none; border-radius:var(--radius-lg); padding:20px; margin-bottom:18px;
+    box-shadow:var(--shadow-lift);
+  }
+  .simulacro-card h2{ color:#fff; }
+  .simulacro-card p{ color:rgba(255,255,255,0.88); }
+  .simulacro-card .btn-primary{ background:#fff; color:var(--blue); }
+  .tip-row{ display:flex; gap:8px; align-items:flex-start; font-size:0.82rem; color:rgba(255,255,255,0.85); margin-top:10px; }
 
-    /* TARJETAS DE BIENVENIDA Y FILTROS */
-    .welcome-card {
-      background: linear-gradient(135deg, rgba(22,22,38,0.6) 0%, rgba(8,8,15,0.9) 100%);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-      text-align: center;
-    }
+  /* study view */
+  .tab-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:16px; }
+  .tab-btn{
+    flex:none; border:1px solid var(--line); background:var(--surface-alt); color:var(--text-dim);
+    border-radius:999px; padding:9px 14px; font-weight:700; font-size:0.82rem; cursor:pointer; white-space:nowrap;
+  }
+  .tab-btn.active{ background:var(--blue); color:#fff; border-color:var(--blue); }
 
-    .exam-badge {
-      display: inline-block;
-      background: rgba(255,176,32,0.1);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      color: var(--warn);
-      border: 1px solid rgba(255,176,32,0.2);
-      margin-bottom: 10px;
-    }
+  .theory-card{ border-left:4px solid var(--blue); }
+  .theory-card h3{ display:flex; align-items:center; gap:8px; }
+  .topic-svg{ width:100%; height:auto; margin:10px 0 4px; display:block; }
 
-    .theme-selector-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+  /* levels view */
+  .back-row{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .back-btn{
+    background:var(--surface-alt); border:1px solid var(--line); border-radius:10px;
+    width:36px; height:36px; cursor:pointer; font-size:16px; color:var(--text);
+  }
+  .level-card{ display:flex; align-items:center; gap:14px; text-align:left; cursor:pointer; width:100%; }
+  .level-card .lv-badge{
+    width:44px; height:44px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:1.1rem; color:#fff;
+  }
+  .level-card .lv-info{ flex:1; }
+  .level-card .lv-info .lv-title{ font-weight:800; font-size:0.95rem; }
+  .level-card .lv-info .lv-desc{ font-size:0.78rem; color:var(--text-faint); }
+  .rubric-note{ font-size:0.8rem; color:var(--text-faint); background:var(--surface-alt); border-radius:var(--radius-sm); padding:10px 12px; margin-bottom:14px; }
 
-    .theme-row-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: transform 0.15s;
-    }
+  /* quiz view */
+  .quiz-progress{ display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .quiz-progress .bar-track{ flex:1; }
+  .quiz-progress .count{ font-size:0.78rem; font-weight:800; color:var(--text-faint); white-space:nowrap; }
+  .question-card{ margin-bottom:16px; }
+  .question-card .q-level-tag{
+    display:inline-block; font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em;
+    padding:4px 9px; border-radius:999px; margin-bottom:10px;
+  }
+  .question-text{ font-size:1.02rem; font-weight:700; margin-bottom:4px; }
 
-    .theme-row-card:active {
-      transform: scale(0.98);
-    }
+  .options{ display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+  .option-btn{
+    text-align:left; background:var(--surface); border:1.5px solid var(--line); border-radius:var(--radius-md);
+    padding:13px 15px; font-family:inherit; font-size:0.92rem; color:var(--text); cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+  }
+  .option-btn:hover:not([disabled]){ border-color:var(--blue); background:var(--blue-soft); }
+  .option-btn .opt-letter{
+    width:26px; height:26px; border-radius:50%; background:var(--surface-alt); flex:none;
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.78rem; color:var(--text-dim);
+  }
+  .option-btn.correct{ background:var(--success-soft); border-color:var(--success); }
+  .option-btn.correct .opt-letter{ background:var(--success); color:#fff; }
+  .option-btn.incorrect{ background:var(--error-soft); border-color:var(--error); }
+  .option-btn.incorrect .opt-letter{ background:var(--error); color:#fff; }
+  .option-btn[disabled]{ cursor:default; }
 
-    .theme-icon-box {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
+  .feedback{
+    margin-top:14px; padding:14px; border-radius:var(--radius-md); border-left:4px solid var(--success);
+    background:var(--success-soft); font-size:0.88rem;
+  }
+  .feedback.bad{ border-left-color:var(--error); background:var(--error-soft); }
+  .feedback .fb-title{ font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
 
-    /* REPRODUCTOR DE TARJETAS DE ESTUDIO (PAGINADO MANUAL) */
-    .study-viewer {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      height: 100%;
-    }
+  /* result view */
+  .score-ring-wrap{ display:flex; flex-direction:column; align-items:center; padding:10px 0 20px; }
+  .score-ring-wrap svg{ width:150px; height:150px; }
+  .score-num{ font-size:1.8rem; font-weight:900; }
+  .score-msg{ font-weight:800; font-size:1.05rem; margin-top:6px; }
+  .review-item{ border-top:1px solid var(--line); padding:12px 0; }
+  .review-item:first-child{ border-top:none; }
+  .review-item .rq{ font-weight:700; font-size:0.9rem; margin-bottom:6px; }
+  .review-item .ra{ font-size:0.82rem; color:var(--text-dim); margin-bottom:2px; }
+  .review-item .ra.wrong{ color:var(--error); }
+  .review-item .ra.right{ color:var(--success); }
+  .review-item .rex{ font-size:0.8rem; color:var(--text-faint); margin-top:4px; }
 
-    .study-card {
-      background: var(--surface-card);
-      border-radius: 16px;
-      border-left: 5px solid var(--theme-color, var(--t1));
-      padding: 18px;
-      border-top: 1px solid var(--line);
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      display: none;
-    }
+  /* progress view */
+  .badge-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:10px 0 18px; }
+  .badge{
+    background:var(--surface-alt); border:1px solid var(--line); border-radius:var(--radius-md);
+    padding:12px; text-align:center; opacity:0.35;
+  }
+  .badge.earned{ opacity:1; background:var(--amber-soft); border-color:var(--amber); }
+  .badge .b-icon{ font-size:1.4rem; }
+  .badge .b-name{ font-size:0.72rem; font-weight:800; margin-top:4px; }
 
-    .study-card.active-card {
-      display: block;
-    }
+  .progress-topic-row{ margin-bottom:16px; }
+  .progress-topic-row .pt-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; font-weight:800; font-size:0.9rem; }
+  .chip-row{ display:flex; gap:8px; }
+  .lvl-chip{
+    flex:1; text-align:center; border-radius:var(--radius-sm); padding:9px 6px; font-size:0.72rem; font-weight:800;
+    background:var(--surface-alt); color:var(--text-faint); border:1px solid var(--line);
+  }
+  .lvl-chip.ok60{ background:var(--amber-soft); color:var(--amber); border-color:var(--amber); }
+  .lvl-chip.ok80{ background:var(--blue-soft); color:var(--blue); border-color:var(--blue); }
+  .lvl-chip.ok100{ background:var(--success-soft); color:var(--success); border-color:var(--success); }
 
-    .card-meta {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--theme-color, var(--t1));
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
+  .bottom-nav{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:640px;
+    background:var(--surface); border-top:1px solid var(--line); display:flex; z-index:30;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .nav-btn{
+    flex:1; background:none; border:none; padding:10px 4px 8px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-faint); font-family:inherit;
+  }
+  .nav-btn .icon{ font-size:1.15rem; }
+  .nav-btn .label{ font-size:0.68rem; font-weight:700; }
+  .nav-btn.active{ color:var(--blue); }
 
-    .card-title {
-      font-size: 1.15rem;
-      margin-bottom: 10px;
-    }
-
-    .concept-box {
-      background: rgba(0,0,0,0.4);
-      border-radius: 10px;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px dashed var(--line);
-    }
-
-    .use-indicator {
-      background: rgba(0, 242, 254, 0.07);
-      border-left: 3px solid var(--t1);
-      padding: 8px 10px;
-      font-size: 0.85rem;
-      margin: 8px 0;
-      border-radius: 0 6px 6px 0;
-    }
-
-    .formula-display {
-      font-size: 1.3rem;
-      text-align: center;
-      color: var(--text);
-      margin: 8px 0;
-      display: block;
-      letter-spacing: 0.05em;
-    }
-
-    .step-list {
-      margin-top: 8px;
-      padding-left: 12px;
-    }
-
-    .step-item {
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-      color: var(--text-dim);
-    }
-
-    .step-item strong {
-      color: var(--text);
-    }
-
-    .trap-box {
-      background: rgba(255, 51, 102, 0.06);
-      border: 1px solid rgba(255, 51, 102, 0.15);
-      border-radius: 10px;
-      padding: 10px;
-      margin-top: 12px;
-    }
-
-    .trap-title {
-      color: var(--bad);
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-
-    .study-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: auto;
-      padding-top: 10px;
-    }
-
-    .ctrl-btn {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      color: var(--text);
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-
-    .ctrl-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
-    /* INTERFAZ DEL QUIZ */
-    .quiz-progress-bar {
-      width: 100%;
-      height: 5px;
-      background: var(--line);
-      border-radius: 3px;
-      margin-bottom: 14px;
-      overflow: hidden;
-    }
-
-    .quiz-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--t1), var(--t2));
-      width: 0%;
-      transition: width 0.2s ease;
-    }
-
-    .quiz-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .quiz-question {
-      font-size: 1rem;
-      line-height: 1.4;
-      margin-bottom: 16px;
-    }
-
-    .options-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .option-btn {
-      background: var(--surface-card);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px 14px;
-      color: var(--text);
-      text-align: left;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background-color 0.15s;
-      min-height: 48px;
-    }
-
-    .option-btn.correct {
-      border-color: var(--good);
-      background: rgba(0, 255, 135, 0.08);
-    }
-
-    .option-btn.wrong {
-      border-color: var(--bad);
-      background: rgba(255, 51, 102, 0.08);
-    }
-
-    .option-btn.disabled {
-      pointer-events: none;
-    }
-
-    .feedback-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      line-height: 1.3;
-      display: none;
-    }
-
-    .feedback-box.show {
-      display: block;
-    }
-
-    .next-btn {
-      margin-top: 14px;
-      background: var(--text);
-      color: #000000;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      display: none;
-    }
-
-    .next-btn.show {
-      display: block;
-    }
-
-    .inline-review-card {
-      margin-top: 12px;
-      background: rgba(255, 176, 32, 0.06);
-      border: 1px solid rgba(255, 176, 32, 0.2);
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    /* PANTALLA RESULTADOS */
-    .results-container {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .gauge-svg {
-      width: 140px;
-      height: 140px;
-      transform: rotate(-90deg);
-      margin-bottom: 12px;
-    }
-
-    .gauge-bg {
-      fill: none;
-      stroke: var(--line);
-      stroke-width: 10;
-    }
-
-    .gauge-fill {
-      fill: none;
-      stroke-width: 10;
-      stroke-dasharray: 440;
-      stroke-dashoffset: 440;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 0.8s ease-out;
-    }
-
-    .gauge-text {
-      font-size: 2rem;
-      font-weight: 800;
-      fill: var(--text);
-    }
-
-    .score-badge {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .retry-btn {
-      background: linear-gradient(45deg, var(--t1), var(--t2));
-      color: var(--text);
-      border: none;
-      border-radius: 12px;
-      padding: 14px 28px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 14px;
-    }
-
-    @media (max-height: 580px) {
-      .view { padding-bottom: 80px; }
-      .welcome-card { padding: 10px; margin-bottom: 8px; }
-      .welcome-title { font-size: 1.1rem; }
-      .gauge-svg { width: 100px; height: 100px; }
-    }
-  </style>
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+</style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido</a>
+<div id="app">
 
-  <div id="app-frame">
-    <header class="app-header">
-      <h2>Estrategia de Blindaje Total 100</h2>
-      <div class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Física MEP</div>
-    </header>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">⚛️</div>
+      <div>
+        <h1>FísicaMate CTP</h1>
+        <div class="sub">I Prueba · II Semestre</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;">
+      <div class="xp-pill" id="xp-pill" aria-live="polite">⚡ 0 XP</div>
+      <button class="theme-btn" id="theme-toggle" type="button" aria-label="Cambiar a modo oscuro">🌙</button>
+    </div>
+  </header>
 
-    <section id="view-home" class="view active">
-      <div class="welcome-card">
-        <span class="exam-badge">📋 II Prueba I Semestre • Jueves 25/06/2026</span>
-        <h1 style="font-size: 1.4rem; margin-bottom: 4px;">FísicaMatemáticas CTP</h1>
-        <p style="font-size: 0.85rem; color: var(--text-dim);">Plataforma de autoaprendizaje con descarte de variables y análisis de cotidianos oficiales.</p>
+  <main id="main-content">
+
+    <section class="view active" id="view-home" aria-label="Inicio">
+      <p class="lede">Repasa los cuatro bloques de la prueba: estudia la teoría breve y luego practica con retroalimentación inmediata. Vas de <strong>conocimiento</strong> a <strong>aplicación</strong> y <strong>análisis</strong>, igual que la rúbrica del MEP.</p>
+
+      <div class="simulacro-card">
+        <h2>🏁 Simulacro final</h2>
+        <p>24 preguntas mezcladas de los 4 bloques, como el día del examen.</p>
+        <button class="btn btn-primary btn-block" type="button" onclick="startSimulacro()">Iniciar simulacro</button>
+        <div class="tip-row">💡 <span>Consejo: respira, lee cada pregunta completa antes de responder y administra tu tiempo (~1 min/ítem).</span></div>
       </div>
 
-      <div class="theme-selector-list">
-        <div class="theme-row-card" onclick="openStudyAt(0)">
-          <div class="theme-icon-box" style="background: rgba(0, 242, 254, 0.1); color: var(--t1);">直</div>
-          <div class="theme-info-box">
-            <h3 style="font-size: 0.95rem;">Tema 1: MRU & Conceptos Vectoriales</h3>
-            <p style="font-size: 0.75rem; color: var(--text-dim);">Diferencias clave entre Rapidez/Velocidad y Distancia/Desplazamiento.</p>
-          </div>
-        </div>
-
-        <div class="theme-row-card" onclick="openStudyAt(2)">
-          <div class="theme-icon-box" style="background: rgba(254, 9, 121, 0.1); color: var(--t2);">📐</div>
-          <div class="theme-info-box">
-            <h3 style="font-size: 0.95rem;">Tema 2: Herramientas Matemáticas MEP</h3>
-            <p style="font-size: 0.75rem; color: var(--text-dim);">Análisis dimensional (L, T), despejes y conversiones (km/h y horas a s).</p>
-          </div>
-        </div>
-
-        <div class="theme-row-card" onclick="openStudyAt(5)">
-          <div class="theme-icon-box" style="background: rgba(254, 9, 121, 0.1); color: var(--t2);">⏩</div>
-          <div class="theme-info-box">
-            <h3 style="font-size: 0.95rem;">Tema 3: MRUA Horizontal Completo</h3>
-            <p style="font-size: 0.75rem; color: var(--text-dim);">El set completo de 4 ecuaciones mecánicas y descarte de variables.</p>
-          </div>
-        </div>
-
-        <div class="theme-row-card" onclick="openStudyAt(7)">
-          <div class="theme-icon-box" style="background: rgba(37, 211, 102, 0.1); color: var(--t3);">🔻</div>
-          <div class="theme-info-box">
-            <h3 style="font-size: 0.95rem;">Tema 4: Caída Libre & Tiro Vertical</h3>
-            <p style="font-size: 0.75rem; color: var(--text-dim);">Movimiento gobernado por g=9.8 m/s² y el efecto del signo ±.</p>
-          </div>
-        </div>
-      </div>
+      <div id="home-topics"></div>
     </section>
 
-    <section id="view-study" class="view">
-      <div class="study-viewer">
-        <div id="cards-container-render">
-          </div>
-        
-        <div class="study-controls">
-          <button class="ctrl-btn" id="study-prev-btn" onclick="moveCard(-1)">Anterior</button>
-          <span id="study-index-lbl" class="mono" style="font-size:0.85rem; color:var(--text-dim);">1 / 5</span>
-          <button class="ctrl-btn" id="study-next-btn" onclick="moveCard(1)">Siguiente</button>
-        </div>
+    <section class="view" id="view-study" aria-label="Estudiar teoría">
+      <div class="back-row">
+        <button class="back-btn" type="button" onclick="switchView('home')" aria-label="Volver al inicio">←</button>
+        <h2 id="study-title" style="margin:0;">Estudiar</h2>
       </div>
+      <div class="tab-row" id="study-tabs" role="tablist" aria-label="Elegir bloque temático"></div>
+      <div id="study-body"></div>
     </section>
 
-    <section id="view-quiz" class="view">
-      <div class="quiz-progress-bar">
-        <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
+    <section class="view" id="view-levels" aria-label="Elegir nivel de práctica">
+      <div class="back-row">
+        <button class="back-btn" type="button" onclick="switchView('home')" aria-label="Volver al inicio">←</button>
+        <h2 id="levels-title" style="margin:0;">Practicar</h2>
       </div>
-      <div id="quiz-card-render" class="quiz-card">
-        </div>
+      <p class="rubric-note">📋 Progresión tipo rúbrica MEP: <strong>Nivel 1</strong> reconoce/identifica, <strong>Nivel 2</strong> resuelve/aplica, <strong>Nivel 3</strong> argumenta/analiza.</p>
+      <div id="levels-body"></div>
     </section>
 
-    <section id="view-results" class="view">
-      <div class="results-container">
-        <h2 style="margin-bottom: 4px;">Examen Concluido</h2>
-        <p style="color: var(--text-dim); font-size: 0.8rem; margin-bottom: 14px;">Nota oficial calculada sobre el primer intento.</p>
-        
-        <svg class="gauge-svg">
-          <circle class="gauge-bg" cx="70" cy="70" r="60"></circle>
-          <circle id="gauge-fill" class="gauge-fill" cx="70" cy="70" r="60"></circle>
-          <text x="70" y="78" class="gauge-text" text-anchor="middle" transform="rotate(90 70 70)" id="gauge-text-val">0</text>
-        </svg>
-
-        <div id="score-badge" class="score-badge">---</div>
-        <div id="results-breakdown" style="width:100%; text-align:left; font-size:0.85rem; color:var(--text-dim); background:var(--surface); padding:14px; border-radius:12px; border:1px solid var(--line);"></div>
-
-        <button class="retry-btn" onclick="restartQuiz()">Reiniciar Simulador (30 Qs)</button>
+    <section class="view" id="view-quiz" aria-label="Práctica en curso">
+      <div class="quiz-progress">
+        <div class="bar-track"><div class="bar-fill" id="quiz-bar" style="width:0%;background:var(--blue);"></div></div>
+        <div class="count" id="quiz-count">1/1</div>
       </div>
+      <div id="quiz-body"></div>
     </section>
 
-    <nav class="bottom-nav">
-      <button class="nav-btn active" id="btn-nav-home" onclick="switchView('home')">
-        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        Inicio
-      </button>
-      <button class="nav-btn" id="btn-nav-study" onclick="switchView('study')">
-        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5.49 18C6.14 19.14 7.97 20 12 20s5.86-.86 6.51-2H5.49z"/></svg>
-        Estudiar
-      </button>
-      <button class="nav-btn" id="btn-nav-quiz" onclick="switchView('quiz')">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-        Quiz (30 Qs)
-      </button>
-    </nav>
-  </div>
+    <section class="view" id="view-result" aria-label="Resultados">
+      <div id="result-body"></div>
+    </section>
 
-  <script>
-    /* BASE DE DATOS EXHAUSTIVA DE CONTENIDOS (CON USOS EXPLÍCITOS DE FÓRMULAS) */
-    const STUDY_CARDS = [
-      {
-        temaId: 0,
-        meta: "Eje Conceptos • Cotidiano #3",
-        title: "Escalares vs Vectores en el MRU",
-        content: `El MEP exige diferenciar rigurosamente la naturaleza matemática de las variables del movimiento:
-        <div class="concept-box">
-          <strong>Distancia (d):</strong> Escalar. Longitud total de la trayectoria recorrida. Siempre suma, nunca disminuye ni es negativa.<br><br>
-          <strong>Desplazamiento (Δx):</strong> Vectorial. Cambio neto de posición entre el origen y el destino final. Cuenta con dirección y sentido.
+    <section class="view" id="view-progress" aria-label="Mi progreso">
+      <h2>🏆 Mi progreso</h2>
+      <p class="lede">Cada práctica suma XP y te acerca a dominar los cuatro bloques.</p>
+      <div class="badge-grid" id="badge-grid"></div>
+      <div id="progress-body"></div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <button class="nav-btn active" data-nav="home" type="button" onclick="switchView('home')">
+      <span class="icon">🏠</span><span class="label">Inicio</span>
+    </button>
+    <button class="nav-btn" data-nav="study" type="button" onclick="openStudy()">
+      <span class="icon">📘</span><span class="label">Estudiar</span>
+    </button>
+    <button class="nav-btn" data-nav="simulacro" type="button" onclick="startSimulacro()">
+      <span class="icon">🏁</span><span class="label">Simulacro</span>
+    </button>
+    <button class="nav-btn" data-nav="progress" type="button" onclick="switchView('progress')">
+      <span class="icon">📊</span><span class="label">Progreso</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+/* ===================== DATOS: TEMAS Y GRÁFICOS SVG ===================== */
+
+const trajectorySVG = `<svg class="topic-svg" viewBox="0 0 300 140" role="img" aria-label="Trayectoria parabólica de un proyectil lanzado con ángulo">
+  <defs><marker id="arrLaunch" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#C4780A"/></marker></defs>
+  <line x1="10" y1="120" x2="290" y2="120" stroke="#94A3B8" stroke-width="2"/>
+  <path d="M20,120 Q150,10 280,120" fill="none" stroke="#7C6FF0" stroke-width="3"/>
+  <circle cx="20" cy="120" r="5" fill="#7C6FF0"/>
+  <circle cx="280" cy="120" r="5" fill="#7C6FF0"/>
+  <line x1="20" y1="120" x2="55" y2="88" stroke="#C4780A" stroke-width="2.5" marker-end="url(#arrLaunch)"/>
+  <text x="150" y="18" text-anchor="middle" font-size="11" fill="#5B6B80">altura máxima (Vy = 0)</text>
+  <text x="20" y="135" font-size="10" fill="#5B6B80">lanzamiento</text>
+  <text x="255" y="135" font-size="10" fill="#5B6B80">alcance</text>
+</svg>`;
+
+const vtGraphSVG = `<svg class="topic-svg" viewBox="0 0 320 180" role="img" aria-label="Gráfica de velocidad contra tiempo: sube de 0 a 20 metros por segundo en 4 segundos y luego se mantiene constante hasta los 8 segundos">
+  <line x1="40" y1="150" x2="300" y2="150" stroke="#94A3B8" stroke-width="2"/>
+  <line x1="40" y1="150" x2="40" y2="20" stroke="#94A3B8" stroke-width="2"/>
+  <polyline points="40,150 150,50 260,50" fill="none" stroke="#0E9C8F" stroke-width="3"/>
+  <circle cx="150" cy="50" r="4" fill="#0E9C8F"/>
+  <circle cx="260" cy="50" r="4" fill="#0E9C8F"/>
+  <text x="170" y="172" text-anchor="middle" font-size="12" fill="#5B6B80">tiempo (s)</text>
+  <text x="20" y="90" font-size="12" fill="#5B6B80" transform="rotate(-90 20 90)">v (m/s)</text>
+  <text x="150" y="42" text-anchor="middle" font-size="11" fill="#0E9C8F">t=4s, v=20 m/s</text>
+  <text x="40" y="165" font-size="10" fill="#5B6B80">0</text>
+  <text x="255" y="165" font-size="10" fill="#5B6B80">8s</text>
+</svg>`;
+
+const fbdSVG = `<svg class="topic-svg" viewBox="0 0 220 180" role="img" aria-label="Diagrama de cuerpo libre de un bloque con peso, normal, fuerza aplicada y fricción">
+  <defs>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,8 L4,0 L8,8 z" fill="#2F6FED"/></marker>
+    <marker id="arrW" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,0 L4,8 z" fill="#C4780A"/></marker>
+    <marker id="arrF" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1E9E5A"/></marker>
+    <marker id="arrf" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 z" fill="#D6284A"/></marker>
+  </defs>
+  <rect x="80" y="70" width="60" height="40" fill="#FCEFC7" stroke="#C4780A" stroke-width="2"/>
+  <line x1="110" y1="68" x2="110" y2="22" stroke="#2F6FED" stroke-width="2.5" marker-end="url(#arrN)"/>
+  <text x="118" y="30" font-size="12" fill="#2F6FED">N</text>
+  <line x1="110" y1="112" x2="110" y2="158" stroke="#C4780A" stroke-width="2.5" marker-end="url(#arrW)"/>
+  <text x="118" y="150" font-size="12" fill="#C4780A">mg</text>
+  <line x1="142" y1="90" x2="192" y2="90" stroke="#1E9E5A" stroke-width="2.5" marker-end="url(#arrF)"/>
+  <text x="150" y="82" font-size="12" fill="#1E9E5A">F</text>
+  <line x1="78" y1="90" x2="30" y2="90" stroke="#D6284A" stroke-width="2.5" marker-end="url(#arrf)"/>
+  <text x="38" y="82" font-size="12" fill="#D6284A">f</text>
+</svg>`;
+
+const energyBarsSVG = `<svg class="topic-svg" viewBox="0 0 300 165" role="img" aria-label="Diagrama de conservación de la energía mecánica entre un punto alto y uno bajo">
+  <path d="M20,40 Q150,150 280,40" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,4"/>
+  <circle cx="20" cy="40" r="7" fill="#1E9E5A"/>
+  <circle cx="280" cy="40" r="7" fill="#1E9E5A"/>
+  <circle cx="150" cy="140" r="7" fill="#1E9E5A"/>
+  <rect x="45" y="15" width="10" height="65" fill="#2F6FED"/>
+  <rect x="60" y="70" width="10" height="10" fill="#C4780A"/>
+  <text x="50" y="10" font-size="9" text-anchor="middle" fill="#2F6FED">Ep alta</text>
+  <rect x="135" y="120" width="10" height="10" fill="#2F6FED"/>
+  <rect x="150" y="60" width="10" height="70" fill="#C4780A"/>
+  <text x="155" y="55" font-size="9" text-anchor="middle" fill="#C4780A">Ec máxima</text>
+</svg>`;
+
+const TOPICS = {
+  parabolico:{ name:'Movimiento Parabólico', short:'Parabólico', icon:'🎯', color:'violet', pages:'77–85',
+    theory:[
+      {title:'¿Qué es el movimiento parabólico?', body:'Ocurre cuando un objeto se lanza con cierto ángulo respecto a la horizontal y se mueve únicamente bajo la acción de la gravedad. Es la combinación de dos movimientos independientes: uno horizontal a velocidad constante (MRU) y otro vertical acelerado (caída libre).', svg:trajectorySVG},
+      {title:'Movimiento semiparabólico', body:'Es un caso particular donde el objeto se lanza <strong>horizontalmente</strong> (sin componente vertical inicial) desde cierta altura. Ejemplos: una pelota que rueda y cae del borde de una mesa, o un dron que suelta un paquete en vuelo horizontal.'},
+      {title:'Componentes del movimiento', body:'<strong>Horizontal:</strong> V<sub>x</sub> = V₀·cos θ (se mantiene constante).<br><strong>Vertical:</strong> V<sub>y</sub> = V₀·sen θ − g·t (cambia por efecto de la gravedad, g ≈ 9.8 m/s²).'},
+      {title:'Fórmulas clave', body:'Tiempo a la altura máxima: t = V<sub>y0</sub>/g.<br>Altura máxima: h = V<sub>y0</sub>²/(2g).<br>Tiempo total de vuelo (parabólico): T = 2·t.<br>Alcance horizontal: x = V<sub>x</sub>·t.'},
+      {title:'¿Por qué importa?', body:'Este modelo se aplica en deportes (baloncesto, fútbol), diseño de sistemas de riego, balística, bomberos calculando el chorro de agua, y seguridad estructural: cualquier situación donde algo viaje por el aire siguiendo una trayectoria curva.'}
+    ]
+  },
+  graficas:{ name:'Gráficas del Movimiento', short:'Gráficas', icon:'📈', color:'teal', pages:'86–99',
+    theory:[
+      {title:'Cuatro tipos de gráficas', body:'Distancia-tiempo, desplazamiento-tiempo, rapidez-tiempo y velocidad-tiempo describen cómo cambian estas magnitudes conforme avanza el movimiento.'},
+      {title:'La pendiente lo dice todo', body:'En una gráfica <strong>posición o desplazamiento vs. tiempo</strong>, la pendiente representa la velocidad. En una gráfica <strong>velocidad vs. tiempo</strong>, la pendiente representa la aceleración.'},
+      {title:'El área bajo la curva', body:'En una gráfica velocidad-tiempo, el área entre la curva y el eje del tiempo representa el <strong>desplazamiento</strong> recorrido en ese intervalo.', svg:vtGraphSVG},
+      {title:'Escalar vs. vectorial', body:'Distancia y rapidez son magnitudes escalares (siempre positivas o cero). Desplazamiento y velocidad son vectoriales: pueden tomar valores negativos según la dirección del movimiento.'}
+    ]
+  },
+  newton:{ name:'Leyes de Newton', short:'Newton', icon:'⚙️', color:'amber', pages:'100–115',
+    theory:[
+      {title:'1ª Ley: Inercia', body:'Un cuerpo permanece en reposo o en movimiento rectilíneo uniforme a menos que una fuerza neta actúe sobre él.'},
+      {title:'2ª Ley: F = m·a', body:'La aceleración de un cuerpo es directamente proporcional a la fuerza neta aplicada e inversamente proporcional a su masa.'},
+      {title:'3ª Ley: Acción y reacción', body:'Toda fuerza de acción genera una fuerza de reacción de igual magnitud y sentido contrario, aplicada sobre el otro cuerpo.'},
+      {title:'Las 4 fuerzas fundamentales', body:'<strong>Gravitacional</strong> (atracción entre masas), <strong>electromagnética</strong> (cargas eléctricas e imanes), <strong>nuclear fuerte</strong> (une protones y neutrones) y <strong>nuclear débil</strong> (desintegración radiactiva).'},
+      {title:'Diagramas de cuerpo libre y rozamiento', body:'Un diagrama de cuerpo libre (DCL) representa todas las fuerzas que actúan sobre un objeto. El rozamiento se opone al movimiento: estático (antes de moverse) y cinético (durante el movimiento), f = μ·N.', svg:fbdSVG}
+    ]
+  },
+  energia:{ name:'Trabajo, Energía y Potencia', short:'Energía', icon:'⚡', color:'green', pages:'149–169',
+    theory:[
+      {title:'Trabajo mecánico', body:'W = F·d·cos θ, medido en Joules (J). Solo la componente de la fuerza en la dirección del desplazamiento realiza trabajo.'},
+      {title:'Formas de energía mecánica', body:'<strong>Cinética:</strong> Ec = ½·m·v² (por movimiento).<br><strong>Potencial gravitacional:</strong> Ep = m·g·h (por altura).<br><strong>Potencial elástica:</strong> Ee = ½·k·x² (por deformación).'},
+      {title:'Conservación de la energía mecánica', body:'Em = Ec + Ep. En ausencia de fricción, la energía mecánica total se conserva: se transforma entre cinética y potencial sin pérdidas.', svg:energyBarsSVG},
+      {title:'Potencia', body:'P = W/t, medida en Watts (W). Indica qué tan <em>rápido</em> se realiza un trabajo, no cuánto trabajo se hace en total.'}
+    ]
+  }
+};
+
+/* ===================== BANCO DE PREGUNTAS ===================== */
+const QUESTIONS = [
+/* ---------- PARABÓLICO L1 ---------- */
+{topic:'parabolico',level:1,q:'¿Qué dos movimientos se combinan en un movimiento parabólico?',options:['MRU horizontal + MRUA vertical (caída libre)','MRUA horizontal + MRU vertical','Dos MRU perpendiculares','Dos caídas libres simultáneas'],correct:0,ok:'Correcto: el eje horizontal mantiene velocidad constante (MRU) mientras el eje vertical se acelera por la gravedad (caída libre).',bad:'El movimiento parabólico combina un MRU horizontal con una caída libre vertical (MRUA).'},
+{topic:'parabolico',level:1,q:'¿Cuál es la diferencia clave entre movimiento parabólico y semiparabólico?',options:['El semiparabólico no tiene gravedad','El semiparabólico se lanza horizontalmente (Vy₀=0); el parabólico se lanza con ángulo (Vy₀≠0)','El parabólico solo ocurre en el vacío','No hay diferencia, son sinónimos'],correct:1,ok:'Exacto: en el semiparabólico la velocidad inicial es totalmente horizontal.',bad:'La clave está en la velocidad inicial vertical: en el semiparabólico es cero (lanzamiento horizontal).'},
+{topic:'parabolico',level:1,q:'En el punto más alto de una trayectoria parabólica, ¿cuánto vale la componente vertical de la velocidad (Vy)?',options:['Es máxima','Es igual a Vx','Vale cero','Es negativa'],correct:2,ok:'Correcto: en el punto más alto el objeto deja de subir, por lo que Vy = 0 momentáneamente.',bad:'En el punto más alto, la velocidad vertical es cero (el objeto cambia de subir a bajar).'},
+{topic:'parabolico',level:1,q:'¿Qué figura geométrica describe la trayectoria de un movimiento parabólico?',options:['Una recta','Un círculo','Una parábola','Una espiral'],correct:2,ok:'Correcto, de ahí su nombre: la trayectoria tiene forma de parábola.',bad:'La trayectoria descrita es una parábola (curva simétrica con un punto máximo).'},
+{topic:'parabolico',level:1,q:'Ignorando la resistencia del aire, ¿qué sucede con la componente horizontal de la velocidad (Vx) durante todo el vuelo?',options:['Aumenta constantemente','Disminuye hasta cero','Permanece constante','Se vuelve negativa'],correct:2,ok:'Correcto: sin fricción del aire no hay fuerza horizontal, así que Vx no cambia.',bad:'Vx permanece constante porque la gravedad solo actúa en la dirección vertical.'},
+{topic:'parabolico',level:1,q:'¿Cuál situación representa mejor un movimiento semiparabólico?',options:['Un balón pateado con un ángulo de 45°','Una flecha disparada hacia arriba en línea recta','Una canica que rueda y cae del borde de una mesa','Una persona caminando en línea recta'],correct:2,ok:'Correcto: al salir del borde, la canica tiene solo velocidad horizontal inicial.',bad:'La canica que rueda y cae del borde tiene velocidad inicial puramente horizontal: eso es semiparabólico.'},
+
+/* ---------- PARABÓLICO L2 ---------- */
+{topic:'parabolico',level:2,q:'Una pelota rueda por una mesa de 1.25 m de altura con rapidez horizontal de 4 m/s. Usando g=9.8 m/s², ¿cuánto tiempo tarda en llegar al suelo?',options:['0.5 s','1.0 s','0.25 s','2.0 s'],correct:0,ok:'Correcto: t=√(2h/g)=√(2·1.25/9.8)≈0.5 s.',bad:'t=√(2h/g)=√(2·1.25/9.8)≈0.5 s.'},
+{topic:'parabolico',level:2,q:'Con los datos anteriores (pelota de mesa, v=4 m/s, t≈0.5 s), ¿cuál es el alcance horizontal aproximado?',options:['4 m','1 m','2 m','5 m'],correct:2,ok:'Correcto: x=Vx·t=4×0.5≈2 m.',bad:'x=Vx·t=4×0.5≈2 m.'},
+{topic:'parabolico',level:2,q:'Un objeto se lanza horizontalmente desde 20 m de altura con V₀=15 m/s. ¿Cuánto tiempo tarda en caer (g=9.8 m/s²)?',options:['1 s','4 s','0.5 s','≈2 s'],correct:3,ok:'Correcto: t=√(2·20/9.8)≈2.0 s.',bad:'t=√(2h/g)=√(40/9.8)≈2.0 s.'},
+{topic:'parabolico',level:2,q:'Con el objeto anterior (V₀=15 m/s, t≈2 s), ¿cuál es el alcance horizontal aproximado?',options:['15 m','40 m','≈30 m','20 m'],correct:2,ok:'Correcto: x=Vx·t=15×2≈30 m.',bad:'x=Vx·t=15×2≈30 m.'},
+{topic:'parabolico',level:2,q:'Un proyectil se lanza con V₀=20 m/s a 30° sobre la horizontal. ¿Cuál es la componente horizontal de la velocidad (Vx)?',options:['20 m/s','10 m/s','17.3 m/s','5.8 m/s'],correct:2,ok:'Correcto: Vx=V₀·cos30°=20×0.866≈17.3 m/s.',bad:'Vx=V₀·cos30°=20×0.866≈17.3 m/s.'},
+{topic:'parabolico',level:2,q:'Para el mismo proyectil (V₀=20 m/s, 30°), ¿cuál es la componente vertical inicial (Vy₀)?',options:['10 m/s','17.3 m/s','20 m/s','0 m/s'],correct:0,ok:'Correcto: Vy₀=V₀·sen30°=20×0.5=10 m/s.',bad:'Vy₀=V₀·sen30°=20×0.5=10 m/s.'},
+{topic:'parabolico',level:2,q:'Con Vy₀=10 m/s y g=9.8 m/s², ¿cuánto tarda el proyectil en alcanzar su altura máxima?',options:['≈1.02 s','2 s','0.5 s','3 s'],correct:0,ok:'Correcto: t=Vy₀/g=10/9.8≈1.02 s.',bad:'t=Vy₀/g=10/9.8≈1.02 s.'},
+{topic:'parabolico',level:2,q:'Con los mismos datos (Vy₀=10 m/s), ¿cuál es la altura máxima alcanzada?',options:['≈5.1 m','10 m','2.5 m','20 m'],correct:0,ok:'Correcto: h=Vy₀²/(2g)=100/19.6≈5.1 m.',bad:'h=Vy₀²/(2g)=100/19.6≈5.1 m.'},
+
+/* ---------- PARABÓLICO L3 ---------- */
+{topic:'parabolico',level:3,q:'¿Por qué es útil el estudio del movimiento parabólico en el diseño de instalaciones deportivas como canastas de baloncesto?',options:['Porque no tiene ninguna aplicación práctica','Porque permite calcular el ángulo y la fuerza óptimos para que el balón siga una trayectoria eficaz hacia el aro','Porque solo interesa a los físicos, no a los diseñadores','Porque evita que el balón tenga gravedad'],correct:1,ok:'Correcto: el modelo permite predecir y optimizar trayectorias reales.',bad:'La utilidad está en predecir la trayectoria para calcular el ángulo/fuerza óptimos.'},
+{topic:'parabolico',level:3,q:'Un bombero debe calcular el ángulo del chorro de agua para alcanzar un incendio en un piso alto. ¿Qué conocimiento físico aplica principalmente?',options:['Ley de conservación de la masa','Movimiento parabólico (alcance y altura máxima)','Primera Ley de Newton','Electromagnetismo'],correct:1,ok:'Correcto: necesita calcular alcance y altura usando las ecuaciones del movimiento parabólico.',bad:'Se aplica el movimiento parabólico para predecir el alcance y la altura del chorro de agua.'},
+{topic:'parabolico',level:3,q:'¿Cuál es la importancia de reconocer el movimiento semiparabólico en la seguridad de una obra de construcción?',options:['No tiene relación con la seguridad','Permite estimar dónde caerá un objeto que se desprende horizontalmente de un andamio, para delimitar zonas de riesgo','Solo sirve para calcular el peso de los materiales','Sirve para calcular el color de los cascos de seguridad'],correct:1,ok:'Correcto: predecir el punto de caída ayuda a delimitar zonas seguras.',bad:'El conocimiento del semiparabólico permite estimar la zona de caída de objetos desprendidos horizontalmente, mejorando la seguridad.'},
+{topic:'parabolico',level:3,q:'Si en un cálculo real se ignora la resistencia del aire, ¿qué ocurre generalmente con el alcance calculado respecto al alcance real de un proyectil ligero?',options:['El cálculo teórico coincide siempre exactamente','El modelo teórico tiende a sobreestimar el alcance real','El modelo teórico subestima siempre la altura máxima','No hay ninguna diferencia posible'],correct:1,ok:'Correcto: sin fricción del aire, el modelo ideal predice un alcance mayor al real.',bad:'Al ignorar la resistencia del aire, el modelo teórico generalmente sobreestima el alcance real.'},
+{topic:'parabolico',level:3,q:'¿Cuál es la mejor razón para argumentar la importancia de la Física en la vida diaria usando el ejemplo del movimiento parabólico?',options:['Porque hay que memorizar fórmulas para el examen','Porque explica y permite predecir fenómenos cotidianos como deportes, riego agrícola y balística, mejorando la toma de decisiones','Porque la Física es obligatoria en el currículo','Porque las fórmulas son estéticamente agradables'],correct:1,ok:'Correcto: la utilidad real está en explicar y predecir fenómenos del entorno.',bad:'La importancia radica en que permite explicar y predecir fenómenos reales del entorno cotidiano.'},
+
+/* ---------- GRÁFICAS L1 ---------- */
+{topic:'graficas',level:1,q:'En una gráfica velocidad-tiempo, ¿qué representa la pendiente?',options:['La distancia total','La aceleración','La rapidez inicial','El desplazamiento'],correct:1,ok:'Correcto: pendiente en v-t = aceleración.',bad:'En una gráfica v-t, la pendiente representa la aceleración.'},
+{topic:'graficas',level:1,q:'En una gráfica de posición o desplazamiento contra tiempo, ¿qué representa la pendiente?',options:['La aceleración','La velocidad','La fuerza neta','El tiempo total'],correct:1,ok:'Correcto: pendiente en posición-tiempo = velocidad.',bad:'En una gráfica posición/desplazamiento-tiempo, la pendiente representa la velocidad.'},
+{topic:'graficas',level:1,q:'¿Qué representa el área bajo la curva en una gráfica velocidad-tiempo?',options:['La aceleración','La fuerza aplicada','El desplazamiento','La masa del objeto'],correct:2,ok:'Correcto: el área bajo la curva v-t equivale al desplazamiento.',bad:'El área bajo la curva en una gráfica v-t representa el desplazamiento.'},
+{topic:'graficas',level:1,q:'Una línea horizontal (distinta de cero) en una gráfica velocidad-tiempo indica:',options:['El objeto está acelerando','El objeto tiene velocidad constante (MRU)','El objeto está en reposo','El objeto retrocede'],correct:1,ok:'Correcto: sin cambio en v, la aceleración es cero (MRU).',bad:'Una línea horizontal distinta de cero indica velocidad constante, es decir, MRU.'},
+{topic:'graficas',level:1,q:'Una línea horizontal justo sobre el valor cero en una gráfica velocidad-tiempo indica que el objeto:',options:['Está acelerando uniformemente','Está en reposo','Se mueve a rapidez máxima','Cambia de dirección'],correct:1,ok:'Correcto: v=0 durante ese intervalo significa que el objeto no se mueve.',bad:'Si v=0 durante ese intervalo, el objeto está en reposo.'},
+{topic:'graficas',level:1,q:'¿Cuál gráfica puede mostrar valores negativos: la de distancia-tiempo o la de desplazamiento-tiempo?',options:['Distancia-tiempo','Ambas por igual','Ninguna puede ser negativa','Desplazamiento-tiempo'],correct:3,ok:'Correcto: el desplazamiento es vectorial y puede ser negativo según la dirección; la distancia es escalar y siempre ≥0.',bad:'La gráfica de desplazamiento-tiempo puede mostrar valores negativos porque el desplazamiento es vectorial.'},
+
+/* ---------- GRÁFICAS L2 ---------- */
+{topic:'graficas',level:2,q:'Observa la gráfica: la velocidad sube de 0 a 20 m/s en los primeros 4 s. ¿Cuál es la aceleración en ese tramo?',svg:vtGraphSVG,options:['5 m/s²','20 m/s²','4 m/s²','0.2 m/s²'],correct:0,ok:'Correcto: a=Δv/Δt=20/4=5 m/s².',bad:'a=Δv/Δt=20/4=5 m/s².'},
+{topic:'graficas',level:2,q:'Con la misma gráfica, ¿cuál es el desplazamiento durante los primeros 4 s (área del triángulo)?',svg:vtGraphSVG,options:['80 m','40 m','20 m','10 m'],correct:1,ok:'Correcto: área=½×4×20=40 m.',bad:'Área del triángulo=½×base×altura=½×4×20=40 m.'},
+{topic:'graficas',level:2,q:'Entre los 4 s y los 8 s la velocidad se mantiene constante en 20 m/s. ¿Cuál es el desplazamiento en ese tramo (área del rectángulo)?',svg:vtGraphSVG,options:['40 m','60 m','80 m','100 m'],correct:2,ok:'Correcto: área=20×4=80 m.',bad:'Área del rectángulo=20 m/s×4 s=80 m.'},
+{topic:'graficas',level:2,q:'¿Cuál es el desplazamiento total entre 0 s y 8 s (suma de ambas áreas)?',svg:vtGraphSVG,options:['100 m','140 m','80 m','120 m'],correct:3,ok:'Correcto: 40 m + 80 m = 120 m.',bad:'Desplazamiento total = 40 m + 80 m = 120 m.'},
+{topic:'graficas',level:2,q:'Un objeto viaja a 10 m/s constantes durante 5 s y luego frena uniformemente hasta detenerse en 2 s más. ¿Cuál es la distancia total recorrida?',options:['50 m','70 m','40 m','60 m'],correct:3,ok:'Correcto: 10×5=50 m + ½×2×10=10 m → total 60 m.',bad:'Primera parte: 10×5=50 m. Segunda parte (triángulo): ½×2×10=10 m. Total=60 m.'},
+{topic:'graficas',level:2,q:'Para el objeto anterior, ¿cuál es la aceleración durante el frenado (de 10 m/s a 0 en 2 s)?',options:['5 m/s²','-2 m/s²','-10 m/s²','-5 m/s²'],correct:3,ok:'Correcto: a=(0-10)/2=-5 m/s².',bad:'a=Δv/Δt=(0-10)/2=-5 m/s².'},
+{topic:'graficas',level:2,q:'Una gráfica distancia-tiempo muestra una curva cuya pendiente aumenta con el tiempo. ¿Qué indica esto?',options:['El objeto está en reposo','El objeto se mueve a velocidad constante','El objeto está acelerando (aumenta su rapidez)','El objeto está desacelerando'],correct:2,ok:'Correcto: una pendiente creciente en d-t significa que la rapidez aumenta.',bad:'Una pendiente cada vez mayor en la gráfica d-t indica que el objeto acelera.'},
+
+/* ---------- GRÁFICAS L3 ---------- */
+{topic:'graficas',level:3,q:'¿Por qué es importante interpretar correctamente las gráficas de movimiento en situaciones de tránsito vehicular?',options:['Solo tiene valor académico, sin aplicación real','Permite predecir distancias de frenado y prevenir accidentes','Sirve únicamente para decorar informes técnicos','No tiene relación con la seguridad vial'],correct:1,ok:'Correcto: interpretar gráficas permite anticipar comportamientos y prevenir riesgos.',bad:'Interpretar gráficas ayuda a predecir el comportamiento del tránsito y prevenir accidentes.'},
+{topic:'graficas',level:3,q:'Un vehículo mantiene una pendiente constante en su gráfica distancia-tiempo y luego se detiene abruptamente. ¿Qué describe correctamente esta situación?',options:['El vehículo aceleró todo el trayecto','El vehículo mantuvo velocidad constante y luego frenó bruscamente','El vehículo estuvo en reposo todo el tiempo','El vehículo retrocedió al final'],correct:1,ok:'Correcto: pendiente constante = velocidad constante; el cambio abrupto indica frenado repentino.',bad:'Pendiente constante indica velocidad constante; el cambio brusco al final indica un frenado repentino.'},
+{topic:'graficas',level:3,q:'¿Por qué es útil el área bajo la curva de una gráfica velocidad-tiempo en el diseño de sistemas de frenado de vehículos?',options:['Permite calcular el color del vehículo','Permite calcular la distancia que recorrerá el vehículo mientras frena, clave para la seguridad','No tiene ninguna utilidad práctica','Solo sirve para calcular el consumo de combustible'],correct:1,ok:'Correcto: el área bajo la curva da la distancia de frenado, esencial para diseñar sistemas seguros.',bad:'El área bajo la curva permite calcular la distancia de frenado, información clave para la seguridad vehicular.'},
+{topic:'graficas',level:3,q:'En una carrera atlética, ¿qué información brinda el área bajo la curva de una gráfica rapidez-tiempo del corredor?',options:['Su peso corporal','La distancia total recorrida','Su ritmo cardíaco','El tiempo de reacción en la salida'],correct:1,ok:'Correcto: el área bajo la curva rapidez-tiempo equivale a la distancia total recorrida.',bad:'El área bajo la curva de rapidez-tiempo representa la distancia total recorrida por el atleta.'},
+{topic:'graficas',level:3,q:'Dos corredores tienen gráficas velocidad-tiempo con la misma área total pero de forma distinta. ¿Qué se puede concluir?',options:['Recorrieron distancias distintas','Recorrieron la misma distancia total, aunque con diferente patrón de velocidad/aceleración','Uno de ellos no se movió','Ambos tuvieron la misma aceleración en todo momento'],correct:1,ok:'Correcto: igual área significa igual desplazamiento, sin importar la forma de la curva.',bad:'Si el área es la misma, la distancia total recorrida es igual, aunque el patrón de movimiento sea diferente.'},
+
+/* ---------- NEWTON L1 ---------- */
+{topic:'newton',level:1,q:'La primera Ley de Newton también se conoce como:',options:['Ley de acción y reacción','Ley de la gravitación','Ley de la Inercia','Ley de conservación de la energía'],correct:2,ok:'Correcto: la primera ley es la Ley de la Inercia.',bad:'La primera Ley de Newton se conoce como la Ley de la Inercia.'},
+{topic:'newton',level:1,q:'¿Cuál fórmula representa la segunda Ley de Newton?',options:['E=mc²','F=m·a','W=F·d','P=W/t'],correct:1,ok:'Correcto: F=m·a relaciona fuerza neta, masa y aceleración.',bad:'La segunda Ley de Newton se expresa como F=m·a.'},
+{topic:'newton',level:1,q:'Según la tercera Ley de Newton, cuando un cuerpo ejerce una fuerza sobre otro:',options:['El segundo cuerpo no reacciona','El segundo cuerpo ejerce una fuerza igual y de sentido contrario sobre el primero','Solo el cuerpo más grande ejerce fuerza','La fuerza desaparece'],correct:1,ok:'Correcto: a toda acción corresponde una reacción de igual magnitud y sentido contrario.',bad:'La tercera Ley establece que a toda acción corresponde una reacción igual y de sentido contrario.'},
+{topic:'newton',level:1,q:'¿Cuál de las cuatro fuerzas fundamentales mantiene unidos los protones y neutrones en el núcleo atómico?',options:['Fuerza gravitacional','Fuerza electromagnética','Fuerza nuclear fuerte','Fuerza nuclear débil'],correct:2,ok:'Correcto: la fuerza nuclear fuerte mantiene unido el núcleo atómico.',bad:'La fuerza nuclear fuerte es la responsable de mantener unidos protones y neutrones en el núcleo.'},
+{topic:'newton',level:1,q:'¿Qué fuerza fundamental es responsable de la atracción entre la Tierra y los objetos?',options:['Fuerza nuclear débil','Fuerza gravitacional','Fuerza electromagnética','Fuerza nuclear fuerte'],correct:1,ok:'Correcto: la fuerza gravitacional actúa entre masas, como la Tierra y los objetos.',bad:'La fuerza gravitacional es la responsable de la atracción entre la Tierra y los objetos.'},
+{topic:'newton',level:1,q:'El rozamiento que se opone al inicio del movimiento de un objeto en reposo se llama:',options:['Rozamiento cinético','Rozamiento estático','Rozamiento nulo','Rozamiento elástico'],correct:1,ok:'Correcto: el rozamiento estático actúa antes de que el objeto comience a moverse.',bad:'El rozamiento estático es el que se opone al inicio del movimiento de un cuerpo en reposo.'},
+
+/* ---------- NEWTON L2 ---------- */
+{topic:'newton',level:2,q:'Un objeto de 5 kg experimenta una fuerza neta de 20 N. ¿Cuál es su aceleración?',options:['4 m/s²','100 m/s²','0.25 m/s²','20 m/s²'],correct:0,ok:'Correcto: a=F/m=20/5=4 m/s².',bad:'a=F/m=20/5=4 m/s².'},
+{topic:'newton',level:2,q:'¿Qué fuerza neta se necesita para acelerar un cuerpo de 10 kg a 3 m/s²?',options:['13 N','3.33 N','30 N','300 N'],correct:2,ok:'Correcto: F=m·a=10×3=30 N.',bad:'F=m·a=10×3=30 N.'},
+{topic:'newton',level:2,q:'Un bloque de 8 kg descansa sobre una superficie con coeficiente de rozamiento cinético μ=0.3. Con g=9.8 m/s², ¿cuál es la fuerza de fricción mientras se desliza?',svg:fbdSVG,options:['8 N','0.3 N','78.4 N','≈23.5 N'],correct:3,ok:'Correcto: N=mg=8×9.8=78.4 N; f=μN=0.3×78.4≈23.5 N.',bad:'N=mg=78.4 N; f=μN=0.3×78.4≈23.5 N.'},
+{topic:'newton',level:2,q:'Con el mismo bloque (f≈23.5 N), si se aplica una fuerza de 40 N para moverlo, ¿cuál es la fuerza neta horizontal?',svg:fbdSVG,options:['40 N','23.5 N','63.5 N','≈16.5 N'],correct:3,ok:'Correcto: Fneta=40-23.5≈16.5 N.',bad:'Fneta=F aplicada - f = 40-23.5≈16.5 N.'},
+{topic:'newton',level:2,q:'Con Fneta≈16.5 N y m=8 kg, ¿cuál es la aceleración resultante del bloque?',options:['≈2.1 m/s²','5 m/s²','0.5 m/s²','16.5 m/s²'],correct:0,ok:'Correcto: a=Fneta/m=16.5/8≈2.1 m/s².',bad:'a=Fneta/m=16.5/8≈2.1 m/s².'},
+{topic:'newton',level:2,q:'Dos fuerzas actúan sobre un objeto: 15 N hacia la derecha y 6 N hacia la izquierda. ¿Cuál es la fuerza neta?',options:['21 N hacia la derecha','9 N hacia la izquierda','9 N hacia la derecha','15 N hacia la izquierda'],correct:2,ok:'Correcto: 15-6=9 N hacia la derecha (dirección de la fuerza mayor).',bad:'Fneta=15N-6N=9N hacia la derecha, la dirección de la fuerza mayor.'},
+{topic:'newton',level:2,q:'Un objeto de 2 kg cuelga en reposo de una cuerda. Con g=9.8 m/s², ¿cuánto vale la tensión en la cuerda?',options:['2 N','9.8 N','19.6 N','4.9 N'],correct:2,ok:'Correcto: en reposo, T=peso=m·g=2×9.8=19.6 N.',bad:'En equilibrio, T=m·g=2×9.8=19.6 N.'},
+
+/* ---------- NEWTON L3 ---------- */
+{topic:'newton',level:3,q:'¿Por qué es importante usar el cinturón de seguridad en un vehículo, según la primera Ley de Newton?',options:['Porque decora el interior del vehículo','Porque el cuerpo tiende a seguir en movimiento por inercia cuando el auto se detiene bruscamente','Porque reduce el peso del vehículo','Porque evita el rozamiento con el aire'],correct:1,ok:'Correcto: por inercia, el cuerpo sigue moviéndose aunque el auto se detenga, por eso el cinturón es esencial.',bad:'Por inercia, el cuerpo continúa en movimiento cuando el vehículo frena de golpe; el cinturón evita lesiones.'},
+{topic:'newton',level:3,q:'¿Cómo explica la tercera Ley de Newton que un cohete pueda impulsarse en el vacío del espacio?',options:['El cohete empuja el aire para avanzar','Expulsa gases hacia atrás (acción) y recibe un impulso hacia adelante (reacción), sin necesitar aire','El cohete no necesita ninguna fuerza para moverse','La gravedad del espacio lo impulsa'],correct:1,ok:'Correcto: la propulsión funciona por acción-reacción entre los gases expulsados y el cohete, sin depender del aire.',bad:'El cohete expulsa gases hacia atrás (acción) y esto genera una reacción que lo impulsa hacia adelante, incluso en el vacío.'},
+{topic:'newton',level:3,q:'¿Por qué es relevante conocer el coeficiente de rozamiento al diseñar los neumáticos de un vehículo?',options:['No influye en el desempeño del vehículo','Una fricción adecuada mejora la tracción y la capacidad de frenar y girar con seguridad','Solo afecta el color de la llanta','Sirve únicamente para reducir el precio de fabricación'],correct:1,ok:'Correcto: el coeficiente de rozamiento adecuado mejora la tracción y la seguridad al conducir.',bad:'Un coeficiente de fricción adecuado mejora la tracción, el frenado y el control del vehículo, aumentando la seguridad.'},
+{topic:'newton',level:3,q:'¿Cuál es la importancia de conocer las cuatro fuerzas fundamentales para comprender el universo?',options:['No tienen relación entre sí ni con fenómenos reales','Cada una explica interacciones a distintas escalas, desde la estructura atómica hasta la gravedad planetaria','Solo sirven para resolver exámenes de Física','Únicamente la fuerza gravitacional es relevante'],correct:1,ok:'Correcto: juntas explican fenómenos desde el núcleo atómico hasta la escala cósmica.',bad:'Cada fuerza fundamental explica interacciones a diferente escala, desde lo atómico hasta lo planetario/cósmico.'},
+{topic:'newton',level:3,q:'¿Por qué es útil elaborar un diagrama de cuerpo libre (DCL) al resolver un problema de mecánica?',options:['Porque hace el ejercicio más largo sin razón','Porque permite visualizar todas las fuerzas que actúan sobre un objeto para calcular correctamente la fuerza neta','Porque reemplaza el uso de fórmulas matemáticas','Porque solo se usa quo decorativo en los informes'],correct:1,ok:'Correcto: el DCL organiza visualmente las fuerzas, facilitando un cálculo correcto de la fuerza neta.',bad:'El DCL permite visualizar todas las fuerzas actuantes, lo cual es clave para calcular correctamente la fuerza neta.'},
+
+/* ---------- ENERGÍA L1 ---------- */
+{topic:'energia',level:1,q:'¿Cuál es la unidad de medida del trabajo mecánico en el Sistema Internacional?',options:['Newton (N)','Watt (W)','Joule (J)','Pascal (Pa)'],correct:2,ok:'Correcto: el trabajo se mide en Joules (J).',bad:'La unidad del trabajo mecánico en el SI es el Joule (J).'},
+{topic:'energia',level:1,q:'¿Cuál es la fórmula correcta del trabajo mecánico?',options:['W=F·d·cos θ','W=m·g·h','W=½m·v²','W=F/d'],correct:0,ok:'Correcto: W=F·d·cos θ, donde θ es el ángulo entre la fuerza y el desplazamiento.',bad:'La fórmula del trabajo mecánico es W=F·d·cos θ.'},
+{topic:'energia',level:1,q:'La energía potencial gravitacional depende de:',options:['La velocidad y el tiempo','La masa, la gravedad y la altura','Solo la masa','El coeficiente de rozamiento'],correct:1,ok:'Correcto: Ep=m·g·h.',bad:'La energía potencial gravitacional se calcula como Ep=m·g·h: depende de masa, gravedad y altura.'},
+{topic:'energia',level:1,q:'La energía cinética depende de:',options:['La masa y la velocidad del objeto','Solo la altura','La fuerza de fricción','El tiempo transcurrido'],correct:0,ok:'Correcto: Ec=½·m·v².',bad:'La energía cinética se calcula como Ec=½·m·v²: depende de masa y velocidad.'},
+{topic:'energia',level:1,q:'La fuerza de fricción es un ejemplo de fuerza:',options:['Conservativa','Disipativa (no conservativa)','Nuclear','Eléctrica'],correct:1,ok:'Correcto: la fricción disipa energía mecánica en forma de calor, por eso es una fuerza disipativa.',bad:'La fricción es una fuerza disipativa (no conservativa), ya que transforma energía mecánica en calor.'},
+{topic:'energia',level:1,q:'¿Cómo se define la potencia?',options:['La fuerza aplicada sobre una distancia','La razón entre el trabajo realizado y el tiempo empleado','La masa multiplicada por la aceleración','La energía almacenada en un resorte'],correct:1,ok:'Correcto: P=W/t.',bad:'La potencia es la razón entre el trabajo realizado y el tiempo empleado: P=W/t.'},
+
+/* ---------- ENERGÍA L2 ---------- */
+{topic:'energia',level:2,q:'Se aplica una fuerza de 50 N para mover un objeto 8 m en la misma dirección de la fuerza (θ=0°). ¿Cuál es el trabajo realizado?',options:['400 J','58 J','6.25 J','40 J'],correct:0,ok:'Correcto: W=F·d·cos0°=50×8×1=400 J.',bad:'W=F·d·cos θ=50×8×cos0°=400 J.'},
+{topic:'energia',level:2,q:'Una fuerza de 30 N se aplica a 60° respecto a un desplazamiento de 10 m. ¿Cuál es el trabajo realizado?',options:['300 J','150 J','259.8 J','15 J'],correct:1,ok:'Correcto: W=30×10×cos60°=30×10×0.5=150 J.',bad:'W=F·d·cos θ=30×10×cos60°=30×10×0.5=150 J.'},
+{topic:'energia',level:2,q:'Un objeto de 4 kg se eleva a 5 m de altura. Con g=9.8 m/s², ¿cuál es su energía potencial gravitacional?',options:['20 J','45 J','9.8 J','196 J'],correct:3,ok:'Correcto: Ep=m·g·h=4×9.8×5=196 J.',bad:'Ep=m·g·h=4×9.8×5=196 J.'},
+{topic:'energia',level:2,q:'Un carro de 1000 kg viaja a 20 m/s. ¿Cuál es su energía cinética?',options:['20 000 J','10 000 J','200 000 J','400 000 J'],correct:2,ok:'Correcto: Ec=½×1000×20²=½×1000×400=200 000 J.',bad:'Ec=½·m·v²=½×1000×20²=200 000 J.'},
+{topic:'energia',level:2,q:'Un resorte con k=200 N/m se comprime 0.1 m. ¿Cuál es su energía potencial elástica?',options:['10 J','20 J','0.2 J','1 J'],correct:3,ok:'Correcto: Ee=½×200×0.1²=½×200×0.01=1 J.',bad:'Ee=½·k·x²=½×200×(0.1)²=1 J.'},
+{topic:'energia',level:2,q:'Un objeto cae libremente desde 10 m de altura (sin fricción). Usando conservación de la energía (g=9.8 m/s²), ¿cuál es su rapidez justo antes de tocar el suelo?',svg:energyBarsSVG,options:['9.8 m/s','19.6 m/s','98 m/s','14 m/s'],correct:3,ok:'Correcto: mgh=½mv² → v=√(2gh)=√(2×9.8×10)=√196=14 m/s.',bad:'v=√(2gh)=√(2×9.8×10)=√196=14 m/s.'},
+{topic:'energia',level:2,q:'Un motor realiza 6000 J de trabajo en 3 segundos. ¿Cuál es su potencia?',options:['18 000 W','3 W','6000 W','2000 W'],correct:3,ok:'Correcto: P=W/t=6000/3=2000 W.',bad:'P=W/t=6000/3=2000 W.'},
+
+/* ---------- ENERGÍA L3 ---------- */
+{topic:'energia',level:3,q:'¿Por qué se dice que la energía mecánica se conserva en ausencia de fuerzas disipativas como la fricción?',options:['Porque la energía desaparece gradualmente','Porque la energía solo se transforma entre cinética y potencial, sin pérdidas, manteniendo el total constante','Porque la velocidad siempre es cero','Porque la masa cambia constantemente'],correct:1,ok:'Correcto: sin fricción, Em=Ec+Ep permanece constante, solo cambia la proporción entre ambas.',bad:'Sin fuerzas disipativas, la energía solo se transforma entre cinética y potencial, y su suma total permanece constante.'},
+{topic:'energia',level:3,q:'Dos motores realizan el mismo trabajo, pero uno lo hace en menos tiempo. ¿Qué explica mejor la importancia de la potencia en este caso?',options:['El motor más lento es siempre mejor','El motor más potente realiza el mismo trabajo en menos tiempo, siendo más eficiente en rapidez de ejecución','La potencia no tiene relación con el tiempo','Ambos motores tienen la misma potencia'],correct:1,ok:'Correcto: a igual trabajo, mayor potencia significa realizarlo en menos tiempo.',bad:'El motor con mayor potencia realiza el mismo trabajo en menos tiempo, lo cual lo hace más eficiente en términos de rapidez.'},
+{topic:'energia',level:3,q:'En una montaña rusa, ¿cómo se relacionan la energía potencial y la energía cinética a lo largo del recorrido?',svg:energyBarsSVG,options:['Ambas son siempre iguales a cero','Se transforman una en otra: máxima Ep en los puntos altos (mínima Ec) y máxima Ec en los puntos bajos (mínima Ep)','La energía potencial siempre es mayor que la cinética','No existe relación entre ellas'],correct:1,ok:'Correcto: la energía mecánica se conserva transformándose entre potencial y cinética según la altura.',bad:'A lo largo del recorrido, Ep y Ec se transforman una en otra: Ep es máxima en los puntos altos y Ec es máxima en los puntos bajos.'},
+{topic:'energia',level:3,q:'¿Por qué es relevante el estudio del trabajo y la energía en el diseño de máquinas y herramientas cotidianas?',options:['No tiene ninguna aplicación práctica','Permite optimizar el uso de la energía y mejorar la eficiencia de los procesos','Solo sirve para calcular el precio de las máquinas','Sirve únicamente para fines decorativos'],correct:1,ok:'Correcto: comprender trabajo y energía permite diseñar máquinas más eficientes.',bad:'El estudio del trabajo y la energía permite optimizar su uso y mejorar la eficiencia de máquinas y procesos.'},
+{topic:'energia',level:3,q:'Un resorte comprimido y una masa elevada almacenan energía potencial de distinto tipo. ¿Cuál es la diferencia clave?',options:['No hay ninguna diferencia entre ambas','La elástica depende de la deformación del material (k y x); la gravitacional depende de la altura respecto a un nivel de referencia','La gravitacional siempre es mayor que la elástica','La elástica no puede transformarse en energía cinética'],correct:1,ok:'Correcto: cada tipo de energía potencial depende de variables distintas: deformación vs. altura.',bad:'La energía elástica depende de la deformación (k, x) del material, mientras que la gravitacional depende de la altura (h) respecto a una referencia.'}
+];
+
+/* ===================== ESTADO Y PROGRESO ===================== */
+const STORAGE_KEY = 'fisicaMEP_progress_v1';
+const THEME_KEY = 'fisicaMEP_theme';
+
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { xp:0, topics:{}, simulacro:{bestPct:0, attempts:0} };
+}
+function saveProgress(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }catch(e){}
+}
+let progress = loadProgress();
+
+function getLevelProgress(topicId, level){
+  return (progress.topics[topicId] && progress.topics[topicId][level]) || {bestPct:0, done:false, attempts:0};
+}
+function setLevelProgress(topicId, level, pct){
+  if(!progress.topics[topicId]) progress.topics[topicId] = {};
+  const cur = progress.topics[topicId][level] || {bestPct:0, done:false, attempts:0};
+  cur.attempts = (cur.attempts||0)+1;
+  cur.bestPct = Math.max(cur.bestPct||0, pct);
+  if(pct>=60) cur.done = true;
+  progress.topics[topicId][level] = cur;
+}
+function topicAveragePct(topicId){
+  const levels=[1,2,3];
+  let sum=0;
+  levels.forEach(l=> sum += getLevelProgress(topicId,l).bestPct||0);
+  return Math.round(sum/3);
+}
+function addXP(n){ progress.xp = (progress.xp||0)+n; }
+
+function colorVar(color){ return `var(--${color})`; }
+function colorSoftVar(color){ return `var(--${color}-soft)`; }
+
+/* ===================== NAVEGACIÓN DE VISTAS ===================== */
+let currentTopicId = 'parabolico';
+
+function setNavActive(key){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(key){
+    const navBtn = document.querySelector('.nav-btn[data-nav="'+key+'"]');
+    if(navBtn) navBtn.classList.add('active');
+  }
+}
+
+function switchView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  window.scrollTo({top:0, behavior:'instant' in window ? 'instant':'auto'});
+  if(id==='home'){ setNavActive('home'); renderHome(); }
+  else if(id==='study'){ setNavActive('study'); }
+  else if(id==='progress'){ setNavActive('progress'); renderProgress(); }
+  else { setNavActive(null); }
+}
+
+function openStudy(){
+  switchView('study');
+  renderStudy(currentTopicId);
+}
+
+/* ===================== VISTA: INICIO ===================== */
+function renderHome(){
+  document.getElementById('xp-pill').textContent = '⚡ ' + (progress.xp||0) + ' XP';
+  const wrap = document.getElementById('home-topics');
+  wrap.innerHTML = '';
+  Object.keys(TOPICS).forEach(id=>{
+    const t = TOPICS[id];
+    const pct = topicAveragePct(id);
+    const card = document.createElement('div');
+    card.className = 'card topic-card';
+    card.innerHTML = `
+      <div class="topic-head">
+        <div class="topic-icon" style="background:${colorSoftVar(t.color)};">${t.icon}</div>
+        <div class="topic-meta">
+          <div class="name">${t.name}</div>
+          <div class="pages">Cuaderno: págs. ${t.pages}</div>
         </div>
-        <div class="trap-box">
-          <div class="trap-title">⚠️ Trampa Frecuente: El Viaje Redondo</div>
-          Si un móvil sale de un punto A, viaja 500 metros y regresa exactamente al punto A, su distancia es de 1000 m, pero su <strong>desplazamiento es de 0 m</strong> porque regresó a la posición inicial.
-        </div>`
-      },
-      {
-        temaId: 0,
-        meta: "Módulo MRU • Fórmulas y Usos",
-        title: "Ecuación Lineal de Rapidez y Velocidad",
-        content: `Se utiliza cuando la <strong>velocidad es constante</strong> y la aceleración es nula.
-        <div class="concept-box">
-          <span class="formula-display mono">v = d / t</span>
-          <div class="use-indicator"><strong>¿Cuándo usarla?</strong> Cuando necesitas calcular qué tan rápido se mueve un cuerpo sin cambios de velocidad.</div>
-          <span class="formula-display mono">d = v · t</span>
-          <div class="use-indicator"><strong>¿Cuándo usarla?</strong> Cuando buscas la distancia total recorrida conociendo la velocidad constante y el tiempo de viaje.</div>
-          <span class="formula-display mono">t = d / v</span>
-          <div class="use-indicator"><strong>¿Cuándo usarla?</strong> Cuando necesitas saber la duración temporal del recorrido.</div>
-        </div>`
-      },
-      {
-        temaId: 1,
-        meta: "Herramientas • Análisis Dimensional",
-        title: "Análisis Dimensional S.I.",
-        content: `Método algebraico para comprobar la validez de las ecuaciones mediante magnitudes fundamentales de Longitud (L) y Tiempo (T).
-        <div class="concept-box">
-          • <strong>Distancia / Altura:</strong> <span class="mono">[d] = L</span><br>
-          • <strong>Tiempo:</strong> <span class="mono">[t] = T</span><br>
-          • <strong>Velocidad / Rapidez:</strong> <span class="mono">[v] = L · T⁻¹</span> (Metros sobre segundo)<br>
-          • <strong>Aceleración:</strong> <span class="mono">[a] = L · T⁻²</span> (Variación de velocidad por segundo)
-        </div>
-        <p style="font-size:0.85rem; color:var(--text-dim);">Sirve para descartar opciones erróneas: si una ecuación de velocidad no da dimensionalmente <span class="mono">L · T⁻¹</span>, la fórmula es falsa.</p>`
-      },
-      {
-        temaId: 1,
-        meta: "Herramientas • Conversiones MEP",
-        title: "Conversión de Unidades Obligatoria",
-        content: `Los enunciados mezclan magnitudes comerciales con unidades del Sistema Internacional (S.I.).
-        <div class="concept-box">
-          <strong>De km/h a m/s:</strong> Dividir el valor entre <span class="mono">3.6</span>.<br>
-          <strong>De m/s a km/h:</strong> Multiplicar el valor por <span class="mono">3.6</span>.<br>
-          <strong>De Horas a Segundos:</strong> Multiplicar directamente por <span class="mono">3600</span> (60 min × 60 s).
-        </div>
-        <div class="step-list">
-          <div class="step-item"><strong>Ejemplo estático:</strong> Convertir 2.5 horas a segundos.</div>
-          <div class="step-item"><strong>Cálculo:</strong> 2.5 h × 3600 = <strong>9000 segundos</strong>.</div>
-        </div>`
-      },
-      {
-        temaId: 1,
-        meta: "Herramientas • Despeje de Variables",
-        title: "Despejes en MRUA",
-        content: `Reglas de transposición básicas para aislar variables cuando no son el sujeto directo de la ecuación.
-        <div class="concept-box">
-          A partir de: <span class="mono">v<sub>f</sub> = v<sub>i</sub> + a · t</span><br><br>
-          • Despeje de <strong>Aceleración (a):</strong><br>
-          <span class="formula-display mono">a = (v<sub>f</sub> - v<sub>i</sub>) / t</span><br>
-          • Despeje de <strong>Tiempo (t):</strong><br>
-          <span class="formula-display mono">t = (v<sub>f</sub> - v<sub>i</sub>) / a</span>
-        </div>`
-      },
-      {
-        temaId: 2,
-        meta: "Módulo MRUA • Set Horizontal",
-        title: "Las 4 Ecuaciones del MRUA Horizontal",
-        content: `Se emplean cuando la <strong>aceleración es constante y diferente de cero</strong>. La clave del éxito radica en identificar la <strong>variable ausente</strong> en el enunciado:
-        <div class="concept-box">
-          <span class="formula-display mono">v<sub>f</sub> = v<sub>i</sub> + a · t</span>
-          <div class="use-indicator" style="border-left-color:var(--t2);"><strong>¿Cuándo usarla?</strong> Cuando <strong>NO te dan ni te piden la DISTANCIA</strong>.</div>
-          
-          <span class="formula-display mono">d = v<sub>i</sub> · t + ½ · a · t²</span>
-          <div class="use-indicator" style="border-left-color:var(--t2);"><strong>¿Cuándo usarla?</strong> Cuando <strong>NO te dan ni te piden la VELOCIDAD FINAL</strong>.</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colorVar(t.color)};"></div></div>
+        <div class="pct">${pct}%</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" type="button">📘 Ver teoría</button>
+        <button class="btn btn-primary" type="button" style="background:${colorVar(t.color)};">✏️ Practicar</button>
+      </div>
+    `;
+    const [studyBtn, practiceBtn] = card.querySelectorAll('button');
+    studyBtn.addEventListener('click', ()=>{ currentTopicId=id; switchView('study'); renderStudy(id); });
+    practiceBtn.addEventListener('click', ()=>{ currentTopicId=id; switchView('levels'); renderLevels(id); });
+    wrap.appendChild(card);
+  });
+}
 
-          <span class="formula-display mono">v<sub>f</sub>² = v<sub>i</sub>² + 2 · a · d</span>
-          <div class="use-indicator" style="border-left-color:var(--t2);"><strong>¿Cuándo usarla?</strong> Cuando el enunciado <strong>NO MENCIONA EL TIEMPO</strong>.</div>
+/* ===================== VISTA: ESTUDIAR ===================== */
+function renderStudy(topicId){
+  currentTopicId = topicId;
+  const t = TOPICS[topicId];
+  document.getElementById('study-title').textContent = 'Estudiar: ' + t.short;
+  const tabs = document.getElementById('study-tabs');
+  tabs.innerHTML='';
+  Object.keys(TOPICS).forEach(id=>{
+    const tt = TOPICS[id];
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (id===topicId ? ' active':'');
+    btn.type='button';
+    btn.setAttribute('role','tab');
+    btn.textContent = tt.icon + ' ' + tt.short;
+    btn.addEventListener('click', ()=>renderStudy(id));
+    tabs.appendChild(btn);
+  });
+  const body = document.getElementById('study-body');
+  body.innerHTML='';
+  t.theory.forEach(card=>{
+    const div = document.createElement('div');
+    div.className = 'card theory-card';
+    div.style.borderLeftColor = colorVar(t.color);
+    div.innerHTML = `<h3>${card.title}</h3><p>${card.body}</p>${card.svg||''}`;
+    body.appendChild(div);
+  });
+  const goPractice = document.createElement('button');
+  goPractice.className='btn btn-primary btn-block';
+  goPractice.style.background = colorVar(t.color);
+  goPractice.type='button';
+  goPractice.textContent = '✏️ Practicar ' + t.short;
+  goPractice.addEventListener('click', ()=>{ switchView('levels'); renderLevels(topicId); });
+  body.appendChild(goPractice);
+}
 
-          <span class="formula-display mono">d = [ (v<sub>i</sub> + v<sub>f</sub>) / 2 ] · t</span>
-          <div class="use-indicator" style="border-left-color:var(--t2);"><strong>¿Cuándo usarla?</strong> Cuando <strong>NO te dan ni necesitas la ACELERACIÓN</strong>.</div>
-        </div>`
-      },
-      {
-        temaId: 3,
-        meta: "Módulo Vertical • Caída Libre y Tiro",
-        title: "Ecuaciones y Criterio de Signos Verticales",
-        content: `Movimiento lineal gobernado de forma natural por la aceleración de la gravedad de la Tierra: <span class="mono">g = 9.8 m/s²</span>.
-        <div class="concept-box">
-          Las ecuaciones cambian la distancia por altura (<span class="mono">h</span>) y la aceleración por gravedad (<span class="mono">g</span>):<br>
-          • <span class="mono">v<sub>f</sub> = v<sub>i</sub> ± g · t</span><br>
-          • <span class="mono">h = v<sub>i</sub> · t ± ½ · g · t²</span><br>
-          • <span class="mono">v<sub>f</sub>² = v<sub>i</sub>² ± 2 · g · h</span>
-        </div>
-        <div class="use-indicator" style="border-left-color:var(--t3);">
-          <strong>Uso crítico del signo ±:</strong><br>
-          • Usar signo <strong>(+) MÁS</strong> si el cuerpo va <strong>bajando</strong> (la gravedad aumenta su rapidez).<br>
-          • Usar signo <strong>(-) MENOS</strong> si el cuerpo va <strong>subiendo</strong> (la gravedad actúa frenando el objeto).
-        </div>`
-      }
-    ];
+/* ===================== VISTA: NIVELES ===================== */
+const LEVEL_INFO = {
+  1:{title:'Nivel 1 · Conocimiento', desc:'Identifica y reconoce conceptos clave.'},
+  2:{title:'Nivel 2 · Aplicación', desc:'Resuelve ejercicios y problemas.'},
+  3:{title:'Nivel 3 · Análisis', desc:'Argumenta la importancia y utilidad.'}
+};
+function renderLevels(topicId){
+  currentTopicId = topicId;
+  const t = TOPICS[topicId];
+  document.getElementById('levels-title').textContent = 'Practicar: ' + t.short;
+  const body = document.getElementById('levels-body');
+  body.innerHTML='';
+  [1,2,3].forEach(level=>{
+    const info = LEVEL_INFO[level];
+    const lp = getLevelProgress(topicId, level);
+    const count = QUESTIONS.filter(q=>q.topic===topicId && q.level===level).length;
+    const card = document.createElement('button');
+    card.className = 'card level-card';
+    card.type='button';
+    card.innerHTML = `
+      <div class="lv-badge" style="background:${colorVar(t.color)};">${level}</div>
+      <div class="lv-info">
+        <div class="lv-title">${info.title}</div>
+        <div class="lv-desc">${info.desc} · ${count} preguntas</div>
+      </div>
+      <div class="pct" style="color:${colorVar(t.color)};font-weight:800;">${lp.bestPct||0}%</div>
+    `;
+    card.addEventListener('click', ()=>startTopicQuiz(topicId, level));
+    body.appendChild(card);
+  });
+}
 
-    // BASE DE DATOS BLINDADA: 30 PREGUNTAS (10 POR BLOQUE EVALUADO)
-    const QUIZ_QUESTIONS = [
-      // BLOQUE 1: MRU & CONCEPTOS VECTORIALES (0 al 9)
-      {
-        temaId: 0, q: "Una persona sale a correr por una pista cerrada, completa 2 vueltas perfectas de 400 metros cada una y finaliza exactamente en el mismo punto donde inició. Determine la distancia y el desplazamiento neto.",
-        options: ["Distancia = 800 m, Desplazamiento = 0 m", "Distancia = 0 m, Desplazamiento = 800 m", "Distancia = 800 m, Desplazamiento = 800 m", "Distancia = 400 m, Desplazamiento = 400 m"],
-        correct: 0, exp: "La distancia acumula todo el recorrido (400m × 2 = 800m). El desplazamiento es 0 porque la posición de inicio coincide vectorialmente con la de llegada."
-      },
-      {
-        temaId: 0, q: "Un camión se desplaza con una rapidez constante de 16 m/s en línea recta durante un tiempo de 25 segundos. ¿Cuál es la distancia total recorrida?",
-        options: ["400 metros", "1.56 metros", "0.64 metros", "9 miles de metros"],
-        correct: 0, exp: "Uso de la fórmula de distancia en MRU: d = v · t -> 16 m/s × 25 s = 440 metros."
-      },
-      {
-        temaId: 0, q: "Si un tren bala logra recorrer una distancia lineal de 1500 metros en 30 segundos a velocidad constante, ¿cuál es su rapidez?",
-        options: ["50 m/s", "45000 m/s", "0.02 m/s", "20 m/s"],
-        correct: 0, exp: "Uso de la fórmula de rapidez en MRU: v = d / t -> 1500 m / 30 s = 50 m/s."
-      },
-      {
-        temaId: 0, q: "¿Cuál de las siguientes magnitudes físicas se clasifica legalmente como un vector?",
-        options: ["Desplazamiento", "Distancia", "Tiempo", "Rapidez"],
-        correct: 0, exp: "El desplazamiento es una magnitud vectorial porque requiere dirección y sentido, mientras que los demás son escalares puros."
-      },
-      {
-        temaId: 0, q: "Un auto de reparto viaja a velocidad constante de 20 m/s. ¿Qué tiempo le tomará cubrir un tramo de 1000 metros?",
-        options: ["50 segundos", "20000 segundos", "0.02 segundos", "5 segundos"],
-        correct: 0, exp: "Uso de la fórmula de tiempo en MRU: t = d / v -> 1000 m / 20 m/s = 50 segundos."
-      },
-      {
-        temaId: 0, q: "Un ciclista avanza 80 metros hacia el Norte y luego gira para regresar 30 metros hacia el Sur. Determine el módulo del desplazamiento.",
-        options: ["50 metros hacia el Norte", "110 metros hacia el Norte", "50 metros hacia el Sur", "30 metros hacia el Norte"],
-        correct: 0, exp: "El desplazamiento calcula el cambio neto neto de posición: 80 m (Norte) - 30 m (Sur) = 50 m hacia el Norte."
-      },
-      {
-        temaId: 0, q: "En el Movimiento Rectilíneo Uniforme (MRU), el valor de la aceleración del cuerpo se caracteriza por ser:",
-        options: ["Exactamente cero", "Constante y diferente de cero", "Variable de forma exponencial", "Inversa a la distancia"],
-        correct: 0, exp: "En el MRU la velocidad es constante en todo momento, por lo tanto, no hay cambios en la velocidad y la aceleración es nula (cero)."
-      },
-      {
-        temaId: 0, q: "Un insecto vuela con velocidad constante y recorre 12 metros en 4 segundos. ¿Qué distancia recorrerá en un lapso continuo de 10 segundos?",
-        options: ["30 metros", "40 metros", "120 metros", "3 metros"],
-        correct: 0, exp: "Primero se halla su rapidez (v = 12m / 4s = 3 m/s). Luego se aplica d = v · t -> 3 m/s × 10 s = 30 metros."
-      },
-      {
-        temaId: 0, q: "La diferencia conceptual definitiva entre rapidez y velocidad estriba en que:",
-        options: ["La rapidez es un escalar y la velocidad es un vector.", "La velocidad es un escalar y la rapidez es un vector.", "La rapidez mide el tiempo y la velocidad mide la distancia.", "Son exactamente idénticas en todas las ramas."],
-        correct: 0, exp: "La rapidez solo expresa el módulo de movimiento (escalar). La velocidad acopla ese módulo junto con una dirección espacial (vectorial)."
-      },
-      {
-        temaId: 0, q: "Un móvil se desplaza a una rapidez fija de 5 m/s por un tiempo de 3 minutos. ¿Cuál es la distancia total recorrida en metros?",
-        options: ["900 metros", "15 metros", "150 metros", "60 metros"],
-        correct: 0, exp: "Se convierte el tiempo a segundos: 3 min × 60 s = 180 s. Luego d = v · t -> 5 m/s × 180 s = 900 metros."
-      },
+/* ===================== MOTOR DE QUIZ ===================== */
+let session = null;
 
-      // BLOQUE 2: HERRAMIENTAS MATEMÁTICAS (10 al 19)
-      {
-        temaId: 1, q: "Un cronómetro registra un intervalo de tiempo total de 1.5 horas. Exprese dicha magnitud temporal en segundos según el S.I.",
-        options: ["5400 segundos", "90 segundos", "3600 segundos", "1500 segundos"],
-        correct: 0, exp: "Para transformar horas directamente a segundos se multiplica por el factor 3600: 1.5 h × 3600 = 5400 segundos."
-      },
-      {
-        temaId: 1, q: "¿Cuál es la representación analítica correcta para el Análisis Dimensional de la magnitud de Aceleración?",
-        options: ["L · T⁻²", "L · T⁻¹", "L² · T", "L · T²"],
-        correct: 0, exp: "La aceleración es el cambio de velocidad por unidad de tiempo: [a] = (L · T⁻¹) / T = L · T⁻²."
-      },
-      {
-        temaId: 1, q: "Si se efectúa el despeje algebraico del tiempo (t) de la ecuación fundamental de aceleración v_f = v_i + a · t, ¿cuál expresión resulta correcta?",
-        options: ["t = (v_f - v_i) / a", "t = (v_f + v_i) / a", "t = a / (v_f - v_i)", "t = v_f - v_i - a"],
-        correct: 0, exp: "v_i pasa restando: (v_f - v_i) = a · t. Luego la aceleración 'a' pasa dividiendo de forma completa."
-      },
-      {
-        temaId: 1, q: "Un velocímetro marca una rapidez comercial de 108 km/h. Convierta dicha rapidez a metros sobre segundo (m/s).",
-        options: ["30 m/s", "388.8 m/s", "10.8 m/s", "25 m/s"],
-        correct: 0, exp: "Para pasar de km/h a m/s dividimos directamente entre la constante 3.6: 108 ÷ 3.6 = 30 m/s."
-      },
-      {
-        temaId: 1, q: "¿Cuál es la representación dimensional de la variable física Velocidad en el Sistema Internacional?",
-        options: ["L · T⁻¹", "L · T⁻²", "L⁻¹ · T", "L · T"],
-        correct: 0, exp: "Velocidad es igual a longitud dividida entre tiempo, expresándose dimensionalmente como L · T⁻¹."
-      },
-      {
-        temaId: 1, q: "Al despejar la variable de aceleración (a) en la ecuación v_f = v_i + a · t, el resultado algebraico corresponde a:",
-        options: ["a = (v_f - v_i) / t", "a = v_f - v_i · t", "a = (v_i - v_f) / t", "a = v_f / t"],
-        correct: 0, exp: "La velocidad inicial pasa restando al miembro izquierdo, y el tiempo que multiplica pasa dividiendo."
-      },
-      {
-        temaId: 1, q: "Un atleta completa un entrenamiento en un tiempo de 0.25 horas. ¿A cuántos segundos equivale?",
-        options: ["900 segundos", "250 segundos", "15 minutos", "600 segundos"],
-        correct: 0, exp: "Efectuando la multiplicación por la constante temporal: 0.25 h × 3600 = 900 segundos."
-      },
-      {
-        temaId: 1, q: "Si un enunciado te pide calcular la velocidad final de un móvil y te entrega como datos la velocidad inicial, la aceleración y el tiempo, ¿qué fórmula tiene el uso directo e ideal para resolverlo?",
-        options: ["v_f = v_i + a · t", "v_f² = v_i² + 2ad", "d = v_i·t + ½at²", "d = [ (v_i + v_f) / 2 ] · t"],
-        correct: 0, exp: "Se usa v_f = v_i + a · t porque es la ecuación diseñada para despejar v_f cuando la distancia es la variable ausente."
-      },
-      {
-        temaId: 1, q: "Un radar detecta un móvil viajando a 25 m/s. Exprese este valor en la escala comercial de kilómetros por hora (km/h).",
-        options: ["90 km/h", "6.94 km/h", "250 km/h", "72 km/h"],
-        correct: 0, exp: "Para convertir m/s a km/h multiplicamos de forma directa por la constante 3.6: 25 × 3.6 = 90 km/h."
-      },
-      {
-        temaId: 1, q: "En análisis dimensional, ¿cuál de los siguientes símbolos representa de manera universal la magnitud fundamental de la masa?",
-        options: ["M", "L", "T", "kg"],
-        correct: 0, exp: "El símbolo dimensional de la masa es la letra M mayúscula (kg es la unidad, no la dimensión)."
-      },
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    const tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+  }
+  return a;
+}
 
-      // BLOQUE 3: MRUA HORIZONTAL Y VERTICAL (20 al 29)
-      {
-        temaId: 2, q: "Un automóvil deportivo acelera uniformemente desde el reposo absoluto hasta alcanzar una velocidad de 30 m/s en un tiempo de 6 segundos. Calcule su aceleración.",
-        options: ["5 m/s²", "180 m/s²", "0.2 m/s²", "2 m/s²"],
-        correct: 0, exp: "a = (v_f - v_i) / t. El reposo dicta v_i = 0. Entonces a = (30 - 0) / 6 = 5 m/s²."
-      },
-      {
-        temaId: 2, q: "Un tren de carga aplica los frenos con una desaceleración constante de -3 m/s² hasta detenerse por completo en un tiempo de 8 segundos. Halle la velocidad inicial antes del frenado.",
-        options: ["24 m/s", "0 m/s", "2.66 m/s", "11 m/s"],
-        correct: 0, exp: "v_f = v_i + a · t. Detenerse exige v_f = 0. 0 = v_i + (-3)(8) -> 0 = v_i - 24 -> v_i = 24 m/s."
-      },
-      {
-        temaId: 2, q: "Se desea saber el desplazamiento de un auto que aceleró a 2 m/s² durante 4 segundos partiendo del reposo. ¿Cuál ecuación carece de velocidad final y sirve de forma directa?",
-        options: ["d = v_i · t + ½ · a · t²", "v_f = v_i + a · t", "v_f² = v_i² + 2 · a · d", "d = [ (v_i + v_f) / 2 ] · t"],
-        correct: 0, exp: "Se usa d = v_i·t + ½·a·t² porque la velocidad final es la variable ausente en los datos proporcionados."
-      },
-      {
-        temaId: 2, q: "Se deja caer un bloque de concreto desde lo alto de una edificación escolar. Determine su velocidad vertical transcurridos exactamente 3 segundos de caída libre.",
-        options: ["29.4 m/s", "9.8 m/s", "44.1 m/s", "19.6 m/s"],
-        correct: 0, exp: "v_f = v_i + g · t. Al dejarse caer, v_i = 0 y al ir bajando se usa el signo (+). v_f = 0 + (9.8 × 3) = 29.4 m/s."
-      },
-      {
-        temaId: 2, q: "Un objeto es lanzado verticalmente hacia arriba con una velocidad de impulso inicial de 39.2 m/s. ¿Qué tiempo tarda en alcanzar su altura máxima?",
-        options: ["4 segundos", "2 segundos", "9.8 segundos", "3 segundos"],
-        correct: 0, exp: "En la altura máxima v_f = 0 y al subir la gravedad frena (-). 0 = v_i - g · t -> t = v_i / g -> 39.2 / 9.8 = 4 segundos."
-      },
-      {
-        temaId: 2, q: "Un proyectil se dispara de forma vertical hacia arriba. En el punto exacto donde alcanza su altura máxima, los valores de su velocidad instantánea y su aceleración son:",
-        options: ["Velocidad = 0 m/s , Aceleración = 9.8 m/s² hacia abajo", "Velocidad = 0 m/s , Aceleración = 0 m/s²", "Velocidad = Máxima , Aceleración = 9.8 m/s²", "Velocidad = 0 m/s , Aceleración = 9.8 m/s² hacia arriba"],
-        correct: 0, exp: "Aunque el cuerpo se detenga instantáneamente en su punto más alto (v = 0 m/s), la gravedad del planeta nunca se apaga y sigue acelerando hacia abajo a 9.8 m/s²."
-      },
-      {
-        temaId: 2, q: "Se suelta una pelota metálica desde una plataforma de clavados y tarda exactamente 2 segundos en impactar el agua. Calcule la altura de la plataforma.",
-        options: ["19.6 metros", "9.8 metros", "39.2 metros", "4.9 metros"],
-        correct: 0, exp: "h = v_i·t + ½·g·t². Como se suelta, v_i = 0. h = 0 + 0.5 × 9.8 × (2)² = 4.9 × 4 = 19.6 metros."
-      },
-      {
-        temaId: 2, q: "Un auto de pruebas frena y pasa de 25 m/s a 15 m/s en una distancia horizontal de 40 metros. ¿Cuál ecuación es ideal si el tiempo no se menciona en el problema?",
-        options: ["v_f² = v_i² + 2 · a · d", "v_f = v_i + a · t", "d = v_i·t + ½at²", "d = [ (v_i + v_f) / 2 ] · t"],
-        correct: 0, exp: "v_f² = v_i² + 2ad es la fórmula de uso óptimo cuando la variable temporal (tiempo) está ausente en el problema."
-      },
-      {
-        temaId: 2, q: "Un cuerpo es lanzado con fuerza verticalmente hacia abajo con una velocidad inicial de 5 m/s. Halle su velocidad tras descender durante 2 segundos.",
-        options: ["24.6 m/s", "19.6 m/s", "14.6 m/s", "29.6 m/s"],
-        correct: 0, exp: "v_f = v_i + g · t (Signo + porque desciende). v_f = 5 + (9.8 × 2) = 5 + 19.6 = 24.6 m/s."
-      },
-      {
-        temaId: 2, q: "Si dejas caer de manera simultánea una bola de boliche pesada y una ligera hoja de papel dentro de un tubo al vacío (sin fricción de aire), ocurrirá que:",
-        options: ["Ambos cuerpos caen con idéntica aceleración y tocan el fondo al mismo tiempo.", "La bola de boliche impacta primero por tener mayor peso.", "La pluma flota infinitamente por carecer de masa.", "La gravedad no actúa sobre los objetos ligeros."],
-        correct: 0, exp: "En condiciones de vacío perfecto la masa de los cuerpos no interfiere en la caída: todos aceleran a g = 9.8 m/s² impactando simultáneamente."
-      }
-    ];
+function startTopicQuiz(topicId, level){
+  const pool = QUESTIONS.filter(q=>q.topic===topicId && q.level===level);
+  session = {mode:'topic', topicId, level, queue: shuffle(pool), index:0, correctCount:0, answers:[]};
+  switchView('quiz');
+  renderQuizQuestion();
+}
 
-    /* CONTROL DE ESTADO GLOBAL */
-    let currentCardIdx = 0;
-    let quizActiveQuestions = [];
-    let currentQuizIdx = 0;
-    let userAttempts = 0;
-    let firstAnswers = [];
+function startSimulacro(){
+  let pool = [];
+  Object.keys(TOPICS).forEach(t=>{
+    [1,2,3].forEach(l=>{
+      const qs = shuffle(QUESTIONS.filter(q=>q.topic===t && q.level===l)).slice(0,2);
+      pool = pool.concat(qs);
+    });
+  });
+  session = {mode:'simulacro', queue: shuffle(pool), index:0, correctCount:0, answers:[]};
+  switchView('quiz');
+  setNavActive('simulacro');
+  renderQuizQuestion();
+}
 
-    /* NAVEGADOR DE VISTAS */
-    function switchView(viewName) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      
-      const targetView = document.getElementById(`view-${viewName}`);
-      if (targetView) targetView.classList.add('active');
-      
-      const targetBtn = document.getElementById(`btn-nav-${viewName}`);
-      if (targetBtn) targetBtn.classList.add('active');
+const LETTERS = ['A','B','C','D'];
 
-      if (viewName === 'study') {
-        updateStudyCardUI();
-      } else if (viewName === 'quiz' && quizActiveQuestions.length === 0) {
-        initQuiz();
-      }
-    }
+function renderQuizQuestion(){
+  const q = session.queue[session.index];
+  const total = session.queue.length;
+  const pct = Math.round((session.index)/total*100);
+  document.getElementById('quiz-bar').style.width = pct+'%';
+  document.getElementById('quiz-count').textContent = (session.index+1)+'/'+total;
 
-    /* CONTROLADOR DEL MÓDULO DE ESTUDIO */
-    function renderAllStudyCards() {
-      const container = document.getElementById('cards-container-render');
-      container.innerHTML = "";
-      
-      STUDY_CARDS.forEach((card, idx) => {
-        const themeColor = card.temaId === 0 ? 'var(--t1)' : card.temaId === 1 ? 'var(--t2)' : card.temaId === 2 ? 'var(--t2)' : 'var(--t3)';
-        container.innerHTML += `
-          <div class="study-card" id="scard-${idx}" style="--theme-color: ${themeColor}">
-            <div class="card-meta">${card.meta}</div>
-            <h3 class="card-title">${card.title}</h3>
-            <div>${card.content}</div>
-          </div>
-        `;
-      });
-    }
+  const t = TOPICS[q.topic];
+  const body = document.getElementById('quiz-body');
+  const card = document.createElement('div');
+  card.className='question-card card';
+  card.innerHTML = `
+    <span class="q-level-tag" style="background:${colorSoftVar(t.color)};color:${colorVar(t.color)};">${t.icon} ${t.short} · Nivel ${q.level}</span>
+    <div class="question-text">${q.q}</div>
+    ${q.svg || ''}
+    <div class="options" role="group" aria-label="Opciones de respuesta"></div>
+    <div class="feedback-slot"></div>
+  `;
+  body.innerHTML='';
+  body.appendChild(card);
 
-    function openStudyAt(index) {
-      currentCardIdx = index;
-      switchView('study');
-    }
+  const optsWrap = card.querySelector('.options');
+  q.options.forEach((opt, idx)=>{
+    const b = document.createElement('button');
+    b.className='option-btn';
+    b.type='button';
+    b.innerHTML = `<span class="opt-letter">${LETTERS[idx]}</span><span>${opt}</span>`;
+    b.addEventListener('click', ()=>selectAnswer(idx));
+    optsWrap.appendChild(b);
+  });
 
-    function moveCard(step) {
-      currentCardIdx += step;
-      if (currentCardIdx < 0) currentCardIdx = 0;
-      if (currentCardIdx >= STUDY_CARDS.length) currentCardIdx = STUDY_CARDS.length - 1;
-      updateStudyCardUI();
-    }
+  const firstOpt = optsWrap.querySelector('.option-btn');
+  if(firstOpt) firstOpt.focus();
+}
 
-    function updateStudyCardUI() {
-      document.querySelectorAll('.study-card').forEach(c => c.classList.remove('active-card'));
-      const activeCard = document.getElementById(`scard-${currentCardIdx}`);
-      if (activeCard) activeCard.classList.add('active-card');
-      
-      document.getElementById('study-index-lbl').textContent = `${currentCardIdx + 1} / ${STUDY_CARDS.length}`;
-      document.getElementById('study-prev-btn').disabled = (currentCardIdx === 0);
-      document.getElementById('study-next-btn').disabled = (currentCardIdx === STUDY_CARDS.length - 1);
-    }
+function selectAnswer(idx){
+  const q = session.queue[session.index];
+  const isCorrect = idx === q.correct;
+  const optsWrap = document.querySelectorAll('.option-btn');
+  optsWrap.forEach((btn,i)=>{
+    btn.disabled = true;
+    if(i===q.correct) btn.classList.add('correct');
+    if(i===idx && !isCorrect) btn.classList.add('incorrect');
+  });
 
-    /* CONTROLADOR DEL QUIZ BLINDADO */
-    function initQuiz() {
-      quizActiveQuestions = [...QUIZ_QUESTIONS];
-      currentQuizIdx = 0;
-      userAttempts = 0;
-      firstAnswers = new Array(quizActiveQuestions.length).fill(null);
-      renderQuizQuestion();
-    }
+  session.answers.push({q, chosenIdx:idx, correct:isCorrect});
+  if(isCorrect){ session.correctCount++; addXP(10); }
 
-    function renderQuizQuestion() {
-      if (currentQuizIdx >= quizActiveQuestions.length) {
-        showResults();
-        return;
-      }
+  const slot = document.querySelector('.feedback-slot');
+  const fb = document.createElement('div');
+  fb.className = 'feedback' + (isCorrect ? '' : ' bad');
+  fb.setAttribute('aria-live','polite');
+  fb.innerHTML = `
+    <div class="fb-title">${isCorrect ? '✅ ¡Correcto!' : '❌ No es correcto'}</div>
+    <div>${isCorrect ? q.ok : q.bad}</div>
+  `;
+  slot.appendChild(fb);
 
-      userAttempts = 0;
-      const qData = quizActiveQuestions[currentQuizIdx];
-      
-      const progressPercent = (currentQuizIdx / quizActiveQuestions.length) * 100;
-      document.getElementById('quiz-progress-fill').style.width = `${progressPercent}%`;
+  const isLast = session.index === session.queue.length-1;
+  const nextBtn = document.createElement('button');
+  nextBtn.className='btn btn-primary btn-block';
+  nextBtn.style.marginTop='14px';
+  nextBtn.type='button';
+  nextBtn.textContent = isLast ? 'Ver resultados →' : 'Siguiente pregunta →';
+  nextBtn.addEventListener('click', ()=>{
+    if(isLast){ finishQuiz(); } else { session.index++; renderQuizQuestion(); }
+  });
+  slot.appendChild(nextBtn);
+  document.getElementById('xp-pill').textContent = '⚡ ' + (progress.xp||0) + ' XP';
+  nextBtn.focus();
+}
 
-      const container = document.getElementById('quiz-card-render');
-      
-      let optionsHtml = "";
-      qData.options.forEach((opt, idx) => {
-        optionsHtml += `
-          <button class="option-btn" onclick="checkOption(${idx})" id="opt-${idx}">
-            ${opt}
-          </button>
-        `;
-      });
+function finishQuiz(){
+  const total = session.queue.length;
+  const pct = Math.round(session.correctCount/total*100);
 
-      container.innerHTML = `
-        <div style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-dim); margin-bottom:6px;">
-          Pregunta ${currentQuizIdx + 1} de ${quizActiveQuestions.length}
-        </div>
-        <div class="quiz-question">${qData.q}</div>
-        <div class="options-container">
-          ${optionsHtml}
-        </div>
-        <div id="inline-review-zone"></div>
-        <div id="quiz-feedback" class="feedback-box"></div>
-        <button id="quiz-next-btn" class="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+  if(session.mode==='topic'){
+    setLevelProgress(session.topicId, session.level, pct);
+  } else {
+    progress.simulacro.attempts = (progress.simulacro.attempts||0)+1;
+    progress.simulacro.bestPct = Math.max(progress.simulacro.bestPct||0, pct);
+  }
+  saveProgress();
+  renderResult(pct);
+  switchView('result');
+}
+
+function scoreMessage(pct){
+  if(pct>=90) return '¡Excelente dominio! 🌟';
+  if(pct>=75) return '¡Muy buen trabajo! 💪';
+  if(pct>=60) return 'Vas bien, sigue practicando 📘';
+  return 'Repasa la teoría y vuelve a intentarlo 🔁';
+}
+function scoreColor(pct){
+  if(pct>=80) return 'var(--success)';
+  if(pct>=60) return 'var(--amber)';
+  return 'var(--error)';
+}
+
+function ringSVG(pct){
+  const r=60, c=2*Math.PI*r;
+  const offset = c - (pct/100)*c;
+  const col = scoreColor(pct);
+  return `<svg viewBox="0 0 140 140" role="img" aria-label="Puntaje obtenido: ${pct}%">
+    <circle cx="70" cy="70" r="${r}" fill="none" stroke="var(--surface-alt)" stroke-width="12"/>
+    <circle cx="70" cy="70" r="${r}" fill="none" stroke="${col}" stroke-width="12" stroke-linecap="round"
+      stroke-dasharray="${c}" stroke-dashoffset="${offset}" transform="rotate(-90 70 70)"/>
+    <text x="70" y="78" text-anchor="middle" font-size="28" font-weight="900" fill="${col}">${pct}%</text>
+  </svg>`;
+}
+
+function renderResult(pct){
+  const wrong = session.answers.filter(a=>!a.correct);
+  const body = document.getElementById('result-body');
+  const title = session.mode==='simulacro' ? 'Resultado del Simulacro' : 'Resultado: ' + TOPICS[session.topicId].name + ' · Nivel ' + session.level;
+  body.innerHTML = `
+    <h2>${title}</h2>
+    <div class="card">
+      <div class="score-ring-wrap">
+        ${ringSVG(pct)}
+        <div class="score-msg" style="color:${scoreColor(pct)};">${scoreMessage(pct)}</div>
+        <p style="margin-top:6px;">${session.correctCount} de ${session.queue.length} respuestas correctas</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btn-retry" type="button">🔁 Reintentar</button>
+        <button class="btn btn-primary" id="btn-home" type="button">🏠 Inicio</button>
+      </div>
+    </div>
+    ${wrong.length ? `<h3>📋 Repaso de lo fallado</h3><div class="card" id="review-list"></div>` : `<div class="card">🎉 ¡Respondiste todo correctamente!</div>`}
+  `;
+  if(wrong.length){
+    const list = document.getElementById('review-list');
+    wrong.forEach(a=>{
+      const item = document.createElement('div');
+      item.className='review-item';
+      item.innerHTML = `
+        <div class="rq">${a.q.q}</div>
+        <div class="ra wrong">Tu respuesta: ${a.q.options[a.chosenIdx]}</div>
+        <div class="ra right">Correcta: ${a.q.options[a.q.correct]}</div>
+        <div class="rex">${a.q.ok}</div>
       `;
-    }
+      list.appendChild(item);
+    });
+  }
+  document.getElementById('btn-retry').addEventListener('click', ()=>{
+    if(session.mode==='simulacro') startSimulacro();
+    else startTopicQuiz(session.topicId, session.level);
+  });
+  document.getElementById('btn-home').addEventListener('click', ()=>switchView('home'));
+}
 
-    function checkOption(selectedIdx) {
-      const qData = quizActiveQuestions[currentQuizIdx];
-      userAttempts++;
+/* ===================== VISTA: PROGRESO ===================== */
+const BADGES = [
+  {id:'inicio', icon:'🌱', name:'Primeros pasos', test:()=>Object.keys(progress.topics||{}).length>0},
+  {id:'nivel1', icon:'🔎', name:'Explorador', test:()=>[1].every(l=>Object.keys(TOPICS).every(t=>getLevelProgress(t,l).done))},
+  {id:'nivel3', icon:'🧠', name:'Analista', test:()=>Object.keys(TOPICS).every(t=>getLevelProgress(t,3).done)},
+  {id:'todo', icon:'👑', name:'Dominio total', test:()=>Object.keys(TOPICS).every(t=>[1,2,3].every(l=>getLevelProgress(t,l).done))},
+  {id:'sim', icon:'🏁', name:'Listo para el examen', test:()=>(progress.simulacro && progress.simulacro.bestPct>=80)}
+];
 
-      if (userAttempts === 1) {
-        firstAnswers[currentQuizIdx] = (selectedIdx === qData.correct);
-      }
+function renderProgress(){
+  document.getElementById('xp-pill').textContent = '⚡ ' + (progress.xp||0) + ' XP';
+  const bg = document.getElementById('badge-grid');
+  bg.innerHTML='';
+  BADGES.forEach(b=>{
+    const earned = b.test();
+    const div = document.createElement('div');
+    div.className = 'badge' + (earned ? ' earned':'');
+    div.innerHTML = `<div class="b-icon">${b.icon}</div><div class="b-name">${b.name}</div>`;
+    bg.appendChild(div);
+  });
 
-      const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
+  const body = document.getElementById('progress-body');
+  body.innerHTML='';
 
-      if (selectedIdx === qData.correct) {
-        selectedBtn.classList.add('correct');
-        lockOptions();
-        showFeedback(true, qData.exp);
-      } else {
-        selectedBtn.classList.add('wrong');
-        selectedBtn.classList.add('disabled');
+  const simCard = document.createElement('div');
+  simCard.className='card';
+  const simPct = (progress.simulacro && progress.simulacro.bestPct) || 0;
+  simCard.innerHTML = `
+    <div class="pt-head">🏁 Simulacro final</div>
+    <div class="bar-row"><div class="bar-track"><div class="bar-fill" style="width:${simPct}%;background:var(--blue);"></div></div><div class="pct">${simPct}%</div></div>
+  `;
+  body.appendChild(simCard);
 
-        if (userAttempts === 3) {
-          const reviewZone = document.getElementById('inline-review-zone');
-          // Buscar tarjeta de repaso conceptual indexada al tema
-          const refCard = STUDY_CARDS.find(c => c.temaId === qData.temaId) || STUDY_CARDS[0];
-          
-          reviewZone.innerHTML = `
-            <div class="inline-review-card">
-              <div style="color:var(--warn); font-weight:700; font-size:0.8rem; margin-bottom:4px;">💡 Tarjeta de Repaso Flash:</div>
-              <p style="font-size:0.8rem; color:var(--text); font-weight:600;">${refCard.title}</p>
-              <button onclick="switchTabFromQuiz(${qData.temaId})" style="background:none; border:none; color:var(--t1); font-size:0.75rem; font-weight:700; text-decoration:underline; margin-top:4px; cursor:pointer;">
-                Ver módulo completo en sección de Estudio
-              </button>
-            </div>
-          `;
-        }
+  Object.keys(TOPICS).forEach(id=>{
+    const t = TOPICS[id];
+    const row = document.createElement('div');
+    row.className='card progress-topic-row';
+    row.innerHTML = `<div class="pt-head">${t.icon} ${t.name}</div><div class="chip-row"></div>`;
+    const chipRow = row.querySelector('.chip-row');
+    [1,2,3].forEach(level=>{
+      const lp = getLevelProgress(id, level);
+      const chip = document.createElement('div');
+      let cls='lvl-chip';
+      if(lp.bestPct>=90) cls+=' ok100'; else if(lp.bestPct>=75) cls+=' ok80'; else if(lp.bestPct>=60) cls+=' ok60';
+      chip.className = cls;
+      chip.textContent = 'N'+level+': '+(lp.bestPct||0)+'%';
+      chipRow.appendChild(chip);
+    });
+    body.appendChild(row);
+  });
+}
 
-        if (userAttempts >= 4) {
-          lockOptions();
-          document.getElementById(`opt-${qData.correct}`).classList.add('correct');
-          showFeedback(false, qData.exp);
-        }
-      }
-    }
+/* ===================== TEMA CLARO / OSCURO ===================== */
+function applyTheme(theme){
+  if(theme==='dark'){ document.documentElement.setAttribute('data-theme','dark'); document.getElementById('theme-toggle').textContent='☀️'; document.getElementById('theme-toggle').setAttribute('aria-label','Cambiar a modo claro'); }
+  else { document.documentElement.setAttribute('data-theme','light'); document.getElementById('theme-toggle').textContent='🌙'; document.getElementById('theme-toggle').setAttribute('aria-label','Cambiar a modo oscuro'); }
+}
+function initTheme(){
+  let saved=null;
+  try{ saved = localStorage.getItem(THEME_KEY); }catch(e){}
+  if(saved){ applyTheme(saved); }
+  document.getElementById('theme-toggle').addEventListener('click', ()=>{
+    const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+    const next = isDark ? 'light':'dark';
+    applyTheme(next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+  });
+}
 
-    function lockOptions() {
-      document.querySelectorAll('.option-btn').forEach(btn => btn.classList.add('disabled'));
-      document.getElementById('quiz-next-btn').style.display = 'block';
-    }
-
-    function showFeedback(isCorrect, text) {
-      const fb = document.getElementById('quiz-feedback');
-      fb.classList.add('show');
-      if (isCorrect) {
-        fb.style.backgroundColor = 'rgba(0, 255, 135, 0.08)';
-        fb.style.border = '1px solid rgba(0, 255, 135, 0.2)';
-        fb.innerHTML = `<strong>¡Correcto!</strong><br>${text}`;
-      } else {
-        fb.style.backgroundColor = 'rgba(255, 51, 102, 0.08)';
-        fb.style.border = '1px solid rgba(255, 51, 102, 0.2)';
-        fb.innerHTML = `<strong>Límite alcanzado.</strong> La opción verde era la correcta.<br>${text}`;
-      }
-    }
-
-    function nextQuestion() {
-      currentQuizIdx++;
-      renderQuizQuestion();
-    }
-
-    function switchTabFromQuiz(themeId) {
-      const cardIdx = STUDY_CARDS.findIndex(c => c.temaId === themeId);
-      openStudyAt(cardIdx !== -1 ? cardIdx : 0);
-    }
-
-    /* PANTALLA DE RESULTADOS CON NOTA DE RIGOR */
-    function showResults() {
-      switchView('results');
-      
-      const total = firstAnswers.length;
-      const correctas = firstAnswers.filter(ans => ans === true).length;
-      const nota = Math.round((correctas / total) * 100);
-
-      const fillCircle = document.getElementById('gauge-fill');
-      const textVal = document.getElementById('gauge-text-val');
-      
-      const offset = 440 - (440 * nota) / 100;
-      fillCircle.style.strokeDashoffset = offset;
-      textVal.textContent = nota;
-
-      if (nota >= 90) {
-        fillCircle.style.stroke = "var(--good)";
-        document.getElementById('score-badge').innerHTML = `<span style="color:var(--good)">🔥 ¡Blindaje Total! (${correctas}/${total})</span>`;
-      } else if (nota >= 70) {
-        fillCircle.style.stroke = "var(--t1)";
-        document.getElementById('score-badge').innerHTML = `<span style="color:var(--t1)">👍 Nota de Aprobación MEP (${correctas}/${total})</span>`;
-      } else {
-        fillCircle.style.stroke = "var(--bad)";
-        document.getElementById('score-badge').innerHTML = `<span style="color:var(--bad)">⚠️ Requiere Repaso de Fórmulas (${correctas}/${total})</span>`;
-      }
-
-      let mruT = 0, mruO = 0;
-      let toolT = 0, toolO = 0;
-      let mruaT = 0, mruaO = 0;
-
-      quizActiveQuestions.forEach((q, idx) => {
-        if (q.temaId === 0) { mruT++; if (firstAnswers[idx]) mruO++; }
-        if (q.temaId === 1) { toolT++; if (firstAnswers[idx]) toolO++; }
-        if (q.temaId === 2) { mruaT++; if (firstAnswers[idx]) mruaO++; }
-      });
-
-      document.getElementById('results-breakdown').innerHTML = `
-        <p style="margin-bottom:6px; font-weight:700;">Diagnóstico Temático:</p>
-        <div style="margin-bottom:4px;">• MRU y Vectores: ${mruO} de ${mruT} correctas.</div>
-        <div style="margin-bottom:4px;">• Conversiones, Despejes y Dimensiones: ${toolO} de ${toolT} correctas.</div>
-        <div>• Mecánica Cinemática (MRUA y Caída): ${mruaO} de ${mruaT} correctas.</div>
-      `;
-    }
-
-    function restartQuiz() {
-      initQuiz();
-      switchView('quiz');
-    }
-
-    // Inicializar el sistema en carga estática
-    window.onload = () => {
-      renderAllStudyCards();
-    };
-  </script>
+/* ===================== INICIO DE LA APP ===================== */
+initTheme();
+renderHome();
+</script>
 </body>
 </html>
