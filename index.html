@@ -276,6 +276,7 @@ dialog::backdrop{background:rgba(10,20,40,.5)}
 <div class="tabbar">
   <nav aria-label="Secciones">
     <button class="tab" data-go="home"><span class="e" aria-hidden="true">🏠</span>Inicio</button>
+    <button class="tab" data-go="diag"><span class="e" aria-hidden="true">🩺</span>Diagnóstico</button>
     <button class="tab" data-go="learn"><span class="e" aria-hidden="true">📘</span>Aprender</button>
     <button class="tab" data-go="practice"><span class="e" aria-hidden="true">🎯</span>Practicar</button>
     <button class="tab" data-go="exam"><span class="e" aria-hidden="true">📝</span>Simulacro</button>
@@ -1009,8 +1010,9 @@ function toast(t){const d=document.createElement("div");d.className="toast";d.te
    6. ESTADO PERSISTENTE (localStorage con try/catch)
    ========================================================= */
 const KEY="hidroelec-10-v1";
-let S={done:{},exams:[],gen:0};
+let S={done:{},exams:[],gen:0,diag:[]};
 try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+const EXL=m=>m==="exam"||m==="diag";
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
 function mastery(ind){
   const items=BANK.filter(q=>q.ind===ind); const ok=items.filter(q=>S.done[q.id]===1).length;
@@ -1023,14 +1025,14 @@ function mastery(ind){
 let route="home", learnInd=1, session=null, simTimer=null;
 function go(r,opts={}){
   route=r; if(simTimer){cancelAnimationFrame(simTimer);simTimer=null;}
-  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-current",b.dataset.go===r||(r==="quiz"&&b.dataset.go===(session&&session.mode==="exam"?"exam":"practice"))?"page":"false"));
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-current",b.dataset.go===r||(r==="quiz"&&b.dataset.go===(session&&EXL(session.mode)?session.mode:"practice"))?"page":"false"));
   const m=$("#main"); m.innerHTML=""; const v=document.createElement("div"); v.className="view"; m.appendChild(v);
-  ({home:vHome,learn:vLearn,practice:vPractice,exam:vExam,progress:vProgress,quiz:vQuiz,result:vResult})[r](v,opts);
+  ({home:vHome,diag:vDiag,learn:vLearn,practice:vPractice,exam:vExam,progress:vProgress,quiz:vQuiz,result:vResult})[r](v,opts);
   if(!opts.keepScroll) window.scrollTo({top:0});
   if(opts.focus!==false) m.focus({preventScroll:true});
 }
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
-  if(session && route==="quiz" && session.mode==="exam" && !session.finished && !confirm("¿Salir del simulacro? Se perderán tus respuestas.")) return;
+  if(session && route==="quiz" && EXL(session.mode) && !session.finished && !confirm("¿Salir? Se perderán tus respuestas.")) return;
   go(b.dataset.go);
 }));
 
@@ -1057,12 +1059,14 @@ function vHome(v){
         <button class="btn" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.4)" data-act="route" data-r="exam">📝 Simulacro</button>
       </div>
     </div></section>
+  ${diagHomeCard()}
   <div class="card"><h3>🧭 Ruta recomendada</h3>
     <ol class="steps">
+      <li><b>Diagnóstico:</b> mide lo que ya sabes antes de estudiar.</li>
       <li><b>Aprender:</b> lee la ficha de cada indicador y juega con el simulador.</li>
       <li><b>Practicar:</b> resuelve los niveles en orden: Conocimiento → Aplicación → Análisis.</li>
       <li><b>Práctica infinita:</b> repite ejercicios numéricos con datos nuevos hasta dominarlos.</li>
-      <li><b>Simulacro:</b> 24 ítems calificados con la escala NR, 1, 2 y 3 puntos de la rúbrica.</li>
+      <li><b>Simulacro:</b> 24 ítems calificados con la escala NR, 1, 2 y 3 puntos de la rúbrica. Compara tu nota con la del diagnóstico.</li>
     </ol>
     <div class="bar-row" style="margin-top:10px;--ic:var(--c1)"><div class="bar"><i style="width:${Math.round(ok/tot*100)}%"></i></div><span>${ok}/${tot} ítems dominados</span></div>
   </div>
@@ -1294,11 +1298,11 @@ function startExam(){
 
 /* ---------------- RENDER DE ÍTEM ---------------- */
 function vQuiz(v){
-  const s=session, q=s.items[s.i], n=s.items.length, exam=s.mode==="exam", inf=s.mode==="inf";
+  const s=session, q=s.items[s.i], n=s.items.length, exam=EXL(s.mode), inf=s.mode==="inf";
   const a=s.ans[s.i]; const answered=a&&a.checked;
   const I=indOf(q.ind);
   const pct=inf?100:Math.round((s.i)/n*100);
-  const part=exam?`<span class="chip">Parte ${["I","II","III"][q.lvl-1]}</span>`:"";
+  const part=s.mode==="diag"?`<span class="chip">🩺 Diagnóstico</span>`:exam?`<span class="chip">Parte ${["I","II","III"][q.lvl-1]}</span>`:"";
   let body="";
   if(q.type==="mc"){
     body=`<div class="opts" role="radiogroup" aria-label="Opciones">${q.order.map((oi,k)=>{
@@ -1337,9 +1341,10 @@ function vQuiz(v){
 }
 function refreshPalette(){document.querySelectorAll(".palette button").forEach((b,k)=>{const a=session.ans[k];b.classList.toggle("done",!!(a&&a.v!==undefined&&a.v!==""));});}
 function navButtons(q,a,answered){
-  const s=session, exam=s.mode==="exam", last=s.i===s.items.length-1;
+  const s=session, exam=EXL(s.mode), last=s.i===s.items.length-1;
   if(exam){
     return `<button class="btn btn-g" data-act="prev" ${s.i===0?"disabled":""}>← Anterior</button>
+      ${s.mode==="diag"?`<button class="btn btn-g" data-act="skip">🤷 Aún no lo sé</button>`:""}
       ${last?`<button class="btn btn-p" data-act="submitExam">Entregar ✓</button>`:`<button class="btn btn-p" data-act="next">Siguiente →</button>`}`;
   }
   if(!answered) return `${q.hint?`<button class="btn btn-g" data-act="hint">💡 Pista</button>`:""}<button class="btn btn-p" data-act="check">Comprobar</button>`;
@@ -1354,7 +1359,10 @@ function grade(q,a){
 }
 function feedback(q,a){
   const ok=grade(q,a); let spec="", extra="";
-  if(q.type==="mc"){
+  if(a.skip){
+    spec="Marcaste «Aún no lo sé». ¡Está bien! Esto es justo lo que vas a aprender.";
+    extra=`<p>✅ <b>Respuesta correcta:</b> ${q.type==="mc"?q.opts[0][0]:q.type==="tf"?(q.a?"Verdadero":"Falso"):fmt(q.ans)+" "+q.unit}</p>`;
+  } else if(q.type==="mc"){
     spec = q.opts[a.v][1];
     if(!ok) extra=`<p>✅ <b>Respuesta correcta:</b> ${q.opts[0][0]}</p>`;
   } else if(q.type==="tf"){
@@ -1384,14 +1392,18 @@ function check(){
 function nextQ(){
   const s=session;
   if(s.mode==="inf"){ s.items.push(prepItem(GEN[s.ind]())); s.i++; go("quiz"); return; }
-  if(s.i<s.items.length-1){s.i++;go("quiz");} else if(s.mode==="exam") submitExam(); else go("result");
+  if(s.i<s.items.length-1){s.i++;go("quiz");} else if(EXL(s.mode)) submitExam(); else go("result");
 }
 function submitExam(){
   const s=session; const un=s.items.filter((_,k)=>!s.ans[k]||s.ans[k].v===undefined||s.ans[k].v==="").length;
   if(un && !confirm(`Tienes ${un} ítem(s) sin responder. ¿Entregar de todos modos?`)) return;
-  s.items.forEach((q,k)=>{const a=s.ans[k]; if(a){a.checked=true;a.ok=grade(q,a);} if(q.id){ if(a&&a.ok) S.done[q.id]=1; else if(S.done[q.id]!==1) S.done[q.id]=0; }});
+  const diag=s.mode==="diag";
+  s.items.forEach((q,k)=>{const a=s.ans[k]; if(a){a.checked=true;a.ok=grade(q,a);} if(q.id&&!diag){ if(a&&a.ok) S.done[q.id]=1; else if(S.done[q.id]!==1) S.done[q.id]=0; }});
   s.finished=true; s.end=Date.now();
-  const r=scoreSession(s); S.exams.push({d:Date.now(),pts:r.pts,pct:r.pct}); save();
+  const r=scoreSession(s);
+  if(diag){ const by={}; Object.entries(r.by).forEach(([k,b])=>by[k]={ok:b.ok,total:b.total}); S.diag.push({d:Date.now(),nota:r.pct,ok:r.ok,total:r.total,by}); }
+  else S.exams.push({d:Date.now(),pts:r.pts,pct:r.pct,by:Object.fromEntries(Object.entries(r.by).map(([k,b])=>[k,{ok:b.ok,total:b.total}]))});
+  save();
   go("result");
 }
 function scoreSession(s){
@@ -1402,6 +1414,7 @@ function scoreSession(s){
   return {by,pts,maxPts,ok,total,pct:Math.round(ok/Math.max(1,total)*100)};
 }
 function vResult(v){
+  if(session.mode==="diag") return vDiagResult(v);
   const s=session, r=scoreSession(s), exam=s.mode==="exam";
   const nota=r.maxPts?Math.round(r.pts/r.maxPts*100):0;
   const ring=r.pct>=90?"var(--ok)":r.pct>=50?"var(--c1)":"var(--warn)";
@@ -1416,10 +1429,92 @@ function vResult(v){
     ${Object.entries(r.by).filter(([k,b])=>b.total).map(([k,b])=>`<tr><td>${indOf(+k).icon} ${k}. ${indOf(+k).verb}<br><small style="color:var(--text-faint);font-weight:600">${RUB_DESC[b.pts]}</small></td><td>${b.ok}/${b.total} (${Math.round(b.ok/b.total*100)}%)</td><td><span class="lvl-pill lvl-${b.pts}">${b.pts===0?"NR":b.pts+" pt"+(b.pts>1?"s":"")}</span></td></tr>`).join("")}</tbody></table></div>
     ${weak.length?`<div class="callout warn">📌 <b>Recomendación:</b> repasa ${weak.map(k=>`<a href="#" data-act="learn" data-i="${k}">la ficha del indicador ${k} (${indOf(k).verb})</a>`).join(", ")} y luego usa la práctica infinita.</div>`:`<div class="callout info">🏆 Alcanzaste el nivel máximo en todos los indicadores evaluados.</div>`}</div>
    <div class="card"><h3>🔍 Revisión ítem por ítem</h3>${s.items.map((q,k)=>{const a=s.ans[k]||{};const ok=a.checked&&grade(q,a);
-     let your="—"; if(a.v!==undefined&&a.v!==""){your=q.type==="mc"?q.opts[a.v][0]:q.type==="tf"?(a.v?"Verdadero":"Falso"):esc(a.raw)+" "+q.unit;}
+     let your="—"; if(a.skip) your="🤷 Aún no lo sabía"; else if(a.v!==undefined&&a.v!==""){your=q.type==="mc"?q.opts[a.v][0]:q.type==="tf"?(a.v?"Verdadero":"Falso"):esc(a.raw)+" "+q.unit;}
      return `<details style="border-top:1px solid var(--line);padding:10px 0"><summary style="cursor:pointer;font-weight:800">${ok?"✅":"❌"} ${k+1}. <span style="font-weight:600;color:var(--text-dim)">${q.q.replace(/<[^>]+>/g," ").slice(0,90)}…</span></summary>
        <p style="margin-top:8px"><b>Tu respuesta:</b> ${your}</p>${a.checked?feedback(q,a):`<div class="fb bad"><div class="ttl">Sin responder</div>${q.type==="mc"?`<p>✅ ${q.opts[0][0]}</p>`:q.type==="tf"?`<p>✅ ${q.a?"Verdadero":"Falso"}</p>`:`<p>✅ ${fmt(q.ans)} ${q.unit}</p>`}${q.ex?`<p>📖 ${q.ex}</p>`:""}${q.sol?`<div class="sol"><ol class="steps">${q.sol.map(t=>`<li>${t}</li>`).join("")}</ol></div>`:""}</div>`}</details>`;}).join("")}</div>
    <div class="btn-row"><button class="btn btn-g" data-act="route" data-r="${exam?"exam":"practice"}">Volver</button><button class="btn btn-p" data-act="${exam?"startExam":"retry"}">${exam?"Nuevo simulacro":"Repetir"}</button></div>`;
+}
+
+
+/* ---------------- DIAGNÓSTICO ---------------- */
+/* Conjunto fijo y representativo: 4 ítems por indicador (los 3 niveles cognitivos),
+   para que el diagnóstico sea comparable cada vez que se repite. */
+const DIAG_IDS={1:["h03","h09","h24","h14"],2:["d01","d07","d11","d16"],3:["e01","e17","e11","e23"],4:["i01","i03","i04","i07"]};
+const BAND=n=>n>=90?{t:"Avanzado",c:"lvl-3",m:"¡Ya dominas gran parte del tema! Enfócate en los ítems de análisis y en el simulacro."}
+  :n>=70?{t:"Intermedio alto",c:"lvl-2",m:"Tienes buenas bases. Refuerza los indicadores marcados y practica los problemas."}
+  :n>=50?{t:"Intermedio",c:"lvl-2",m:"Conoces algunos conceptos. Sigue la ruta de estudio en el orden sugerido."}
+  :{t:"Inicial",c:"lvl-1",m:"¡Es normal antes de estudiar! Empieza por las fichas de Aprender y el Nivel 1 de cada indicador."};
+function lastDiag(){return S.diag.length?S.diag[S.diag.length-1]:null;}
+function firstDiag(){return S.diag.length?S.diag[0]:null;}
+function diagHomeCard(){
+  const d=lastDiag();
+  if(!d) return `<div class="card" style="border:2px solid var(--c4);background:linear-gradient(135deg,var(--c4-soft),var(--surface))">
+    <h3>🩺 Antes de empezar: examen de diagnóstico</h3>
+    <p>Responde 16 preguntas cortas (unos 15 minutos) para saber cuánto conoces del tema <b>antes</b> de estudiar. Obtendrás tu <b>nota diagnóstica</b> y una ruta de estudio personalizada.</p>
+    <button class="btn btn-p" style="background:var(--c4);width:100%" data-act="startDiag">Hacer el diagnóstico</button></div>`;
+  const b=BAND(d.nota); const ex=S.exams.length?S.exams[S.exams.length-1]:null;
+  return `<div class="card"><h3>🩺 Tu diagnóstico inicial</h3>
+    <p>Nota diagnóstica: <b style="font-size:1.2rem;color:var(--text)">${firstDiag().nota}/100</b> <span class="lvl-pill ${BAND(firstDiag().nota).c}">${BAND(firstDiag().nota).t}</span>
+    ${ex?`<br>Último simulacro: <b style="color:var(--text)">${ex.pct}/100</b> ${ex.pct-firstDiag().nota>=0?"📈 +":"📉 "}${ex.pct-firstDiag().nota} puntos`:""}</p>
+    <div class="btn-row"><button class="btn btn-g" data-act="route" data-r="diag">Ver detalle</button></div></div>`;
+}
+function vDiag(v){
+  const hist=S.diag.slice().reverse();
+  v.innerHTML=`<h2>🩺 Examen de diagnóstico</h2>
+   <p class="lede">Una evaluación <b>previa</b> para conocer tu punto de partida. No cuenta para tu nota del curso: sirve para orientar tu estudio.</p>
+   <div class="card"><h3>📋 Estructura</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>Indicador</th><th>Ítems</th><th>Niveles</th></tr></thead><tbody>
+    ${IND.map(I=>`<tr><td>${I.icon} ${I.id}. ${I.verb}: ${I.title}</td><td>${DIAG_IDS[I.id].length}</td><td>${[...new Set(DIAG_IDS[I.id].map(id=>BANK.find(q=>q.id===id).lvl))].map(l=>`<span class="chip l${l}">N${l}</span>`).join(" ")}</td></tr>`).join("")}
+    <tr><td><b>Total</b></td><td><b>16</b></td><td></td></tr></tbody></table></div>
+    <ul class="key" style="margin-top:10px">
+     <li>🤷 Si no sabes una respuesta, usa el botón <b>«Aún no lo sé»</b> en lugar de adivinar: así el diagnóstico refleja mejor lo que sabes.</li>
+     <li>🔇 No verás la retroalimentación hasta entregar.</li>
+     <li>💯 <b>Nota diagnóstica</b> = porcentaje de aciertos (0 a 100), con la valoración por indicador según la rúbrica.</li>
+     <li>🔁 Puedes repetirlo al final para medir cuánto aprendiste (las preguntas son las mismas).</li></ul>
+    <button class="btn btn-p" style="width:100%;margin-top:12px;background:var(--c4)" data-act="startDiag">${S.diag.length?"Repetir diagnóstico":"Comenzar diagnóstico"}</button></div>
+   ${compareCard()}
+   ${hist.length?`<div class="card"><h3>Historial de diagnósticos</h3><div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Aciertos</th><th>Nota</th><th>Nivel</th></tr></thead><tbody>
+    ${hist.map(h=>`<tr><td>${new Date(h.d).toLocaleDateString("es-CR")}</td><td>${h.ok}/${h.total}</td><td><b>${h.nota}</b></td><td><span class="lvl-pill ${BAND(h.nota).c}">${BAND(h.nota).t}</span></td></tr>`).join("")}</tbody></table></div></div>`:""}`;
+}
+function startDiag(){
+  const items=[1,2,3].flatMap(l=>IND.flatMap(I=>DIAG_IDS[I.id].map(id=>BANK.find(q=>q.id===id)).filter(q=>q.lvl===l)));
+  session={mode:"diag",items:items.map(prepItem),i:0,ans:{},start:Date.now(),title:"🩺 Examen de diagnóstico"};
+  go("quiz");
+}
+function compareCard(){
+  const d=firstDiag(); if(!d) return "";
+  const ex=S.exams.length?S.exams[S.exams.length-1]:null;
+  const rows=IND.map(I=>{const b=d.by[I.id]; const p0=b&&b.total?Math.round(b.ok/b.total*100):0;
+    let p1=null; if(ex&&ex.by&&ex.by[I.id]&&ex.by[I.id].total) p1=Math.round(ex.by[I.id].ok/ex.by[I.id].total*100);
+    return `<tr><td>${I.icon} ${I.id}. ${I.verb}</td><td>${p0}%</td><td>${p1===null?"—":p1+"%"}</td><td>${p1===null?"—":(p1-p0>=0?`<span class="audit-ok">+${p1-p0}</span>`:`<span class="audit-no">${p1-p0}</span>`)}</td></tr>`;}).join("");
+  return `<div class="card"><h3>📈 Antes y después</h3><p style="font-size:.9rem">Compara tu primer diagnóstico con tu último simulacro${ex?"":" (aún no has hecho ninguno)"}.</p>
+   <div class="tbl-wrap"><table><thead><tr><th>Indicador</th><th>Diagnóstico</th><th>Simulacro</th><th>Avance</th></tr></thead><tbody>${rows}
+   <tr><td><b>Nota global</b></td><td><b>${d.nota}</b></td><td><b>${ex?ex.pct:"—"}</b></td><td><b>${ex?(ex.pct-d.nota>=0?"+":"")+(ex.pct-d.nota):"—"}</b></td></tr></tbody></table></div>
+   ${ex?"":`<button class="btn btn-g" style="width:100%;margin-top:10px" data-act="route" data-r="exam">Ir al simulacro</button>`}</div>`;
+}
+function vDiagResult(v){
+  const s=session, r=scoreSession(s), nota=r.pct, b=BAND(nota);
+  const skipped=s.items.filter((_,k)=>s.ans[k]&&s.ans[k].skip).length;
+  const ring=nota>=90?"var(--ok)":nota>=50?"var(--c4)":"var(--warn)";
+  const order=Object.entries(r.by).map(([k,x])=>({k:+k,p:x.ok/x.total,x})).sort((a,b)=>a.p-b.p||a.k-b.k);
+  const prev=S.diag.length>1?S.diag[S.diag.length-2]:null;
+  v.innerHTML=`<h2>🩺 Resultado del diagnóstico</h2><p class="lede">Este es tu punto de partida. ¡Ahora sabes exactamente qué estudiar!</p>
+   <div class="card" style="text-align:center">
+    <div class="score-ring" style="--p:${nota};--ring:${ring}" role="img" aria-label="Nota diagnóstica ${nota} de 100"><div><b>${nota}</b><small>NOTA / 100</small></div></div>
+    <span class="lvl-pill ${b.c}" style="font-size:.9rem">Nivel ${b.t}</span>
+    <p style="margin-top:10px;font-weight:700;color:var(--text)">${b.m}</p>
+    <p>${r.ok} de ${r.total} correctas${skipped?` · ${skipped} marcadas como «Aún no lo sé»`:""}${prev?` · Diagnóstico anterior: ${prev.nota} (${nota-prev.nota>=0?"+":""}${nota-prev.nota})`:""}</p></div>
+   <div class="card"><h3>📋 Resultado por indicador</h3><div class="tbl-wrap"><table class="rubric"><thead><tr><th>Indicador</th><th>Aciertos</th><th>Nota</th><th>Rúbrica</th></tr></thead><tbody>
+    ${IND.map(I=>{const x=r.by[I.id];return `<tr><td>${I.icon} ${I.id}. ${I.verb}<br><small style="color:var(--text-faint);font-weight:600">${I.title}</small></td><td>${x.ok}/${x.total}</td><td><b>${Math.round(x.ok/x.total*100)}</b></td><td><span class="lvl-pill lvl-${x.pts}">${x.pts===0?"NR":x.pts+" pt"+(x.pts>1?"s":"")}</span></td></tr>`;}).join("")}</tbody></table></div></div>
+   <div class="card"><h3>🧭 Tu ruta de estudio personalizada</h3><p style="font-size:.9rem">Ordenada de lo que más necesitas reforzar a lo que mejor dominas:</p>
+    <ol class="steps">${order.map(o=>{const I=indOf(o.k);const pc=Math.round(o.p*100);
+      return `<li style="margin-bottom:10px"><b>${I.icon} Indicador ${I.id} · ${I.verb}</b> (${pc}%) — ${pc<50?"empieza por la ficha y el Nivel 1.":pc<90?"repasa la ficha y practica los Niveles 2 y 3.":"ya lo dominas: haz práctica infinita para afianzarlo."}
+        <div class="btn-row" style="margin-top:6px"><button class="btn btn-g" style="padding:6px 10px;min-height:36px;font-size:.8rem" data-act="learn" data-i="${I.id}">📘 Ficha</button><button class="btn btn-g" style="padding:6px 10px;min-height:36px;font-size:.8rem" data-act="startP" data-i="${I.id}" data-l="${pc<50?1:0}">🎯 Practicar</button></div></li>`;}).join("")}</ol></div>
+   <div class="card"><h3>🔍 Revisión de respuestas</h3>${s.items.map((q,k)=>{const a=s.ans[k]||{};const ok=a.checked&&grade(q,a);
+     let your="—"; if(a.skip) your="🤷 Aún no lo sabía"; else if(a.v!==undefined&&a.v!==""){your=q.type==="mc"?q.opts[a.v][0]:q.type==="tf"?(a.v?"Verdadero":"Falso"):esc(a.raw)+" "+q.unit;}
+     return `<details style="border-top:1px solid var(--line);padding:10px 0"><summary style="cursor:pointer;font-weight:800">${ok?"✅":a.skip?"🤷":"❌"} ${k+1}. <span style="font-weight:600;color:var(--text-dim)">${q.q.replace(/<[^>]+>/g," ").slice(0,90)}…</span></summary>
+       <p style="margin-top:8px"><b>Tu respuesta:</b> ${your}</p>${a.checked?feedback(q,a):`<div class="fb bad"><div class="ttl">Sin responder</div><p>✅ ${q.type==="mc"?q.opts[0][0]:q.type==="tf"?(q.a?"Verdadero":"Falso"):fmt(q.ans)+" "+q.unit}</p></div>`}</details>`;}).join("")}</div>
+   <div class="btn-row"><button class="btn btn-g" data-act="route" data-r="diag">Volver</button><button class="btn btn-p" data-act="learn" data-i="${order[0].k}">📘 Empezar a estudiar</button></div>`;
 }
 
 /* ---------------- PROGRESO + AUDITORÍA ---------------- */
@@ -1430,6 +1525,7 @@ function vProgress(v){
   const gaps=cov.flatMap(c=>c.tags.filter(x=>!x.n).map(x=>`Ind. ${c.I.id}: ${TAGS[x.t]}`));
   v.innerHTML=`<h2>📊 Progreso</h2><p class="lede">Tu avance se guarda en este dispositivo.</p>
    <div class="grid two">${IND.map(I=>indCard(I,"")).join("")}</div>
+   ${compareCard()}
    <div class="card"><p style="margin:0">Ejercicios de práctica infinita resueltos: <b>${S.gen}</b> · Simulacros realizados: <b>${S.exams.length}</b></p></div>
    <div class="card"><h3>✅ Auditoría de cobertura del temario</h3>
     <p>Cada indicador y subtema del documento oficial está cubierto por ítems en los tres niveles cognitivos.</p>
@@ -1459,11 +1555,13 @@ document.addEventListener("click",e=>{
     case "startInf": startInfinite(i); break;
     case "startErr": startErrors(); break;
     case "startExam": startExam(); break;
+    case "startDiag": startDiag(); break;
+    case "skip": session.ans[session.i]={v:"__skip",raw:"",skip:true}; nextQ(); break;
     case "retry": session.mode==="inf"?startInfinite(session.ind):(session.ind?startPractice(session.ind,session.lvl):startErrors()); break;
-    case "pick": { const s=session,q=s.items[s.i]; if(s.ans[s.i]&&s.ans[s.i].checked&&s.mode!=="exam") return;
+    case "pick": { const s=session,q=s.items[s.i]; if(s.ans[s.i]&&s.ans[s.i].checked&&!EXL(s.mode)) return;
       const val=q.type==="tf"?b.dataset.v==="true":+b.dataset.v; s.ans[s.i]={v:val};
       document.querySelectorAll(".opt").forEach(o=>{const on=o===b;o.classList.toggle("sel",on);o.setAttribute("aria-checked",on);});
-      if(s.mode==="exam") refreshPalette(); break; }
+      if(EXL(s.mode)) refreshPalette(); break; }
     case "check": check(); break;
     case "hint": { const q=session.items[session.i]; $("#hintbox").innerHTML=`<div class="hintbox">💡 ${q.hint}</div>`; break; }
     case "next": nextQ(); break;
@@ -1471,10 +1569,10 @@ document.addEventListener("click",e=>{
     case "jump": session.i=+b.dataset.k; go("quiz",{keepScroll:true}); break;
     case "submitExam": submitExam(); break;
     case "quit":
-      if(session.mode==="exam"&&!session.finished&&!confirm("¿Salir del simulacro? Se perderán tus respuestas.")) return;
-      if(session.mode==="practice"&&Object.values(session.ans).some(a=>a.checked)) go("result"); else go(session.mode==="exam"?"exam":"practice");
+      if(EXL(session.mode)&&!session.finished&&!confirm("¿Salir? Se perderán tus respuestas.")) return;
+      if(session.mode==="practice"&&Object.values(session.ans).some(a=>a.checked)) go("result"); else go(EXL(session.mode)?session.mode:"practice");
       break;
-    case "reset": if(confirm("¿Borrar todo tu progreso?")){S={done:{},exams:[],gen:0};save();go("progress");} break;
+    case "reset": if(confirm("¿Borrar todo tu progreso?")){S={done:{},exams:[],gen:0,diag:[]};save();go("progress");} break;
   }
 });
 document.addEventListener("keydown",e=>{
@@ -1487,7 +1585,7 @@ document.addEventListener("keydown",e=>{
     const opts=[...document.querySelectorAll(".opt:not([disabled])")]; let idx="1234".indexOf(k); if(idx<0) idx="abcd".indexOf(k); if(k==="v")idx=0; if(k==="f")idx=1;
     if(opts[idx]){opts[idx].click();opts[idx].focus();}
   }
-  if(e.key==="Enter"&&s.mode!=="exam"){ if(e.target.tagName==="BUTTON"&&e.target.dataset.act!=="pick") return; e.preventDefault(); answered?nextQ():check(); }
+  if(e.key==="Enter"&&!EXL(s.mode)){ if(e.target.tagName==="BUTTON"&&e.target.dataset.act!=="pick") return; e.preventDefault(); answered?nextQ():check(); }
 });
 
 /* Formulario */
@@ -1511,7 +1609,7 @@ function applyTheme(t){ if(t) document.documentElement.setAttribute("data-theme"
 let th=null; try{th=localStorage.getItem(TK);}catch(e){} applyTheme(th);
 $("#btn-theme").onclick=()=>{ const cur=document.documentElement.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); const nx=cur==="dark"?"light":"dark"; applyTheme(nx); try{localStorage.setItem(TK,nx);}catch(e){} };
 
-window.addEventListener("beforeunload",e=>{ if(session&&session.mode==="exam"&&!session.finished&&route==="quiz"){e.preventDefault();e.returnValue="";} });
+window.addEventListener("beforeunload",e=>{ if(session&&EXL(session.mode)&&!session.finished&&route==="quiz"){e.preventDefault();e.returnValue="";} });
 go("home",{focus:false});
 </script>
 </body>
