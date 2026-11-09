@@ -254,6 +254,28 @@ dialog::backdrop{background:rgba(10,20,40,.5)}
 
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--text);color:var(--surface);padding:10px 16px;border-radius:12px;font-weight:800;font-size:.9rem;z-index:100;animation:fade .2s ease}
 html.big{font-size:118%}
+textarea{width:100%;min-height:96px;border:2px solid var(--line);background:var(--surface);border-radius:var(--r-md);padding:12px 14px;font:inherit;font-weight:600;resize:vertical;color:var(--text)}
+textarea:focus,.search:focus{border-color:var(--c1);outline:none}
+.search{width:100%;border:2px solid var(--line);background:var(--surface);border-radius:var(--r-md);padding:10px 14px;font-weight:700}
+.ex-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ex-chips button{border:1px dashed var(--line);background:var(--surface-alt);border-radius:999px;padding:6px 12px;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--text-dim)}
+.decode{border-radius:var(--r-md);padding:14px;margin-top:12px;background:var(--surface-alt);border-left:5px solid var(--dc,var(--c1));animation:fade .25s ease}
+.decode .row{margin:0 0 8px;color:var(--text);font-size:.93rem}
+.decode .row b.lbl{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint)}
+.decode .f{font-family:"Cambria Math","Times New Roman",serif;font-size:1.25rem;font-weight:700;color:var(--dc,var(--c1))}
+.dchip{display:inline-block;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 2px 0;font-weight:800;font-size:.85rem}
+.dchip.cv{background:var(--warn-soft);border-color:transparent}
+.gcard{border-left:5px solid var(--gc);padding:0;overflow:hidden}
+.gcard summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;gap:10px;align-items:flex-start}
+.gcard summary::-webkit-details-marker{display:none}
+.gcard summary .q{flex:1;font-weight:800}
+.gcard summary .q small{display:block;font-weight:700;color:var(--text-faint);font-size:.8rem;margin-top:2px}
+.gcard summary .fm{font-family:"Cambria Math","Times New Roman",serif;font-weight:700;color:var(--gc);white-space:nowrap}
+.gcard .gb{padding:0 16px 16px}
+.gcard[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+.flow{display:grid;gap:8px}
+.flow>div{background:var(--surface-alt);border-radius:12px;padding:10px 12px;font-size:.92rem;color:var(--text)}
+.flow>div>b{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);margin-bottom:2px}
 .calm{display:flex;gap:16px;align-items:center}
 .breath{flex:none;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle,var(--c2) 0%,var(--c2-soft) 70%);animation:breath 8s ease-in-out infinite}
 @keyframes breath{0%,100%{transform:scale(.7);opacity:.7}50%{transform:scale(1.05);opacity:1}}
@@ -1048,10 +1070,10 @@ let route="home", learnInd=1, session=null, simTimer=null;
 function go(r,opts={}){
   route=r; if(simTimer){cancelAnimationFrame(simTimer);simTimer=null;}
   const tabFor = r==="quiz" ? (session&&EXL(session.mode)?session.mode:session&&session.mode==="cero"?"learn":"practice")
-    : (r==="cero"||r==="station")?"learn" : r==="result"?(session&&EXL(session.mode)?session.mode:session&&session.mode==="cero"?"learn":"practice") : r;
+    : (r==="cero"||r==="station"||r==="pide")?"learn" : r==="result"?(session&&EXL(session.mode)?session.mode:session&&session.mode==="cero"?"learn":"practice") : r;
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-current",b.dataset.go===tabFor?"page":"false"));
   const m=$("#main"); m.innerHTML=""; const v=document.createElement("div"); v.className="view"; m.appendChild(v);
-  ({home:vHome,diag:vDiag,cero:vCero,station:vStation,learn:vLearn,practice:vPractice,exam:vExam,progress:vProgress,quiz:vQuiz,result:vResult})[r](v,opts);
+  ({home:vHome,diag:vDiag,pide:vPide,cero:vCero,station:vStation,learn:vLearn,practice:vPractice,exam:vExam,progress:vProgress,quiz:vQuiz,result:vResult})[r](v,opts);
   if(!opts.keepScroll) window.scrollTo({top:0});
   if(opts.focus!==false) m.focus({preventScroll:true});
 }
@@ -1084,6 +1106,7 @@ function vHome(v){
       </div>
     </div></section>
   ${diagHomeCard()}
+  <button class="station" data-act="route" data-r="pide" style="border:2px solid var(--c1)"><span class="num" style="background:var(--c1-soft)">🧭</span><span class="tt">¿Qué me pide el examen?<small>Pega un enunciado y descubre qué fórmula usar y cómo aplicarla</small></span><span aria-hidden="true">→</span></button>
   <button class="station" data-act="cero" style="border:2px solid var(--c2)"><span class="num">🌱</span><span class="tt">¿Sientes que no entiendes nada? Empieza aquí<small>Ruta «Desde cero»: 8 estaciones cortas, sin prisa · ${Object.keys(S.cero).length}/${CERO.length} completadas</small></span><span aria-hidden="true">→</span></button>
   <div class="card"><h3>🧭 Ruta recomendada</h3>
     <ol class="steps">
@@ -1208,7 +1231,7 @@ const LESSON = {
 function vLearn(v){
   const I=indOf(learnInd);
   v.innerHTML=`<h2>📘 Aprender</h2><p class="lede">Fichas de estudio para cada indicador del temario.</p>
-   <div class="seg" role="tablist" aria-label="Indicadores"><button style="--ic:var(--c2)" data-act="cero">🌱 Desde cero</button>${IND.map(x=>`<button role="tab" aria-selected="${x.id===learnInd}" style="--ic:var(${x.c})" data-act="learnTab" data-i="${x.id}">${x.icon} ${x.id}. ${x.verb}</button>`).join("")}</div>
+   <div class="seg" role="tablist" aria-label="Indicadores"><button style="--ic:var(--c2)" data-act="cero">🌱 Desde cero</button><button style="--ic:var(--c1)" data-act="route" data-r="pide">🧭 ¿Qué me pide?</button>${IND.map(x=>`<button role="tab" aria-selected="${x.id===learnInd}" style="--ic:var(${x.c})" data-act="learnTab" data-i="${x.id}">${x.icon} ${x.id}. ${x.verb}</button>`).join("")}</div>
    <div class="card ind-card" style="--ic:var(${I.c});--ics:var(${I.cs})"><div class="ind-head"><div class="ind-ico" aria-hidden="true">${I.icon}</div><div><div class="k">Indicador ${I.id}</div><div class="n">${I.title}</div></div></div>
    <p style="margin:0;font-size:.92rem">${I.text}</p></div>
    <div class="callout info">🌱 <b>¿Te parece muy difícil?</b> Mira primero la versión sencilla con ejemplos de la vida diaria: <a href="#" data-act="station" data-id="${SIMPLE_FOR[learnInd]}">estación «${CERO.find(c=>c.id===SIMPLE_FOR[learnInd]).title}»</a>.</div>
@@ -1376,7 +1399,7 @@ function navButtons(q,a,answered){
       ${last?`<button class="btn btn-p" data-act="submitExam">Entregar ✓</button>`:`<button class="btn btn-p" data-act="next">Siguiente →</button>`}`;
   }
   if(!answered){ const st=(s.steps||{})[s.i]||0, nSteps=q.sol?q.sol.length-1:0;
-    return `${q.hint?`<button class="btn btn-g" data-act="hint">💡 Pista</button>`:""}${q.type==="num"&&nSteps>0&&st<nSteps?`<button class="btn btn-g" data-act="step">🪜 ${st?"Siguiente paso":"Guíame paso a paso"}</button>`:""}<button class="btn btn-p" data-act="check">${a&&a.retry?"Comprobar otra vez":"Comprobar"}</button>`; }
+    return `${q.hint?`<button class="btn btn-g" data-act="hint">💡 Pista</button>`:""}${q.type==="num"&&!(s.decode&&s.decode[s.i])?`<button class="btn btn-g" data-act="decodeQ">🧭 ¿Qué me pide?</button>`:""}${q.type==="num"&&nSteps>0&&st<nSteps?`<button class="btn btn-g" data-act="step">🪜 ${st?"Siguiente paso":"Guíame paso a paso"}</button>`:""}<button class="btn btn-p" data-act="check">${a&&a.retry?"Comprobar otra vez":"Comprobar"}</button>`; }
   if(s.mode==="inf") return `<button class="btn btn-g" data-act="quit">Terminar</button><button class="btn btn-p" data-act="next" id="nextbtn">Otro ejercicio →</button>`;
   return `<button class="btn btn-p" data-act="next" id="nextbtn">${last?"Ver resultados":"Siguiente →"}</button>`;
 }
@@ -1475,6 +1498,180 @@ function vResult(v){
 }
 
 
+
+
+/* =========================================================
+   «¿QUÉ ME PIDE?» — decodificar el enunciado → fórmula → aplicación
+   ========================================================= */
+const GUIA=[
+{g:"💧 Presión y presión en líquidos",ind:1,c:"--c1",types:[
+ {id:"g-pfa",cue:["«¿Qué presión ejerce…?»","Te dan una fuerza o un peso (N) y un área (m² o cm²)","Cajas, ladrillos, personas de pie, zapatos, cuchillos"],asks:"Presión P (Pa)",f:"P = F ÷ A",steps:["Identifica F: el peso o la fuerza, en N.","Pasa el área a m² (cm² ÷ 10 000).","Divide F entre A.","Escribe la respuesta en Pa."],trap:"Usar cm² sin convertir o multiplicar F × A.",ex:"50 N sobre 25 cm² → A = 0,0025 m² → P = 50 ÷ 0,0025 = 20 000 Pa",tags:["pres"]},
+ {id:"g-fpa",cue:["«¿Qué fuerza ejerce el líquido sobre la tapa…?»","Te dan una presión (Pa) y un área"],asks:"Fuerza F (N)",f:"F = P × A",steps:["Pasa el área a m².","Multiplica P × A.","Escribe la respuesta en N."],trap:"Dividir P ÷ A.",ex:"2,5 × 10⁵ Pa sobre 0,02 m² → F = 5000 N",tags:["pres"]},
+ {id:"g-rgh",cue:["«Presión a X m de profundidad», «en el fondo», «presión hidrostática»","Buzo, piscina, tanque, represa, vaso con líquido","Te dan una densidad (kg/m³) y una profundidad"],asks:"Presión hidrostática P (Pa)",f:"P = ρ × g × h",steps:["Anota ρ en kg/m³ (si viene en g/cm³, × 1000). Si es agua y no te la dan: 1000 kg/m³.","Pasa h a metros (cm ÷ 100).","Multiplica ρ × 9,8 × h.","Escribe la respuesta en Pa."],trap:"Olvidar el 9,8 o dejar h en cm.",ex:"12 cm de alcohol (790 kg/m³) → 790 × 9,8 × 0,12 = 929 Pa",tags:["pliq"]},
+ {id:"g-abs",cue:["«Presión absoluta», «presión total», «incluyendo la atmósfera»","Te dan P₀ = 101 300 Pa"],asks:"Presión absoluta (Pa)",f:"P = P₀ + ρ × g × h",steps:["Calcula primero ρ × g × h.","Súmale P₀ = 101 300 Pa."],trap:"Dar solo ρgh sin sumar la atmosférica.",ex:"5 m en el mar → 50 470 + 101 300 = 151 770 Pa",tags:["patm"]},
+ {id:"g-h",cue:["«¿A qué profundidad…?», «¿qué tan profundo…?»","Te dan una presión (Pa) y la densidad del líquido"],asks:"Profundidad h (m)",f:"h = P ÷ (ρ × g)",steps:["Multiplica ρ × 9,8.","Divide P entre ese resultado.","Escribe la respuesta en m."],trap:"Dividir solo entre ρ (olvidar g).",ex:"39 200 Pa en agua → 39 200 ÷ 9800 = 4 m",tags:["pliq"]},
+ {id:"g-rhop",cue:["«Densidad del líquido desconocido»","Te dan una presión (Pa) y una profundidad (m), pero NO una masa"],asks:"Densidad ρ (kg/m³)",f:"ρ = P ÷ (g × h)",steps:["Multiplica 9,8 × h.","Divide P entre ese resultado."],trap:"Querer usar m/V cuando no te dieron ni masa ni volumen.",ex:"12 000 Pa a 1,5 m → 12 000 ÷ 14,7 ≈ 816 kg/m³",tags:["pliq","dens"]},
+ {id:"g-why1",cue:["«¿Por qué…?», «explique», «¿en cuál es mayor…?» (sin números)","Cuchillos, raquetas, llantas, represas, recipientes de distintas formas, agujeros en una botella, flota o se hunde"],asks:"Una explicación con la idea física correcta",f:"Ideas clave",steps:["Menos área → más presión (P = F/A).","Más profundidad → más presión (P = ρgh).","La forma del recipiente NO importa: solo cuenta h.","Misma profundidad → misma presión.","Flota si ρ(objeto) < ρ(líquido)."],trap:"Pensar que más cantidad de líquido significa más presión.",ex:"«Tres recipientes distintos con la misma altura de agua» → la presión en el fondo es igual.",tags:["hidro","pres","pliq","dens"]}]},
+{g:"⚖️ Densidad, masa y volumen",ind:2,c:"--c2",types:[
+ {id:"g-rho",cue:["«Calcule la densidad», «¿de qué material es?», «identifique la sustancia»","Te dan una masa y un volumen"],asks:"Densidad ρ (g/cm³ o kg/m³)",f:"ρ = m ÷ V",steps:["Revisa que las unidades combinen: g con cm³, o kg con m³.","Divide m ÷ V.","Si te piden el material, compara con la tabla."],trap:"Dividir V ÷ m o mezclar kg con cm³.",ex:"1,93 kg y 100 cm³ → 1930 g ÷ 100 = 19,3 g/cm³ → oro",tags:["form","mat"]},
+ {id:"g-m",cue:["«¿Qué masa tiene…?»","Te dan una densidad y un volumen"],asks:"Masa m (g o kg)",f:"m = ρ × V",steps:["Haz que las unidades combinen (L → cm³: × 1000).","Multiplica ρ × V."],trap:"Dividir u olvidar que 1 L = 1000 cm³.",ex:"2 L de agua → 2000 cm³ × 1 g/cm³ = 2000 g",tags:["desm"]},
+ {id:"g-v",cue:["«¿Qué volumen ocupa…?», «¿cuántos litros…?»","Te dan una masa y una densidad"],asks:"Volumen V (cm³, m³ o L)",f:"V = m ÷ ρ",steps:["Divide m ÷ ρ.","Si te piden litros: m³ × 1000, o cm³ ÷ 1000."],trap:"Multiplicar m × ρ o no pasar a litros.",ex:"4,6 kg de aceite (920 kg/m³) → 0,005 m³ = 5 L",tags:["desv"]},
+ {id:"g-conv",cue:["«Convierta…», «exprese en…»","g/cm³ ↔ kg/m³, L ↔ m³, mL ↔ cm³"],asks:"El mismo valor en otra unidad",f:"Factores de conversión",steps:["g/cm³ → kg/m³: × 1000 (y al revés, ÷ 1000).","m³ → L: × 1000.","1 mL = 1 cm³."],trap:"Usar 100 en lugar de 1000.",ex:"2,7 g/cm³ → 2700 kg/m³",tags:["unid"]},
+ {id:"g-prob",cue:["«Probeta», «el nivel del agua sube de… a…», «objeto irregular (piedra, llave)»"],asks:"El volumen por desplazamiento y luego la densidad",f:"V = V_final − V_inicial · ρ = m ÷ V",steps:["Resta los niveles: ese es el volumen del objeto.","Divide la masa entre ese volumen."],trap:"Usar el nivel final en lugar de la diferencia.",ex:"De 50 a 70 mL con una piedra de 52 g → 52 ÷ 20 = 2,6 g/cm³",tags:["desv","form"]},
+ {id:"g-prisma",cue:["«Un bloque mide … cm × … cm × … cm»"],asks:"Primero el volumen, luego la densidad",f:"V = largo × ancho × alto · ρ = m ÷ V",steps:["Multiplica las tres medidas.","Divide la masa entre ese volumen."],trap:"Sumar las medidas en lugar de multiplicarlas.",ex:"2 × 3 × 5 = 30 cm³; 81 g ÷ 30 = 2,7 g/cm³",tags:["form"]},
+ {id:"g-prop",cue:["«Si se duplica…», «misma masa pero…», «gráfica de m contra V»"],asks:"Una relación (sin calcular)",f:"ρ = m/V como proporción",steps:["Misma masa: más volumen → menos densidad.","Mismo volumen: más densidad → más masa.","En la gráfica m–V, la pendiente es la densidad (más inclinada = más densa)."],trap:"Pensar que la densidad cambia al cortar un objeto.",ex:"Un gas se comprime a la mitad → su densidad se duplica.",tags:["prop"]}]},
+{g:"⚡ Electricidad: identificar",ind:3,c:"--c3",types:[
+ {id:"g-id",cue:["«¿En qué unidad se mide…?», «¿qué representa I, Q o t?»","«Instrumento», «sentido convencional», «tipo de corriente», «conductor o aislante»"],asks:"Identificar un concepto (sin calcular)",f:"Tabla de identificación",steps:["Q → carga → coulomb (C) · I → intensidad → amperio (A) · t → tiempo → segundo (s).","El amperímetro mide I y se conecta en serie.","Convencional: de + a −. Los electrones van de − a +.","CC: un solo sentido (baterías) · CA: cambia de sentido (tomacorriente, 60 Hz).","Conductores: metales · Aislantes: plástico, vidrio, caucho · Semiconductores: silicio."],trap:"Confundir el sentido convencional con el de los electrones.",ex:"«Los electrones van hacia la derecha» → la corriente convencional va hacia la izquierda.",tags:["carga","inten","sent","tipos","cond","med"]},
+ {id:"g-pref",cue:["«Convierta mA, µC, min, h, ms…»"],asks:"El valor en unidades SI",f:"Prefijos y tiempo",steps:["mA → A: ÷ 1000 · µ → × 10⁻⁶.","min → s: × 60 · h → s: × 3600 · ms → s: ÷ 1000."],trap:"Usar el factor de mili (10⁻³) cuando es micro (10⁻⁶).",ex:"250 mA = 0,25 A",tags:["pref","tiempo"]}]},
+{g:"🔋 Problemas de I = Q/t",ind:4,c:"--c4",types:[
+ {id:"g-i",cue:["«Calcule la intensidad / la corriente», «¿cuántos amperios…?»","Te dan una carga (C) y un tiempo"],asks:"Intensidad I (A)",f:"I = Q ÷ t",steps:["Pasa el tiempo a segundos.","Divide Q ÷ t.","Escribe la respuesta en A."],trap:"Dejar el tiempo en minutos.",ex:"6 C en 2 min → 6 ÷ 120 = 0,05 A",tags:["ci"]},
+ {id:"g-q",cue:["«¿Cuánta carga pasó…?», «¿cuántos coulombs…?»","Te dan una intensidad (A) y un tiempo"],asks:"Carga Q (C)",f:"Q = I × t",steps:["Pasa I a A (mA ÷ 1000) y t a segundos.","Multiplica I × t."],trap:"No convertir los mA o los minutos.",ex:"250 mA durante 2 min → 0,25 × 120 = 30 C",tags:["cq"]},
+ {id:"g-t",cue:["«¿Cuánto tiempo tarda…?», «¿en cuántos segundos, minutos u horas…?»","Te dan una carga y una intensidad"],asks:"Tiempo t (en s; luego en min o h si lo piden)",f:"t = Q ÷ I",steps:["Divide Q ÷ I: el resultado sale en segundos.","Si te piden minutos: ÷ 60. Si te piden horas: ÷ 3600."],trap:"Entregar segundos cuando te pidieron minutos u horas.",ex:"1200 C con 4 A → 300 s = 5 min",tags:["ct"]},
+ {id:"g-n",cue:["«¿Cuántos electrones…?»","O te dan una cantidad de electrones y te piden I o Q"],asks:"Número de electrones n, o la carga a partir de los electrones",f:"n = Q ÷ e · Q = n × e",steps:["Si no tienes Q, calcúlala: Q = I × t.","Para los electrones, divide Q entre 1,6 × 10⁻¹⁹.","Si te dieron electrones: Q = n × 1,6 × 10⁻¹⁹ y luego I = Q ÷ t."],trap:"Multiplicar por e cuando hay que dividir.",ex:"1,6 A durante 1 s → Q = 1,6 C → n = 1 × 10¹⁹",tags:["ne"]},
+ {id:"g-mah",cue:["«Batería de … mAh», «capacidad del celular»"],asks:"La carga en coulombs (o el tiempo de carga)",f:"Q = (mAh ÷ 1000) × 3600",steps:["mAh ÷ 1000 → A·h.","× 3600 → coulombs.","Para el tiempo de carga: t = Q ÷ I."],trap:"Olvidar el × 3600.",ex:"3000 mAh → 3 × 3600 = 10 800 C",tags:["cq","conv","ctx"]},
+ {id:"g-graf",cue:["«La gráfica de Q contra t», «la pendiente»"],asks:"La intensidad a partir de la gráfica",f:"I = ΔQ ÷ Δt (pendiente)",steps:["Lee un punto de la recta (t, Q).","Divide Q ÷ t."],trap:"Multiplicar los valores del punto.",ex:"Punto (4 s, 20 C) → I = 5 A",tags:["ci","rep"]}]}
+];
+const GTYPE={}; GUIA.forEach(g=>g.types.forEach(t=>{GTYPE[t.id]=Object.assign({ind:g.ind,c:g.c,grp:g.g},t);}));
+
+/* Detector de enunciados: identifica la incógnita y los datos con sus unidades */
+const U_LIST=[["kg/m³","dens","kg/m³"],["kg/m3","dens","kg/m³"],["g/cm³","densg","g/cm³"],["g/cm3","densg","g/cm³"],["g/ml","densg","g/mL"],["mah","mah","mAh"],["kpa","kpa","kPa"],["pa","pa","Pa"],["atm","atm","atm"],
+ ["electrones","e","electrones"],["segundos","s","s"],["minutos","min","min"],["minuto","min","min"],["horas","h","h"],["hora","h","h"],["litros","L","L"],["litro","L","L"],
+ ["cm²","cm2","cm²"],["cm2","cm2","cm²"],["m²","m2","m²"],["m2","m2","m²"],["cm³","cm3","cm³"],["cm3","cm3","cm³"],["m³","m3","m³"],["m3","m3","m³"],
+ ["ma","mA","mA"],["µa","uA","µA"],["μa","uA","µA"],["ua","uA","µA"],["µc","uC","µC"],["μc","uC","µC"],["uc","uC","µC"],["mc","mC","mC"],["ms","ms","ms"],["min","min","min"],["ml","mL","mL"],
+ ["kg","kg","kg"],["cm","cm","cm"],["g","g","g"],["n","N","N"],["h","h","h"],["s","s","s"],["m","m","m"],["l","L","L"],["c","C","C"],["a","A","A"]];
+const U_NAME={dens:"densidad",densg:"densidad",mah:"capacidad de batería",kpa:"presión",pa:"presión",atm:"presión",e:"número de electrones",s:"tiempo",min:"tiempo",h:"tiempo",ms:"tiempo",L:"volumen",mL:"volumen",cm3:"volumen",m3:"volumen",cm2:"área",m2:"área",mA:"intensidad",uA:"intensidad",A:"intensidad",uC:"carga",mC:"carga",C:"carga",kg:"masa",g:"masa",N:"fuerza (peso)",cm:"longitud / profundidad",m:"longitud / profundidad"};
+function extractData(raw){
+  const t=raw.replace(/[  ]/g," ");
+  const alt=U_LIST.map(u=>u[0].replace(/[.*+?^${}()|[\]\\\/]/g,"\\$&")).join("|");
+  const re=new RegExp("(\\d+(?:[.,]\\d+)?(?:\\s*[x×]\\s*10\\s*\\^?\\s*[-−⁻]?[\\d⁰¹²³⁴⁵⁶⁷⁸⁹]+)?)\\s*("+alt+")(?![a-záéíóúñµμ²³0-9/])","gi");
+  const out=[]; let m;
+  while((m=re.exec(t))){
+    const u=U_LIST.find(x=>x[0]===m[2].toLowerCase()); if(!u) continue;
+    if(["a","c","n","l"].includes(u[0]) && m[2]===m[2].toLowerCase()) continue; // «5 a 10», «de» … solo mayúsculas
+    out.push({num:m[1].trim(),k:u[1],u:u[2],name:U_NAME[u[1]]});
+  }
+  return out;
+}
+function decode(raw){
+  raw=raw.replace(/[  ]/g," ").replace(/(\d)\s(?=\d{3}(?!\d))/g,"$1");
+  const full=raw.toLowerCase();
+  // La incógnita está en la última pregunta («¿…») o tras el último verbo de instrucción.
+  let qi=full.lastIndexOf("¿"); const vre=/(calcul[ae]|determin[ae]|halle|encuentr[ae]|expr[eé]s[ae]|convi[ei]rt[ae])/g; let mm;
+  while((mm=vre.exec(full))) qi=Math.max(qi,mm.index);
+  const q=qi>=0?full.slice(qi):full;
+  const data=extractData(raw); const has=k=>data.some(d=>d.k===k); const hasAny=a=>a.some(has);
+  const depthCtx=/profund|fondo|buzo|piscina|sumerg|tanque|represa|líquido|liquido|agua|mar\b|alcohol|aceite|mercurio/.test(full);
+  const RULES=[
+    [/convi[ei]rt|expr[eé]s/, ()=>hasAny(["mA","uA","uC","mC","min","h","ms"])?"g-pref":"g-conv"],
+    [/electrones/, ()=>"g-n"],
+    [/presi[oó]n/, ()=>/absoluta|total/.test(q)?"g-abs":(has("N")&&hasAny(["cm2","m2"]))?"g-pfa":(hasAny(["dens","densg"])||depthCtx)?"g-rgh":"g-pfa"],
+    [/profundidad|qu[eé] tan profundo/, ()=>"g-h"],
+    [/fuerza/, ()=>"g-fpa"],
+    [/densidad|material|sustancia/, ()=>(hasAny(["pa","kpa"])&&!hasAny(["g","kg"]))?"g-rhop":/probeta|nivel|sube/.test(full)?"g-prob":/\d\s*cm\s*[x×]\s*\d/.test(full)?"g-prisma":"g-rho"],
+    [/masa|cu[aá]nto pesa/, ()=>"g-m"],
+    [/volumen|litros|cu[aá]ntos l\b/, ()=>hasAny(["g","kg"])?"g-v":"g-conv"],
+    [/tiempo|tarda|dura\b|segundos|minutos|horas/, ()=>/mah/.test(full)?"g-mah":"g-t"],
+    [/intensidad|corriente|amperios/, ()=>/gr[aá]fica/.test(full)?"g-graf":has("e")?"g-n":"g-i"],
+    [/carga|coulombs?/, ()=>/mah/.test(full)?"g-mah":has("e")?"g-n":"g-q"],
+    [/por qu[eé]|explique|en cu[aá]l/, ()=>/corriente|electr|cable|bater/.test(full)?"g-id":"g-why1"]
+  ];
+  let id=null,best=Infinity;
+  RULES.forEach(([re,fn])=>{const m=q.search(re); if(m>=0&&m<best){best=m;id=fn();}});
+  // conversiones necesarias
+  const conv=[]; const pressure=["g-rgh","g-h","g-abs","g-rhop"].includes(id);
+  data.forEach(d=>{
+    if(d.k==="cm"&&pressure) conv.push(`${d.num} cm → m (÷ 100)`);
+    if(d.k==="cm2") conv.push(`${d.num} cm² → m² (÷ 10 000)`);
+    if(d.k==="min") conv.push(`${d.num} min → s (× 60)`);
+    if(d.k==="h"&&/^g-(i|q|t|n|mah|pref)$/.test(id||"")) conv.push(`${d.num} h → s (× 3600)`);
+    if(d.k==="ms") conv.push(`${d.num} ms → s (÷ 1000)`);
+    if(d.k==="mA") conv.push(`${d.num} mA → A (÷ 1000)`);
+    if(d.k==="uA") conv.push(`${d.num} µA → A (× 10⁻⁶)`);
+    if(d.k==="uC") conv.push(`${d.num} µC → C (× 10⁻⁶)`);
+    if(d.k==="mC") conv.push(`${d.num} mC → C (÷ 1000)`);
+    if(d.k==="kpa") conv.push(`${d.num} kPa → Pa (× 1000)`);
+    if(d.k==="densg"&&pressure) conv.push(`${d.num} g/cm³ → kg/m³ (× 1000)`);
+    if(d.k==="L"&&(has("densg")||has("cm3"))) conv.push(`${d.num} L → cm³ (× 1000)`);
+    if(d.k==="kg"&&(has("densg")||has("cm3"))) conv.push(`${d.num} kg → g (× 1000)`);
+    if(d.k==="g"&&has("dens")) conv.push(`${d.num} g → kg (÷ 1000)`);
+  });
+  const notes=[];
+  if(pressure&&!hasAny(["dens","densg"])&&/agua/.test(full)&&!/mar/.test(full)) notes.push("Es agua y no te dieron la densidad: usa ρ = 1000 kg/m³.");
+  if(pressure||id==="g-rhop") notes.push("Recuerda que g = 9,8 m/s².");
+  if(id==="g-abs"&&!/101/.test(full)) notes.push("P₀ (presión atmosférica) = 101 300 Pa.");
+  if(id==="g-n") notes.push("e = 1,6 × 10⁻¹⁹ C.");
+  if(id==="g-t"&&/minutos|horas/.test(q)) notes.push("Te piden el tiempo en minutos u horas: convierte el resultado al final.");
+  if(id==="g-v"&&/litros/.test(q)) notes.push("Te piden litros: convierte el volumen al final.");
+  return {id,data,conv,notes};
+}
+function decodeHTML(raw,compact){
+  if(!raw||!raw.trim()) return `<div class="decode" tabindex="-1"><p class="row">✍️ Escribe o pega primero el enunciado del problema.</p></div>`;
+  const r=decode(raw); const T=r.id&&GTYPE[r.id];
+  if(!T) return `<div class="decode" tabindex="-1"><p class="row">🤔 No logré identificar qué te piden. Busca la pregunta (lo que va después de «¿» o de «calcule») y revisa la guía de tipos de pregunta de abajo. Pistas: «presión», «densidad», «masa», «volumen», «intensidad», «carga», «tiempo», «electrones».</p></div>`;
+  return `<div class="decode" tabindex="-1" style="--dc:var(${T.c})">
+   <p class="row"><b class="lbl">1 · ¿Qué te piden?</b>🎯 ${T.asks}</p>
+   <p class="row"><b class="lbl">2 · ¿Qué datos te dan?</b>${r.data.length?r.data.map(d=>`<span class="dchip">${d.num} ${d.u} <small style="color:var(--text-faint)">(${d.name})</small></span>`).join(""):"<span style='color:var(--text-dim)'>No encontré datos con unidades (puede ser una pregunta de explicación).</span>"}</p>
+   ${r.conv.length?`<p class="row"><b class="lbl">3 · ¿Hay que convertir algo?</b>${r.conv.map(c=>`<span class="dchip cv">🔄 ${c}</span>`).join("")}</p>`:`<p class="row"><b class="lbl">3 · ¿Hay que convertir algo?</b>✔ No detecté conversiones necesarias (revísalo de todos modos).</p>`}
+   <p class="row"><b class="lbl">4 · Fórmula que debes usar</b><span class="f">${T.f}</span></p>
+   <p class="row"><b class="lbl">5 · Cómo aplicarla</b></p><ol class="steps" style="margin-top:0">${T.steps.map(x=>`<li>${x}</li>`).join("")}</ol>
+   ${r.notes.length?`<p class="row" style="margin-top:8px">📌 ${r.notes.join(" ")}</p>`:""}
+   <p class="row">⚠️ <b>Trampa típica:</b> ${T.trap}</p>
+   ${compact?"":`<div class="btn-row"><button class="btn btn-g" data-act="gotoType" data-id="${T.id}">Ver este tipo en la guía</button><button class="btn btn-p" style="background:var(${T.c})" data-act="practType" data-id="${T.id}">🎯 Practicar este tipo</button></div>`}
+   <p class="row" style="font-size:.78rem;color:var(--text-faint);margin:8px 0 0">El detector es una guía automática: confirma siempre que tenga sentido con lo que dice el enunciado.</p></div>`;
+}
+const DEC_EX=[
+ "Un buzo se encuentra a 12 m de profundidad en el mar (ρ = 1030 kg/m³). ¿Cuál es la presión hidrostática que soporta?",
+ "Un bloque de 50 N se apoya sobre una cara de 25 cm². Calcule la presión que ejerce.",
+ "En una probeta hay 50 mL de agua; al introducir una piedra de 52 g el nivel sube a 70 mL. ¿Cuál es la densidad de la piedra?",
+ "Una corriente de 250 mA circula durante 2 min. ¿Cuánta carga pasó por el conductor?",
+ "Por un cable pasan 3,0 × 10²⁰ electrones en 4 s. Calcule la intensidad de corriente.",
+ "¿Cuántos minutos tarda en pasar una carga de 1200 C con una corriente de 4 A?"
+];
+function vPide(v){
+  v.innerHTML=`<h2>🧭 ¿Qué me pide el examen?</h2>
+   <p class="lede">El secreto no es memorizar fórmulas, sino <b>reconocer qué te piden</b>. Antes de calcular, hazte siempre estas preguntas:</p>
+   <div class="card"><div class="flow">
+     <div><b>Paso 0 · Lee la pregunta</b>Subraya lo que va después de «¿» o de «calcule»: esa es la <b>incógnita</b>.</div>
+     <div><b>Paso 1 · Encierra los datos</b>Cada número va con su unidad (N, m², kg/m³, C, A, s…). La unidad te dice qué magnitud es.</div>
+     <div><b>Paso 2 · Revisa las unidades</b>¿Hay cm, cm², min, h, mA o µC? Conviértelos antes de usar la fórmula.</div>
+     <div><b>Paso 3 · Escoge la fórmula</b>Es la que relaciona la incógnita con tus datos. Usa la guía de abajo.</div>
+     <div><b>Paso 4 · Aplica D-F-S-R</b>Datos → Fórmula → Sustituir → Resultado con unidad.</div></div></div>
+   <div class="card"><h3>🔎 Detector de enunciados</h3><p style="font-size:.92rem">Escribe o pega un problema (del examen, de una práctica o del cuaderno) y te diré qué te piden, qué datos tienes, qué convertir y qué fórmula usar.</p>
+    <label class="sr" for="dec-in">Enunciado del problema</label><textarea id="dec-in" placeholder="Ej.: Una corriente de 2 A circula durante 5 minutos. ¿Cuánta carga pasa?"></textarea>
+    <div class="ex-chips" aria-label="Ejemplos">${DEC_EX.map((t,i)=>`<button data-act="decodeEx" data-t="${esc(t)}">Ejemplo ${i+1}</button>`).join("")}</div>
+    <button class="btn btn-p" style="width:100%" data-act="decodeRun">🧭 Analizar enunciado</button><div id="dec-out" aria-live="polite"></div></div>
+   <h3 style="margin:18px 4px 6px">📚 Guía: tipos de pregunta → fórmula → cómo aplicarla</h3>
+   <label class="sr" for="g-search">Buscar por palabra clave</label><input id="g-search" class="search" placeholder="🔍 Busca una palabra del enunciado: profundidad, litros, electrones…" autocomplete="off">
+   <div id="g-list" style="margin-top:12px">${GUIA.map(g=>`<div class="g-grp"><h3 style="margin:14px 4px 8px;color:var(${g.c})">${g.g} <span class="chip" style="font-size:.7rem">Indicador ${g.ind}</span></h3>
+    ${g.types.map(t=>`<details class="card gcard" id="${t.id}" style="--gc:var(${g.c})" data-s="${esc((t.cue.join(" ")+" "+t.asks+" "+t.f+" "+t.ex).toLowerCase())}">
+      <summary><span class="q">${t.cue[0]}<small>Te piden: ${t.asks}</small></span><span class="fm">${t.f.split(" · ")[0]}</span></summary>
+      <div class="gb"><div class="flow">
+        <div><b>🗣️ Si el enunciado dice…</b>${t.cue.map(c=>`• ${c}`).join("<br>")}</div>
+        <div><b>🎯 Te piden</b>${t.asks}</div>
+        <div><b>🧮 Fórmula</b><span style="font-family:'Cambria Math','Times New Roman',serif;font-size:1.2rem;font-weight:700;color:var(${g.c})">${t.f}</span></div>
+        <div><b>🪜 Cómo aplicarla</b><ol class="steps" style="margin:0">${t.steps.map(x=>`<li>${x}</li>`).join("")}</ol></div>
+        <div><b>⚠️ Trampa típica</b>${t.trap}</div>
+        <div><b>👀 Ejemplo</b>${t.ex}</div></div>
+        <button class="btn btn-p" style="width:100%;margin-top:10px;background:var(${g.c})" data-act="practType" data-id="${t.id}">🎯 Practicar este tipo (${typeItems(t.id).length} ítems)</button></div></details>`).join("")}</div>`).join("")}</div>`;
+  const inp=$("#g-search");
+  inp.addEventListener("input",()=>{const w=inp.value.trim().toLowerCase();
+    document.querySelectorAll(".gcard").forEach(d=>{const on=!w||d.dataset.s.includes(w); d.style.display=on?"":"none"; if(w&&on) d.open=true;});
+    document.querySelectorAll(".g-grp").forEach(g=>{g.style.display=[...g.querySelectorAll(".gcard")].some(d=>d.style.display!=="none")?"":"none";});});
+  $("#dec-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();$("#dec-out").innerHTML=decodeHTML($("#dec-in").value,false);}});
+}
+function typeItems(id){
+  const T=GTYPE[id];
+  // Prioriza los ítems cuyo enunciado el detector clasifica en este mismo tipo; si son pocos, completa con los subtemas.
+  const pool=BANK.filter(q=>q.ind===T.ind);
+  const exact=pool.filter(q=>q.type==="num"&&decode(q.q.replace(/<[^>]+>/g," ")+" "+(q.data||"")).id===id);
+  const byTag=pool.filter(q=>!exact.includes(q)&&q.tags.some(t=>T.tags.includes(t)));
+  return exact.length>=3?exact:[...exact,...byTag].slice(0,Math.max(6,exact.length));
+}
+function startTypePractice(id){
+  const T=GTYPE[id]; const items=typeItems(id).slice().sort((a,b)=>a.lvl-b.lvl);
+  if(!items.length){toast("Aún no hay ítems para este tipo");return;}
+  session={mode:"practice",ind:T.ind,lvl:0,items:items.map(prepItem),i:0,ans:{},title:`🧭 ${T.asks}`,gtype:id}; go("quiz");
+}
 
 /* =========================================================
    RUTA «DESDE CERO» — andamiaje para estudiantes abrumados
@@ -1580,6 +1777,7 @@ const CERO=[
 function helpBoxes(q){
   const s=session; if(!s) return "";
   let h="";
+  if(s.decode&&s.decode[s.i]&&!(s.ans[s.i]&&s.ans[s.i].checked)) h+=decodeHTML(q.q.replace(/<[^>]+>/g," ")+" "+(q.data||""),true);
   if(s.hints&&s.hints[s.i]&&q.hint) h+=`<div class="hintbox">💡 ${q.hint}</div>`;
   const st=(s.steps||{})[s.i]||0; const a=s.ans[s.i];
   if(st&&q.sol&&!(a&&a.checked)){ const shown=q.sol.slice(0,st);
@@ -1748,7 +1946,7 @@ document.addEventListener("click",e=>{
     case "startExam": startExam(); break;
     case "startDiag": startDiag(); break;
     case "skip": session.ans[session.i]={v:"__skip",raw:"",skip:true}; nextQ(); break;
-    case "retry": session.mode==="cero"?startCero(session.station):session.mode==="inf"?startInfinite(session.ind):(session.ind?startPractice(session.ind,session.lvl):startErrors()); break;
+    case "retry": session.gtype?startTypePractice(session.gtype):session.mode==="cero"?startCero(session.station):session.mode==="inf"?startInfinite(session.ind):(session.ind?startPractice(session.ind,session.lvl):startErrors()); break;
     case "pick": { const s=session,q=s.items[s.i]; if(s.ans[s.i]&&s.ans[s.i].checked&&!EXL(s.mode)) return;
       const val=q.type==="tf"?b.dataset.v==="true":+b.dataset.v; s.ans[s.i]=Object.assign(s.ans[s.i]||{},{v:val,skip:false});
       document.querySelectorAll(".opt").forEach(o=>{const on=o===b;o.classList.toggle("sel",on);o.setAttribute("aria-checked",on);});
@@ -1757,6 +1955,11 @@ document.addEventListener("click",e=>{
     case "hint": { const q=session.items[session.i]; session.hints=session.hints||{}; session.hints[session.i]=true; $("#hintbox").innerHTML=helpBoxes(q); break; }
     case "step": { session.steps=session.steps||{}; session.steps[session.i]=(session.steps[session.i]||0)+1; go("quiz",{keepScroll:true,focus:false}); const sb=document.querySelector(".stepbox"); if(sb) sb.scrollIntoView({behavior:"smooth",block:"nearest"}); break; }
     case "cero": go("cero"); break;
+    case "decodeQ": { session.decode=session.decode||{}; session.decode[session.i]=true; go("quiz",{keepScroll:true,focus:false}); const d=document.querySelector(".decode"); if(d) d.scrollIntoView({behavior:"smooth",block:"nearest"}); break; }
+    case "decodeRun": { $("#dec-out").innerHTML=decodeHTML($("#dec-in").value,false); const d=$("#dec-out .decode"); if(d) d.focus(); break; }
+    case "decodeEx": { $("#dec-in").value=b.dataset.t; $("#dec-out").innerHTML=decodeHTML(b.dataset.t,false); break; }
+    case "gotoType": { const el=document.getElementById(b.dataset.id); if(el){ el.open=true; el.scrollIntoView({behavior:"smooth",block:"start"}); } break; }
+    case "practType": startTypePractice(b.dataset.id); break;
     case "station": go("station",{id:b.dataset.id}); break;
     case "startCero": startCero(b.dataset.id); break;
     case "next": nextQ(); break;
