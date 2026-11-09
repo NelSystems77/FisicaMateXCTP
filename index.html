@@ -1689,29 +1689,29 @@ function startTypePractice(id){
    `val` se usa en las pruebas automáticas para verificar que la secuencia da el resultado indicado.
    ========================================================= */
 const CALC=[
-{id:"c-pfa",ind:1,title:"Presión: P = F ÷ A",f:"P = F ÷ A",types:["g-pfa"],prob:"Un bloque de 50 N se apoya en una cara de 25 cm². ¿Qué presión ejerce?",seq:"50 ÷ ( 25 ÷ 10000 ) =",screen:"20000",unit:"Pa",val:20000,tip:"El área en cm² se pasa a m² dentro del paréntesis (÷ 10 000). Si el área ya viene en m², escribe solo: 500 ÷ 0.25 ="},
-{id:"c-fpa",ind:1,title:"Fuerza: F = P × A",f:"F = P × A",types:["g-fpa"],prob:"Una presión de 2,5 × 10⁵ Pa actúa sobre una tapa de 0,02 m². ¿Qué fuerza ejerce?",seq:"2.5 ×10ˣ 5 ► × 0.02 =",screen:"5000",unit:"N",val:5000,tip:"La tecla ► saca el cursor del exponente. Si te la saltas, el «× 0.02» se escribe dentro del exponente y el resultado sale mal."},
-{id:"c-rgh",ind:1,title:"Presión en un líquido: P = ρ·g·h",f:"P = ρ × g × h",types:["g-rgh"],prob:"Un vaso tiene 12 cm de alcohol (790 kg/m³). ¿Presión hidrostática en el fondo?",seq:"790 × 9.8 × ( 12 ÷ 100 ) =",screen:"929.04",unit:"Pa",val:929.04,tip:"Pasa los cm a metros dentro del paréntesis (÷ 100). Si la profundidad ya está en metros, escribe directamente: 1000 × 9.8 × 3 ="},
-{id:"c-abs",ind:1,title:"Presión absoluta: P₀ + ρ·g·h",f:"P = P₀ + ρ × g × h",types:["g-abs"],prob:"Un buzo está a 5 m en el mar (1030 kg/m³). ¿Presión absoluta?",seq:"101300 + 1030 × 9.8 × 5 =",screen:"151770",unit:"Pa",val:151770,tip:"La calculadora multiplica antes de sumar, así que aquí no necesitas paréntesis."},
-{id:"c-h",ind:1,title:"Profundidad: h = P ÷ (ρ·g)",f:"h = P ÷ (ρ × g)",types:["g-h"],prob:"Un sensor en agua marca 39 200 Pa. ¿A qué profundidad está?",seq:"39200 ÷ ( 1000 × 9.8 ) =",screen:"4",unit:"m",val:4,tip:"Los paréntesis son obligatorios. Sin ellos, la calculadora divide entre 1000 y luego multiplica por 9.8: el error más común en este tipo de problema."},
-{id:"c-rhop",ind:1,title:"Densidad del líquido: ρ = P ÷ (g·h)",f:"ρ = P ÷ (g × h)",types:["g-rhop"],prob:"A 1,5 m de profundidad la presión es 12 000 Pa. ¿Densidad del líquido?",seq:"12000 ÷ ( 9.8 × 1.5 ) =",screen:"816.3265306",unit:"kg/m³",val:12000/14.7,tip:"Redondea al final: ≈ 816,3 kg/m³. No redondees los pasos intermedios."},
-{id:"c-rho",ind:2,title:"Densidad: ρ = m ÷ V",f:"ρ = m ÷ V",types:["g-rho"],prob:"Un objeto tiene 250 g y ocupa 100 cm³. ¿Cuál es su densidad?",seq:"250 ÷ 100 =",screen:"2.5",unit:"g/cm³",val:2.5,tip:"Si la pantalla muestra una fracción (por ejemplo 5/2), presiona S⇔D para verla en decimal."},
-{id:"c-m",ind:2,title:"Masa: m = ρ × V",f:"m = ρ × V",types:["g-m"],prob:"Un lingote de oro (19,3 g/cm³) ocupa 50 cm³. ¿Qué masa tiene?",seq:"19.3 × 50 =",screen:"965",unit:"g",val:965,tip:"Recuerda que la calculadora usa punto decimal: escribe 19.3, no 19,3."},
-{id:"c-v",ind:2,title:"Volumen: V = m ÷ ρ",f:"V = m ÷ ρ",types:["g-v"],prob:"Un trozo de aluminio (2,7 g/cm³) tiene 540 g. ¿Qué volumen ocupa?",seq:"540 ÷ 2.7 =",screen:"200",unit:"cm³",val:200,tip:"Primero va la masa y luego la densidad. Si lo escribes al revés, obtienes un número muy pequeño."},
-{id:"c-conv",ind:2,title:"Conversión de densidad y volumen",f:"× 1000 o ÷ 1000",types:["g-conv"],prob:"Convierte 2,7 g/cm³ a kg/m³.",seq:"2.7 × 1000 =",screen:"2700",unit:"kg/m³",val:2700,tip:"De kg/m³ a g/cm³: 800 ÷ 1000 =  → 0.8. De L a cm³: × 1000. De m³ a L: × 1000."},
-{id:"c-prob",ind:2,title:"Volumen por desplazamiento (probeta)",f:"ρ = m ÷ (V_final − V_inicial)",types:["g-prob"],prob:"Una piedra de 52 g sube el agua de 50 mL a 70 mL. ¿Densidad?",seq:"52 ÷ ( 70 − 50 ) =",screen:"2.6",unit:"g/cm³",val:2.6,tip:"La resta va entre paréntesis: así la calculadora la hace antes de dividir."},
-{id:"c-prisma",ind:2,title:"Densidad de un bloque (largo × ancho × alto)",f:"ρ = m ÷ (l × a × h)",types:["g-prisma"],prob:"Un bloque de 2 cm × 3 cm × 5 cm tiene 81 g. ¿Densidad?",seq:"81 ÷ ( 2 × 3 × 5 ) =",screen:"2.7",unit:"g/cm³",val:2.7,tip:"Multiplica las tres medidas; no las sumes."},
-{id:"c-pref",ind:3,title:"Prefijos y tiempo (mA, µC, min, h)",f:"mili = ×10⁻³ · micro = ×10⁻⁶",types:["g-pref"],prob:"Convierte 45 µC a coulombs.",seq:"45 ×10ˣ (−) 6 =",screen:"4.5×10⁻⁵",unit:"C",val:4.5e-5,tip:"No presiones × antes de ×10ˣ. Otros casos: 250 ÷ 1000 = (mA → A); 5 × 60 = (min → s); 1.5 × 3600 = (h → s); para mili usa ×10ˣ (−) 3."},
-{id:"c-i",ind:4,title:"Intensidad: I = Q ÷ t",f:"I = Q ÷ t",types:["g-i"],prob:"Pasan 6 C en 2 minutos. ¿Cuál es la intensidad?",seq:"6 ÷ ( 2 × 60 ) =",screen:"0.05",unit:"A",val:0.05,tip:"Convierte el tiempo a segundos dentro del paréntesis (× 60 para minutos, × 3600 para horas)."},
-{id:"c-q",ind:4,title:"Carga: Q = I × t",f:"Q = I × t",types:["g-q"],prob:"Una corriente de 250 mA circula durante 2 min. ¿Cuánta carga pasa?",seq:"( 250 ÷ 1000 ) × ( 2 × 60 ) =",screen:"30",unit:"C",val:30,tip:"Dos conversiones, dos paréntesis: mA → A y min → s."},
-{id:"c-t",ind:4,title:"Tiempo: t = Q ÷ I",f:"t = Q ÷ I",types:["g-t"],prob:"¿Cuántos minutos tardan en pasar 1200 C con 4 A?",seq:"1200 ÷ 4 ÷ 60 =",screen:"5",unit:"min",val:5,tip:"1200 ÷ 4 da segundos (300); el ÷ 60 final los pasa a minutos. Para horas, divide entre 3600."},
-{id:"c-ne",ind:4,title:"Número de electrones: n = Q ÷ e",f:"n = Q ÷ e",types:["g-n"],prob:"Pasan 48 C de carga. ¿Cuántos electrones son?",seq:"48 ÷ ( 1.6 ×10ˣ (−) 19 ► ) =",screen:"3×10²⁰",unit:"electrones",val:3e20,tip:"Presiona ► para salir del exponente antes de cerrar el paréntesis. El resultado se muestra en notación científica y es correcto."},
-{id:"c-qe",ind:4,title:"Intensidad a partir de electrones",f:"I = (n × e) ÷ t",types:[],prob:"Pasan 3,0 × 10²⁰ electrones en 4 s. ¿Cuál es la intensidad?",seq:"( 3 ×10ˣ 20 ► × 1.6 ×10ˣ (−) 19 ► ) ÷ 4 =",screen:"12",unit:"A",val:12,tip:"Primero la carga Q = n × e (paréntesis) y luego se divide entre el tiempo."},
-{id:"c-mah",ind:4,title:"Batería en mAh a coulombs",f:"Q = (mAh ÷ 1000) × 3600",types:["g-mah"],prob:"Una batería de 3000 mAh. ¿Cuántos coulombs almacena?",seq:"3000 ÷ 1000 × 3600 =",screen:"10800",unit:"C",val:10800,tip:"mAh ÷ 1000 da A·h; × 3600 da coulombs."},
-{id:"c-graf",ind:4,title:"Intensidad desde la gráfica Q–t",f:"I = Q ÷ t (pendiente)",types:["g-graf"],prob:"En la gráfica, el punto (4 s, 20 C) está sobre la recta. ¿Intensidad?",seq:"20 ÷ 4 =",screen:"5",unit:"A",val:5,tip:"Lee un punto de la recta y divide carga entre tiempo."}
+{id:"c-pfa",ind:1,title:"Presión: P = F ÷ A",f:"P = F ÷ A",types:["g-pfa"],prob:"Un bloque de 50 N se apoya en una cara de 25 cm². ¿Qué presión ejerce?",seq:"50 ÷ ( 25 ÷ 10000 ) EXE",screen:"20000",unit:"Pa",val:20000,tip:"El área en cm² se pasa a m² dentro del paréntesis (÷ 10 000). Si el área ya viene en m², escribe solo: 500 ÷ 0,25 EXE"},
+{id:"c-fpa",ind:1,title:"Fuerza: F = P × A",f:"F = P × A",types:["g-fpa"],prob:"Una presión de 2,5 × 10⁵ Pa actúa sobre una tapa de 0,02 m². ¿Qué fuerza ejerce?",seq:"2,5 ×10■ 5 ► × 0,02 EXE",screen:"5000",unit:"N",val:5000,tip:"La flecha derecha (>) saca el cursor del exponente. Si te la saltas, el «× 0,02» se escribe dentro del exponente y el resultado sale mal."},
+{id:"c-rgh",ind:1,title:"Presión en un líquido: P = ρ·g·h",f:"P = ρ × g × h",types:["g-rgh"],prob:"Un vaso tiene 12 cm de alcohol (790 kg/m³). ¿Presión hidrostática en el fondo?",seq:"790 × 9,8 × ( 12 ÷ 100 ) EXE",screen:"929,04",unit:"Pa",val:929.04,tip:"Pasa los cm a metros dentro del paréntesis (÷ 100). Si la profundidad ya está en metros, escribe directamente: 1000 × 9,8 × 3 EXE"},
+{id:"c-abs",ind:1,title:"Presión absoluta: P₀ + ρ·g·h",f:"P = P₀ + ρ × g × h",types:["g-abs"],prob:"Un buzo está a 5 m en el mar (1030 kg/m³). ¿Presión absoluta?",seq:"101300 + 1030 × 9,8 × 5 EXE",screen:"151770",unit:"Pa",val:151770,tip:"La calculadora multiplica antes de sumar, así que aquí no necesitas paréntesis."},
+{id:"c-h",ind:1,title:"Profundidad: h = P ÷ (ρ·g)",f:"h = P ÷ (ρ × g)",types:["g-h"],prob:"Un sensor en agua marca 39 200 Pa. ¿A qué profundidad está?",seq:"39200 ÷ ( 1000 × 9,8 ) EXE",screen:"4",unit:"m",val:4,tip:"Los paréntesis son obligatorios. Sin ellos, la calculadora divide entre 1000 y luego multiplica por 9.8: el error más común en este tipo de problema."},
+{id:"c-rhop",ind:1,title:"Densidad del líquido: ρ = P ÷ (g·h)",f:"ρ = P ÷ (g × h)",types:["g-rhop"],prob:"A 1,5 m de profundidad la presión es 12 000 Pa. ¿Densidad del líquido?",seq:"12000 ÷ ( 9,8 × 1,5 ) EXE",screen:"816,3265306",unit:"kg/m³",val:12000/14.7,tip:"Redondea al final: ≈ 816,3 kg/m³. No redondees los pasos intermedios."},
+{id:"c-rho",ind:2,title:"Densidad: ρ = m ÷ V",f:"ρ = m ÷ V",types:["g-rho"],prob:"Un objeto tiene 250 g y ocupa 100 cm³. ¿Cuál es su densidad?",seq:"250 ÷ 100 EXE",screen:"2,5",unit:"g/cm³",val:2.5,tip:"Si la pantalla muestra una fracción (por ejemplo 5/2), presiona FORMAT para verla en decimal."},
+{id:"c-m",ind:2,title:"Masa: m = ρ × V",f:"m = ρ × V",types:["g-m"],prob:"Un lingote de oro (19,3 g/cm³) ocupa 50 cm³. ¿Qué masa tiene?",seq:"19,3 × 50 EXE",screen:"965",unit:"g",val:965,tip:"El decimal se escribe con la tecla «,» (a la izquierda de ×10■): 19,3."},
+{id:"c-v",ind:2,title:"Volumen: V = m ÷ ρ",f:"V = m ÷ ρ",types:["g-v"],prob:"Un trozo de aluminio (2,7 g/cm³) tiene 540 g. ¿Qué volumen ocupa?",seq:"540 ÷ 2,7 EXE",screen:"200",unit:"cm³",val:200,tip:"Primero va la masa y luego la densidad. Si lo escribes al revés, obtienes un número muy pequeño."},
+{id:"c-conv",ind:2,title:"Conversión de densidad y volumen",f:"× 1000 o ÷ 1000",types:["g-conv"],prob:"Convierte 2,7 g/cm³ a kg/m³.",seq:"2,7 × 1000 EXE",screen:"2700",unit:"kg/m³",val:2700,tip:"De kg/m³ a g/cm³: 800 ÷ 1000 EXE → 0,8. De L a cm³: × 1000. De m³ a L: × 1000."},
+{id:"c-prob",ind:2,title:"Volumen por desplazamiento (probeta)",f:"ρ = m ÷ (V_final − V_inicial)",types:["g-prob"],prob:"Una piedra de 52 g sube el agua de 50 mL a 70 mL. ¿Densidad?",seq:"52 ÷ ( 70 − 50 ) EXE",screen:"2,6",unit:"g/cm³",val:2.6,tip:"La resta va entre paréntesis: así la calculadora la hace antes de dividir."},
+{id:"c-prisma",ind:2,title:"Densidad de un bloque (largo × ancho × alto)",f:"ρ = m ÷ (l × a × h)",types:["g-prisma"],prob:"Un bloque de 2 cm × 3 cm × 5 cm tiene 81 g. ¿Densidad?",seq:"81 ÷ ( 2 × 3 × 5 ) EXE",screen:"2,7",unit:"g/cm³",val:2.7,tip:"Multiplica las tres medidas; no las sumes."},
+{id:"c-pref",ind:3,title:"Prefijos y tiempo (mA, µC, min, h)",f:"mili = ×10⁻³ · micro = ×10⁻⁶",types:["g-pref"],prob:"Convierte 45 µC a coulombs.",seq:"45 ×10■ SHIFT (−) 6 EXE",screen:"4,5×10⁻⁵",unit:"C",val:4.5e-5,tip:"Presiona ×10■ directamente después del número, sin usar × antes. Otros casos: 250 ÷ 1000 EXE (mA → A); 5 × 60 EXE (min → s); 1,5 × 3600 EXE (h → s). Para mili usa ×10■ SHIFT (−) 3."},
+{id:"c-i",ind:4,title:"Intensidad: I = Q ÷ t",f:"I = Q ÷ t",types:["g-i"],prob:"Pasan 6 C en 2 minutos. ¿Cuál es la intensidad?",seq:"6 ÷ ( 2 × 60 ) EXE",screen:"0,05",unit:"A",val:0.05,tip:"Convierte el tiempo a segundos dentro del paréntesis (× 60 para minutos, × 3600 para horas)."},
+{id:"c-q",ind:4,title:"Carga: Q = I × t",f:"Q = I × t",types:["g-q"],prob:"Una corriente de 250 mA circula durante 2 min. ¿Cuánta carga pasa?",seq:"( 250 ÷ 1000 ) × ( 2 × 60 ) EXE",screen:"30",unit:"C",val:30,tip:"Dos conversiones, dos paréntesis: mA → A y min → s."},
+{id:"c-t",ind:4,title:"Tiempo: t = Q ÷ I",f:"t = Q ÷ I",types:["g-t"],prob:"¿Cuántos minutos tardan en pasar 1200 C con 4 A?",seq:"1200 ÷ 4 ÷ 60 EXE",screen:"5",unit:"min",val:5,tip:"1200 ÷ 4 da segundos (300); el ÷ 60 final los pasa a minutos. Para horas, divide entre 3600."},
+{id:"c-ne",ind:4,title:"Número de electrones: n = Q ÷ e",f:"n = Q ÷ e",types:["g-n"],prob:"Pasan 48 C de carga. ¿Cuántos electrones son?",seq:"48 ÷ ( 1,6 ×10■ SHIFT (−) 19 ► ) EXE",screen:"3×10²⁰",unit:"electrones",val:3e20,tip:"Presiona la flecha derecha (>) para salir del exponente antes de cerrar el paréntesis. El resultado se muestra en notación científica y es correcto."},
+{id:"c-qe",ind:4,title:"Intensidad a partir de electrones",f:"I = (n × e) ÷ t",types:[],prob:"Pasan 3,0 × 10²⁰ electrones en 4 s. ¿Cuál es la intensidad?",seq:"( 3 ×10■ 20 ► × 1,6 ×10■ SHIFT (−) 19 ► ) ÷ 4 EXE",screen:"12",unit:"A",val:12,tip:"Primero la carga Q = n × e (paréntesis) y luego se divide entre el tiempo."},
+{id:"c-mah",ind:4,title:"Batería en mAh a coulombs",f:"Q = (mAh ÷ 1000) × 3600",types:["g-mah"],prob:"Una batería de 3000 mAh. ¿Cuántos coulombs almacena?",seq:"3000 ÷ 1000 × 3600 EXE",screen:"10800",unit:"C",val:10800,tip:"mAh ÷ 1000 da A·h; × 3600 da coulombs."},
+{id:"c-graf",ind:4,title:"Intensidad desde la gráfica Q–t",f:"I = Q ÷ t (pendiente)",types:["g-graf"],prob:"En la gráfica, el punto (4 s, 20 C) está sobre la recta. ¿Intensidad?",seq:"20 ÷ 4 EXE",screen:"5",unit:"A",val:5,tip:"Lee un punto de la recta y divide carga entre tiempo."}
 ];
 const CBY={}; CALC.forEach(c=>c.types.forEach(t=>CBY[t]=c));
-function kbds(seq){return `<div class="kbds" role="img" aria-label="Teclas en orden: ${esc(seq)}">${seq.split(" ").map(t=>`<kbd class="${/^[\d.]+$/.test(t)?"n":/^(×10ˣ|\(−\)|►)$/.test(t)?"sp":""}" aria-hidden="true">${esc(t)}</kbd>`).join("")}</div>`;}
+function kbds(seq){return `<div class="kbds" role="img" aria-label="Teclas en orden: ${esc(seq)}">${seq.split(" ").map(t=>`<kbd class="${/^[\d,.]+$/.test(t)?"n":/^(×10■|\(−\)|►|SHIFT)$/.test(t)?"sp":""}" aria-hidden="true">${esc(t)}</kbd>`).join("")}</div>`;}
 function calcBlock(c){
   return `<p style="margin:0 0 4px;font-size:.9rem"><b>Problema de ejemplo:</b> ${c.prob}</p>${kbds(c.seq)}
    <div class="lcd"><small>Pantalla</small>${c.screen} ${c.unit}</div><p style="margin:0;font-size:.88rem">💡 ${c.tip}</p>`;
@@ -1724,32 +1724,44 @@ function calcRow(typeId,card){
 }
 function vCalc(v){
   const groups=[1,2,3,4].map(i=>({I:indOf(i),items:CALC.filter(c=>c.ind===i)}));
+  const K=t=>`<kbd class="${/^(SHIFT|×10■|\(−\)|►)$/.test(t)?"sp":""}">${t}</kbd>`;
   v.innerHTML=`<h2>🧮 Tu calculadora Casio</h2>
-   <p class="lede">Tutoriales para resolver cada fórmula del temario con la <b>Casio fx-570LA CW (ClassWiz)</b>. Cada tarjeta muestra un problema, las teclas en orden y lo que debe aparecer en pantalla.</p>
-   <div class="callout warn">ℹ️ Estas secuencias usan las teclas comunes de la familia ClassWiz. Si alguna se ve distinta en tu calculadora, busca la que tenga el mismo símbolo impreso (por ejemplo <kbd class="sp">×10ˣ</kbd>, <kbd class="sp">(−)</kbd>, <kbd>S⇔D</kbd>) y comprueba el resultado con la «Prueba rápida» de abajo.</div>
+   <p class="lede">Tutoriales para resolver cada fórmula del temario con tu <b>Casio fx-570LA CW (ClassWiz)</b>, escritos con los nombres de las teclas de <b>tu</b> teclado. Cada tarjeta muestra un problema, las teclas en orden y lo que debe aparecer en pantalla.</p>
+   <div class="card"><h3>⌨️ Mapa de tu teclado</h3><p style="font-size:.9rem">Tu modelo no tiene teclas «=», «MENU», «S⇔D», «ALPHA» ni «CALC». Estas son las que usarás:</p>
+    <div class="tbl-wrap"><table><thead><tr><th>Para…</th><th>Presiona</th></tr></thead><tbody>
+    <tr><td>Entrar al modo de cálculo</td><td>${K("HOME")} (la casita) y elige <b>Calcular</b></td></tr>
+    <tr><td>Obtener el resultado</td><td>${K("EXE")} (en lugar de «=»)</td></tr>
+    <tr><td>Coma decimal</td><td>la tecla ${K(",")} (a la izquierda de ×10■): <b>9,8</b></td></tr>
+    <tr><td>Número negativo</td><td>${K("SHIFT")} y luego ${K("−")} (el símbolo <b>(−)</b> está impreso en dorado sobre esa tecla). Se escribe ${K("SHIFT")} ${K("(−)")}</td></tr>
+    <tr><td>Potencia de diez</td><td>${K("×10■")} (la tecla «×10» con un cuadrito)</td></tr>
+    <tr><td>Salir del exponente</td><td>la flecha derecha ${K("►")} (tecla «&gt;» del cursor)</td></tr>
+    <tr><td>Borrar un dígito / todo</td><td>${K("⌫")} (flecha con X) / ${K("AC")}</td></tr>
+    <tr><td>Fracción ↔ decimal</td><td>${K("FORMAT")} (flechas circulares). También ${K("SHIFT")} ${K("EXE")} (≈) muestra el decimal</td></tr>
+    <tr><td>Usar el resultado anterior</td><td>${K("Ans")}</td></tr>
+    <tr><td>Escribir letras (A, B, C, D, E, F, x, y, z)</td><td>${K("SHIFT")} y luego ${K("4")} (A), ${K("5")} (B), ${K("6")} (C), ${K("1")} (D), ${K("2")} (E), ${K("3")} (F), ${K("0")} (x), ${K(",")} (y), ${K("×10■")} (z)</td></tr></tbody></table></div></div>
    <div class="card"><h3>🔑 Las 8 reglas de oro</h3><ul class="key">
-    <li><b>1. Modo de cálculo:</b> presiona <kbd>MENU</kbd> y elige <b>Calcular</b> (el primer ícono). Borra todo con <kbd>AC</kbd>; borra un solo dígito con <kbd>DEL</kbd>.</li>
-    <li><b>2. Punto decimal:</b> la calculadora usa punto. Escribe <kbd class="n">9.8</kbd>, no 9,8.</li>
-    <li><b>3. Paréntesis siempre en los denominadores:</b> para dividir entre un producto escribe <kbd>(</kbd> 1000 <kbd>×</kbd> 9.8 <kbd>)</kbd>. Sin paréntesis el resultado sale mal.</li>
-    <li><b>4. Potencias de diez:</b> usa <kbd class="sp">×10ˣ</kbd> (no escribas «× 10 ^»). Para 1,6 × 10⁻¹⁹ presiona: <kbd class="n">1.6</kbd> <kbd class="sp">×10ˣ</kbd> <kbd class="sp">(−)</kbd> <kbd class="n">19</kbd>.</li>
-    <li><b>5. Salir del exponente:</b> después de escribir el exponente presiona <kbd class="sp">►</kbd> antes de seguir con × ÷ + − o con un paréntesis.</li>
-    <li><b>6. Signo negativo:</b> usa la tecla <kbd class="sp">(−)</kbd> para números negativos y la tecla <kbd>−</kbd> solo para restar.</li>
-    <li><b>7. Fracción ↔ decimal:</b> si ves una fracción, presiona <kbd>S⇔D</kbd>.</li>
+    <li><b>1. Antes de empezar:</b> presiona ${K("HOME")}, elige <b>Calcular</b> y limpia con ${K("AC")}.</li>
+    <li><b>2. Decimales con coma:</b> usa la tecla ${K(",")}. Escribe <kbd class="n">9,8</kbd>, no 9.8.</li>
+    <li><b>3. Paréntesis siempre en los denominadores:</b> para dividir entre un producto escribe ${K("(")} 1000 ${K("×")} 9,8 ${K(")")}. Sin paréntesis el resultado sale mal.</li>
+    <li><b>4. Potencias de diez:</b> usa ${K("×10■")}. Para 1,6 × 10⁻¹⁹ presiona: <kbd class="n">1,6</kbd> ${K("×10■")} ${K("SHIFT")} ${K("(−)")} <kbd class="n">19</kbd>.</li>
+    <li><b>5. Salir del exponente:</b> después de escribir el exponente presiona ${K("►")} antes de seguir con × ÷ + − o con un paréntesis.</li>
+    <li><b>6. Signo negativo:</b> se escribe con ${K("SHIFT")} ${K("(−)")}. La tecla ${K("−")} sola es solo para restar.</li>
+    <li><b>7. Fracción ↔ decimal:</b> si ves una fracción, presiona ${K("FORMAT")}.</li>
     <li><b>8. Verifica:</b> ¿el resultado tiene sentido? Un resultado gigante o minúsculo suele indicar que falta convertir una unidad.</li></ul></div>
    <div class="card"><h3>✅ Prueba rápida de tu calculadora</h3><p style="font-size:.9rem">Haz estas tres operaciones. Si los resultados coinciden, estás lista para los tutoriales.</p>
-    ${[["6 ÷ ( 2 × 3 ) =","1"],["2 ÷ 5 =","0.4"],["1.6 ×10ˣ (−) 19 ► × 1 ×10ˣ 19 ► =","1.6"]].map(t=>`${kbds(t[0])}<div class="lcd"><small>Debe mostrar</small>${t[1]}</div>`).join("")}</div>
+    ${[["6 ÷ ( 2 × 3 ) EXE","1"],["2 ÷ 5 EXE","0,4"],["1,6 ×10■ SHIFT (−) 19 ► × 1 ×10■ 19 ► EXE","1,6"]].map(t=>`${kbds(t[0])}<div class="lcd"><small>Debe mostrar</small>${t[1]}</div>`).join("")}</div>
    <label class="sr" for="c-search">Buscar tutorial</label><input id="c-search" class="search" placeholder="🔍 Busca una fórmula: presión, densidad, electrones…" autocomplete="off">
    <div id="c-list" style="margin-top:12px">${groups.map(g=>`<div class="g-grp"><h3 style="margin:14px 4px 8px;color:var(${g.I.c})">${g.I.icon} ${g.I.title} <span class="chip" style="font-size:.7rem">Indicador ${g.I.id}</span></h3>
      ${g.items.map(c=>`<details class="card gcard" style="--gc:var(${g.I.c})" data-s="${esc((c.title+" "+c.f+" "+c.prob).toLowerCase())}"><summary><span class="q">${c.title}<small>${c.prob}</small></span></summary><div class="gb">${calcBlock(c)}</div></details>`).join("")}</div>`).join("")}</div>
    <div class="card"><h3>⚡ Trucos para ahorrar tiempo</h3><ul class="key">
-    <li><b>Seguir con el resultado anterior:</b> después de <kbd>=</kbd>, presiona un operador (por ejemplo <kbd>÷</kbd> 60) y la calculadora continúa con el resultado anterior (<kbd>Ans</kbd>).</li>
-    <li><b>Corregir sin reescribir:</b> después de <kbd>=</kbd>, presiona <kbd>▲</kbd> para recuperar la operación anterior, cambia el número y presiona <kbd>=</kbd>.</li>
-    <li><b>Repetir con otros datos (<kbd>CALC</kbd>):</b> escribe la fórmula con letras (<kbd>ALPHA</kbd> + la tecla donde aparece cada letra impresa), presiona <kbd>CALC</kbd>, escribe cada valor y <kbd>=</kbd>. Para otros datos, presiona <kbd>CALC</kbd> de nuevo.</li>
-    <li><b>Despejar con <kbd>SOLVE</kbd> (opcional):</b> escribe la ecuación completa con <kbd>ALPHA</kbd> <kbd>CALC</kbd> para el signo «=» (por ejemplo 39200 = 1000 × 9.8 × X), presiona <kbd>SHIFT</kbd> <kbd>CALC</kbd> y sigue las indicaciones. Si no te resulta, usa el despeje manual de los tutoriales: es más seguro.</li></ul></div>
+    <li><b>Seguir con el resultado anterior:</b> después de ${K("EXE")}, presiona un operador (por ejemplo ${K("÷")} 60) y la calculadora continúa con el resultado anterior (${K("Ans")}).</li>
+    <li><b>Corregir sin reescribir:</b> prueba la flecha ${K("^")} (arriba) para recuperar el cálculo anterior, cambia el número y presiona ${K("EXE")}. Verifica que funcione así en tu calculadora.</li>
+    <li><b>Guardar valores:</b> la tecla ${K("VARIABLE")} muestra los valores guardados en A, B, C, D, E, F, x, y y z, y permite editarlos; así puedes reutilizar un dato (por ejemplo g = 9,8) sin escribirlo cada vez. Las letras se escriben con ${K("SHIFT")} + tecla (ver el mapa de arriba).</li>
+    <li><b>Resolver ecuaciones:</b> la familia ClassWiz CW incluye un solucionador de ecuaciones, pero no pude confirmar los pasos exactos en tu modelo. Para aprenderlo, consulta el manual interactivo de Casio (education.casio.co.uk/classwizhelp) o usa el despeje manual de estos tutoriales, que es más seguro para el examen.</li></ul></div>
    <div class="card"><h3>🚨 Mensajes de error comunes</h3><div class="tbl-wrap"><table><thead><tr><th>Mensaje</th><th>Causa probable</th></tr></thead><tbody>
-    <tr><td><b>Syntax ERROR</b></td><td>Paréntesis sin cerrar, dos operadores seguidos, o usaste <kbd>−</kbd> en lugar de <kbd class="sp">(−)</kbd>.</td></tr>
+    <tr><td><b>Syntax ERROR</b></td><td>Paréntesis sin cerrar, dos operadores seguidos, o usaste la tecla ${K("−")} en lugar de ${K("SHIFT")} ${K("(−)")} para un número negativo.</td></tr>
     <tr><td><b>Math ERROR</b></td><td>Dividiste entre cero: revisa que no falte un número dentro del paréntesis del denominador.</td></tr>
-    <tr><td><b>Resultado muy grande o muy pequeño</b></td><td>Probablemente falta convertir una unidad (cm, cm², min, mA, µC) o te saltaste <kbd class="sp">►</kbd>.</td></tr></tbody></table></div></div>`;
+    <tr><td><b>Resultado muy grande o muy pequeño</b></td><td>Probablemente falta convertir una unidad (cm, cm², min, mA, µC) o te saltaste la flecha ${K("►")} después de un exponente.</td></tr></tbody></table></div></div>`;
   const inp=$("#c-search");
   inp.addEventListener("input",()=>{const w=inp.value.trim().toLowerCase();
     document.querySelectorAll("#c-list .gcard").forEach(d=>{const on=!w||d.dataset.s.includes(w); d.style.display=on?"":"none"; if(w&&on) d.open=true;});
@@ -1771,7 +1783,7 @@ const CERO=[
  body:`<ul class="key"><li><b>Dividir entre un número menor que 1 da un resultado MÁS GRANDE.</b> Ejemplo: 500 ÷ 0,25 = 2000. ¡No es un error!</li>
   <li><b>El triángulo mágico:</b> en la fórmula ρ = m/V, la letra que está sola arriba (m) va en la punta. Tapa con el dedo la letra que buscas: si las otras quedan <b>una sobre otra</b>, divides; si quedan <b>lado a lado</b>, multiplicas.</li></ul>
   <div class="grid two" style="margin-top:10px"><div>${tri("m","ρ","V","--c2")}<p style="text-align:center;font-size:.85rem">ρ = m ÷ V · m = ρ × V · V = m ÷ ρ</p></div><div>${tri("Q","I","t","--c4")}<p style="text-align:center;font-size:.85rem">I = Q ÷ t · Q = I × t · t = Q ÷ I</p></div></div>
-  <ul class="key"><li><b>Notación científica:</b> 1,6 × 10⁻¹⁹ es un número diminuto (0,000…16, con 19 posiciones decimales). En la calculadora: <b>1.6 → EXP (o ×10ˣ) → (−) → 19</b>.</li></ul>`,
+  <ul class="key"><li><b>Notación científica:</b> 1,6 × 10⁻¹⁹ es un número diminuto (0,000…16, con 19 posiciones decimales). En tu calculadora: <b>1,6 → ×10■ → SHIFT (−) → 19</b>.</li></ul>`,
  example:["Busco ρ si m = 20 g y V = 4 cm³.","Tapo ρ en el triángulo → queda m sobre V → divido.","20 ÷ 4 = 5 → ρ = 5 g/cm³"],
  items:[
  {id:"z0a",ind:2,lvl:1,type:"mc",tags:[],q:"En el triángulo de la densidad (m arriba; ρ y V abajo), si tapas V, ¿qué operación queda?",
@@ -2092,7 +2104,7 @@ $("#dlg-form-b").innerHTML=`
   <tr><td><b>t</b></td><td>«te»</td><td>Tiempo</td><td>s (segundo)</td></tr>
   <tr><td><b>e</b></td><td>«e»</td><td>Carga de un electrón (1,6 × 10⁻¹⁹)</td><td>C</td></tr>
   <tr><td><b>n</b></td><td>«ene»</td><td>Número de electrones</td><td>(sin unidad)</td></tr></tbody></table></div>
- <div class="callout info">🧮 <b>Notación científica en la calculadora:</b> para escribir 1,6 × 10⁻¹⁹ presiona <b>1.6</b> → <b>EXP</b> (o <b>×10ˣ</b>) → <b>(−)</b> → <b>19</b>. No escribas «× 10» con la tecla de multiplicar.</div>
+ <div class="callout info">🧮 <b>Notación científica en la calculadora:</b> para escribir 1,6 × 10⁻¹⁹ presiona <b>1,6</b> → <b>×10■</b> → <b>SHIFT</b> y <b>(−)</b> → <b>19</b>. No escribas «× 10» con la tecla de multiplicar.</div>
  <h3 style="margin-top:14px">📌 Constantes y equivalencias</h3><div class="tbl-wrap"><table><tbody>
   <tr><td>g</td><td>9,8 m/s²</td></tr><tr><td>e</td><td>1,6 × 10⁻¹⁹ C</td></tr><tr><td>P₀</td><td>101 300 Pa = 1 atm</td></tr><tr><td>ρ agua</td><td>1000 kg/m³ = 1 g/cm³</td></tr>
   <tr><td>Densidad</td><td>1 g/cm³ = 1000 kg/m³</td></tr><tr><td>Volumen</td><td>1 L = 1000 cm³ = 0,001 m³ · 1 mL = 1 cm³</td></tr>
