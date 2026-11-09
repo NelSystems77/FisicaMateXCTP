@@ -1711,7 +1711,7 @@ const CALC=[
 {id:"c-graf",ind:4,title:"Intensidad desde la gráfica Q–t",f:"I = Q ÷ t (pendiente)",types:["g-graf"],prob:"En la gráfica, el punto (4 s, 20 C) está sobre la recta. ¿Intensidad?",seq:"20 ÷ 4 EXE",screen:"5",unit:"A",val:5,tip:"Lee un punto de la recta y divide carga entre tiempo."}
 ];
 const CBY={}; CALC.forEach(c=>c.types.forEach(t=>CBY[t]=c));
-function kbds(seq){return `<div class="kbds" role="img" aria-label="Teclas en orden: ${esc(seq)}">${seq.split(" ").map(t=>`<kbd class="${/^[\d,.]+$/.test(t)?"n":/^(×10■|\(−\)|►|SHIFT|≈)$/.test(t)?"sp":""}" aria-hidden="true">${esc(t)}</kbd>`).join("")}</div>`;}
+function kbds(seq){return `<div class="kbds" role="img" aria-label="Teclas en orden: ${esc(seq.replace(/►/g,"flecha derecha").replace(/×10■/g,"por diez a la"))}">${seq.split(" ").map(t=>`<kbd class="${/^[\d,.]+$/.test(t)?"n":/^(×10■|\(−\)|►|SHIFT|≈)$/.test(t)?"sp":""}" aria-hidden="true">${t==="►"?"&gt;":esc(t)}</kbd>`).join("")}</div>`;}
 function calcBlock(c){
   return `<p style="margin:0 0 4px;font-size:.9rem"><b>Problema de ejemplo:</b> ${c.prob}</p>${kbds(c.seq)}
    <div class="lcd"><small>Pantalla</small>${c.screen} ${c.unit}</div><p style="margin:0;font-size:.88rem">💡 ${c.tip}</p>`;
@@ -1724,22 +1724,22 @@ function calcRow(typeId,card){
 }
 function vCalc(v){
   const groups=[1,2,3,4].map(i=>({I:indOf(i),items:CALC.filter(c=>c.ind===i)}));
-  const K=t=>`<kbd class="${/^(SHIFT|×10■|\(−\)|►|≈)$/.test(t)?"sp":""}">${t}</kbd>`;
+  const K=t=>`<kbd class="${/^(SHIFT|×10■|\(−\)|►|≈)$/.test(t)?"sp":""}">${t==="►"?"&gt;":t}</kbd>`;
   v.innerHTML=`<h2>🧮 Tu calculadora Casio</h2>
    <p class="lede">Tutoriales para resolver cada fórmula del temario con tu <b>Casio fx-570LA CW (ClassWiz)</b>, escritos con los nombres de las teclas de <b>tu</b> teclado. Cada tarjeta muestra un problema, las teclas en orden y lo que debe aparecer en pantalla.</p>
-   <div class="card"><h3>⌨️ Mapa de tu teclado</h3><p style="font-size:.9rem">Tu modelo no tiene teclas «=», «MENU», «S⇔D», «ALPHA» ni «CALC». Estas son las que usarás:</p>
+   <div class="card"><h3>⌨️ Mapa de tu teclado</h3><p style="font-size:.9rem">Tu modelo no tiene teclas «MENU», «S⇔D», «ALPHA» ni «CALC», y el resultado no se obtiene con «=» sino con EXE. (El «=» está impreso en dorado sobre la tecla «(»: se usa solo para escribir ecuaciones.) Estas son las teclas que usarás:</p>
     <div class="tbl-wrap"><table><thead><tr><th>Para…</th><th>Presiona</th></tr></thead><tbody>
     <tr><td>Entrar al modo de cálculo</td><td>${K("HOME")} (la casita), elige <b>Calcular</b> con las flechas y confirma con ${K("OK")}</td></tr>
     <tr><td>Obtener el resultado</td><td>${K("EXE")} (en lugar de «=»)</td></tr>
     <tr><td>Coma decimal</td><td>la tecla ${K(",")} (a la izquierda de ×10■): <b>9,8</b></td></tr>
     <tr><td>Número negativo</td><td>${K("SHIFT")} y luego ${K("−")} (el símbolo <b>(−)</b> está impreso en dorado sobre esa tecla). Se escribe ${K("SHIFT")} ${K("(−)")}</td></tr>
     <tr><td>Potencia de diez</td><td>${K("×10■")} (la tecla «×10» con un cuadrito)</td></tr>
-    <tr><td>Salir del exponente</td><td>la flecha derecha ${K("►")} (tecla «&gt;» del cursor)</td></tr>
+    <tr><td>Salir del exponente</td><td>la flecha derecha ${K("►")} (a la derecha de ${K("OK")})</td></tr>
     <tr><td>Borrar un dígito / todo</td><td>${K("⌫")} (flecha con X) / ${K("AC")}</td></tr>
     <tr><td>Resultado en decimal</td><td>${K("SHIFT")} y luego ${K("EXE")}: el símbolo <b>≈</b> está impreso en dorado sobre EXE. Se escribe ${K("SHIFT")} ${K("≈")}. Úsalo en lugar de EXE cuando una división dé fracción</td></tr>
     <tr><td>Cambiar el formato de un resultado ya mostrado</td><td>${K("FORMAT")} (flechas circulares)</td></tr>
     <tr><td>Usar el resultado anterior</td><td>${K("Ans")}</td></tr>
-    <tr><td>Escribir letras (A, B, C, D, E, F, x, y, z)</td><td>${K("SHIFT")} y luego ${K("4")} (A), ${K("5")} (B), ${K("6")} (C), ${K("1")} (D), ${K("2")} (E), ${K("3")} (F), ${K("0")} (x), ${K(",")} (y), ${K("×10■")} (z)</td></tr></tbody></table></div></div>
+    <tr><td>Escribir letras (A, B, C, D, E, F, x, y, z)</td><td>${K("SHIFT")} y luego ${K("4")} (A), ${K("5")} (B), ${K("6")} (C), ${K("1")} (D), ${K("2")} (E), ${K("3")} (F), ${K("0")} (x), ${K(",")} (y), ${K("×10■")} (z). La <b>x</b> también tiene su propia tecla ${K("x")} (arriba a la izquierda).</td></tr></tbody></table></div></div>
    <div class="card"><h3>🔑 Las 8 reglas de oro</h3><ul class="key">
     <li><b>1. Antes de empezar:</b> presiona ${K("HOME")}, elige <b>Calcular</b>, confirma con ${K("OK")} y limpia con ${K("AC")}.</li>
     <li><b>2. Decimales con coma:</b> usa la tecla ${K(",")}. Escribe <kbd class="n">9,8</kbd>, no 9.8.</li>
